@@ -1,0 +1,203 @@
+* {
+    font-family: "Montserat";
+}
+
+.body-div{
+    background-image: url("bg-img.png")!important;
+    background-repeat: no-repeat!important;
+    background-size: cover!important;
+    background-position: center!important;
+}
+
+.badge {
+    font-size: 15px !important;
+}
+
+.nav-link:hover,.nav-link.active {
+    color: #cc3301 !important;
+    background-color: #f6f6f6!important;
+    border-radius: 5px;
+}
+
+ul {
+    padding: .5rem !important;
+}
+
+ul li a,
+ul button {
+    width: 100% !important;
+}
+
+body {
+    background-color: #f6f6f6 !important;
+}
+
+.dataTables_paginate {
+    text-align: center !important;
+    display: flex !important;
+    justify-content: center;
+}
+
+.dataTables_paginate a {
+    color: white !important;
+    background-color: #cc3301 !important;
+    border-radius: 10px;
+    padding: 5px;
+    border: 2px solide #fff;
+    cursor: pointer;
+    margin-inline: 10px;
+    align-items: center !important;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
+
+/* === LOADING ==== */
+#loading {
+    position: fixed;
+    top: 50%;
+    margin: auto;
+    /* left: 50%; */
+    /* background-color: #000; */
+    align-items: center;
+    text-align: center;
+    border-radius: 5px;
+    z-index: 2000;
+}
+
+#loading span {
+    color: #fff !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: bold !important;
+}
+
+p {
+    font-size: 20px;
+    color: #000;
+}
+
+.text-dark {
+    color: #000;
+}
+
+.text-red {
+    color: #cc3301;
+}
+
+.bg-dark {
+    background-color: #000;
+    color: #fff;
+}
+
+.bg-dark:hover {
+    color: #cc3301;
+}
+
+.bg-red {
+    background-color: #cc3301;
+    color: #fff;
+}
+
+.bg-red:hover {
+    color: #fff;
+}
+
+.btn {
+    margin: 3px;
+}
+
+#login-page {
+    padding-block: 100px;
+}
+
+.main {
+    background-image: linear-gradient(to left, rgba(255, 0, 0, 0), rgba(204, 51, 1, 255));
+    background-repeat: repeat;
+    background-size: cover !important;
+}
+
+.table-responsive-list {
+    /* height: 300px !important;
+    overflow-y: auto !important; */
+    padding: 0px 5px;
+    border-radius: 10px;
+    padding: 10px
+}
+
+.table-responsive-list thead th {
+    position: sticky;
+    top: 0;
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.bg_dark {
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+thead {
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+.pagination {
+    display: none;
+}
+
+.card {
+    margin-bottom: 5px;
+    border: 5px solid #f6f6f6
+}
+
+.card a {
+    background-color: rgba(0, 0, 0, .175) !important;
+    color: #000 !important;
+}
+
+.card a:hover {
+    color: #fff !important;
+}
+
+button {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175) !important
+}
+
+tr {
+    font-size: 18px !important;
+}
+
+#sidebar_mobile,
+#sidebar {
+    overflow-y: scroll !important;
+}
+
+#sidebar_mobile li {
+    font-size: 8px !important;
+}
+
+#close-moblie-sidebar {
+    margin-top: 55px;
+}

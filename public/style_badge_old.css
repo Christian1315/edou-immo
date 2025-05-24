@@ -1,0 +1,96 @@
+* {
+    font-family: "Poppins";
+}
+
+.logo {
+    /* width: 150px; */
+    height: 100px;
+    width: 100%;
+}
+
+p.sub-title {
+    font-size: 20px;
+    margin-bottom: 10px !important;
+    font-size: bold;
+}
+
+.title {
+    font-size: 25px;
+    background-color: #fbcc0c;
+    color: #fff;
+    padding: 6px;
+}
+
+#body {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("card-logo-crocked.png");
+}
+
+
+p.mandate-title {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+#header {
+    border-bottom: solid 2px #000;
+    align-items: center;
+    margin-block: 10px;
+}
+
+#card-bady,
+#card-bady2 {
+    padding-top: 100px;
+}
+
+#card-bady2 p {
+    font-size: 25px;
+    font-weight: 500;
+}
+
+#card-bady .reference {
+    background-color: rgb(24, 95, 44);
+    text-align: center;
+    color: #fff;
+    width: 100%;
+}
+
+#card-bady .avatar {
+    width: 100%;
+    border-radius: 10px;
+    border: solid 5px rgb(24, 95, 44);
+}
+
+ul.first li::marker {
+    color: #e4540c;
+    font-size: 20px;
+}
+
+ul.second li {
+    list-style-type: none;
+    font-size: 16px;
+    margin-block: 5px;
+    /* color: #fff !important; */
+}
+
+#footer {
+    background-color: rgb(24, 95, 44) !important;
+    color: #fff !important;
+    margin-top: 100px;
+}
+
+#card {
+    border: #000 solid 2px;
+    border-radius: 10px;
+    background-image: url("bg-croisade.jpeg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+#body {
+    background-color: #000;
+    opacity: 0.5;
+}

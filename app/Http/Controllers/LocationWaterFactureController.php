@@ -1,0 +1,515 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use App\Models\Agency;
+use App\Models\AgencyAccount;
+use App\Models\AgencyAccountSold;
+use App\Models\House;
+use App\Models\Location;
+use App\Models\LocationWaterFacture;
+use App\Models\Proprietor;
+use App\Models\Room;
+use App\Models\StopHouseWaterState;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
+use Exception;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
+
+class LocationWaterFactureController extends Controller
+{
+    private const DAYS_BETWEEN_STATE_STOPS = 5;
+    private const SECONDS_IN_DAY = 86400;
+
+    #VERIFIONS SI LE USER EST AUTHENTIFIE
+    public function __construct()
+    {
+        $this->middleware(['auth']);
+    }
+
+    static function water_factures_rules(): array
+    {
+        return [
+            'location' => ['required', "integer"],
+            'end_index' => ['required', "numeric"],
+        ];
+    }
+
+    static function water_factures_messages(): array
+    {
+        return [
+            'location.required' => "Veillez préciser la location!",
+            'location.integer' => "La location doit être un entier",
+
+            'end_index.required' => "L'index de fin est réquis!",
+            'end_index.numeric' => "L'index de fin doit être de type numérique!",
+        ];
+    }
+
+    function _GenerateFacture(Request $request): RedirectResponse
+    {
+        try {
+            DB::beginTransaction();
+
+            $formData = $request->all();
+            $this->validateWaterFacture($formData);
+
+            $location = $this->getLocation($formData['location']);
+            if (!$location) {
+                DB::rollBack();
+                return $this->handleError("Cette location n'existe pas!");
+            }
+
+            $factureData = $this->prepareFactureData($formData, $location);
+            if (!$factureData) {
+                DB::rollBack();
+                return back()->withInput();
+            }
+
+            LocationWaterFacture::create($factureData);
+
+            DB::commit();
+            alert()->success("Succès", "Facture d'eau générée avec succès!");
+
+            return back()->withInput();
+        } catch (QueryException $e) {
+            DB::rollBack();
+            Log::error('Erreur de base de données lors de la génération de facture: ' . $e->getMessage());
+            return $this->handleError("Une erreur est survenue lors de la génération de la facture. Veuillez réessayer.");
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Erreur inattendue lors de la génération de facture: ' . $e->getMessage());
+            return $this->handleError("Une erreur inattendue est survenue. Veuillez réessayer.");
+        }
+    }
+
+    function _FacturePayement(Request $request, int $id): RedirectResponse
+    {
+        try {
+            DB::beginTransaction();
+
+            $facture = $this->getFacture($id);
+            if (!$facture) {
+                DB::rollBack();
+                return $this->handleError("Cette facture n'existe pas!");
+            }
+
+            $agency = $facture->Location->_Agency;
+            $agencyAccount = $this->getAgencyAccount($agency->id);
+            if (!$agencyAccount) {
+                DB::rollBack();
+                return $this->handleError("Ce compte d'agence n'existe pas! Vous ne pouvez pas le créditer!");
+            }
+
+            if (!$this->canCreditAccount($agencyAccount, $facture->amount)) {
+                DB::rollBack();
+                return back()->withInput();
+            }
+
+            $this->processPayment($facture, $agencyAccount);
+
+            DB::commit();
+            alert()->success("Succès", "La facture d'eau de montant ({$facture->amount}) a été payée avec succès!");
+
+            return back()->withInput();
+        } catch (QueryException $e) {
+            DB::rollBack();
+            Log::error('Erreur de base de données lors du paiement de facture: ' . $e->getMessage());
+            return $this->handleError("Une erreur est survenue lors du paiement de la facture. Veuillez réessayer.");
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Erreur inattendue lors du paiement de facture: ' . $e->getMessage());
+            return $this->handleError("Une erreur inattendue est survenue. Veuillez réessayer.");
+        }
+    }
+
+    function _StopStatsOfHouse(Request $request): RedirectResponse
+    {
+        try {
+            DB::beginTransaction();
+
+            $formData = $request->all();
+            $this->validateHouseData($formData);
+
+            $house = $this->getHouse($formData['house']);
+            if (!$house || $house->Locations->isEmpty()) {
+                DB::rollBack();
+                return $this->handleError("Cette maison n'existe pas ou n'appartient à aucune location!");
+            }
+
+            $state = $this->createOrUpdateHouseState($house);
+            $this->updateHouseLocations($house, $state);
+
+            DB::commit();
+            alert()->success("Succès", "L'état en eau de cette maison a été arrêté avec succès!");
+            return back()->withInput();
+        } catch (QueryException $e) {
+            DB::rollBack();
+            Log::error('Erreur de base de données lors de l\'arrêt des états: ' . $e->getMessage());
+            return $this->handleError("Une erreur est survenue lors de l'arrêt des états. Veuillez réessayer.");
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Erreur inattendue lors de l\'arrêt des états: ' . $e->getMessage());
+            return $this->handleError("Une erreur inattendue est survenue. Veuillez réessayer.");
+        }
+    }
+
+    /**
+     * Filtre les locations par superviseur
+     * 
+     * @param Request $request
+     * @param Agency $agency
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    function WaterFiltreBySupervisor(Request $request, Agency $agency)
+    {
+        try {
+            // Validation du superviseur
+            $supervisor = User::find($request->supervisor);
+            if (!$supervisor) {
+                throw new \Exception("Ce superviseur n'existe pas!");
+            }
+
+            // Récupération des locations avec eager loading
+            $locations_filtred = $agency->_Locations()
+                ->where('status', '!=', 3)
+                ->whereHas('Room', function ($query) {
+                    $query->where('water', true);
+                })
+                ->whereHas('House.Supervisor', function ($query) use ($request) {
+                    $query->where('id', $request->supervisor);
+                })
+                ->get();
+
+            if ($locations_filtred->isEmpty()) {
+                throw new \Exception("Aucun résultat trouvé");
+            }
+
+            alert()->success("Succès", "Locations filtrées par superviseur avec succès!");
+            return back()->withInput()->with(["locations_filtred" => $locations_filtred]);
+        } catch (\Exception $e) {
+            alert()->error("Echec", $e->getMessage());
+            return back()->withInput();
+        }
+    }
+
+    /**
+     * Filtre les locations par maison
+     * 
+     * @param Request $request
+     * @param Agency $agency
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    function WaterFiltreByHouse(Request $request, Agency $agency)
+    {
+        try {
+            // Validation de la maison
+            $house = House::find($request->house);
+            if (!$house) {
+                throw new \Exception("Cette maison n'existe pas!");
+            }
+
+            // Récupération des locations avec eager loading
+            $locations_filtred = $agency->_Locations()
+                ->with(['House', 'Room', 'Locataire'])
+                ->where('status', '!=', 3)
+                ->where('house', $request->house)
+                ->whereHas('Room', function ($query) {
+                    $query->where('water', true);
+                })
+                ->get();
+
+            if ($locations_filtred->isEmpty()) {
+                throw new \Exception("Aucun résultat trouvé");
+            }
+
+            alert()->success("Succès", "Locations filtrées par maison avec succès!");
+            return back()->withInput()->with(["locations_filtred" => $locations_filtred]);
+        } catch (\Exception $e) {
+            alert()->error("Echec", $e->getMessage());
+            return back()->withInput();
+        }
+    }
+
+    /**
+     * Filtre les locations par propriétaire
+     * 
+     * @param Request $request
+     * @param Agency $agency
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    function WaterFiltreByProprio(Request $request, Agency $agency)
+    {
+        try {
+            // Validation du propriétaire
+            $proprietor = Proprietor::find($request->proprio);
+            if (!$proprietor) {
+                throw new \Exception("Ce propriétaire n'existe pas!");
+            }
+
+            // Récupération des locations avec eager loading
+            $locations_filtred = $agency->_Locations()
+                ->with(['House.Proprietor', 'Room', 'Locataire'])
+                ->where('status', '!=', 3)
+                ->whereHas('Room', function ($query) {
+                    $query->where('water', true);
+                })
+                ->whereHas('House.Proprietor', function ($query) use ($request) {
+                    $query->where('id', $request->proprio);
+                })
+                ->get();
+
+            if ($locations_filtred->isEmpty()) {
+                throw new \Exception("Aucun résultat trouvé");
+            }
+
+            alert()->success("Succès", "Locations filtrées par propriétaire avec succès!");
+            return back()->withInput()->with(["locations_filtred" => $locations_filtred]);
+        } catch (\Exception $e) {
+            alert()->error("Echec", $e->getMessage());
+            return back()->withInput();
+        }
+    }
+
+
+    private function validateWaterFacture(array $data): void
+    {
+        try {
+            Validator::make($data, self::water_factures_rules(), self::water_factures_messages())->validate();
+        } catch (Exception $e) {
+            Log::error('Erreur de validation des données de facture: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function validateHouseData(array $data): void
+    {
+        try {
+            Validator::make($data, [
+                'house' => ['required', 'integer'],
+            ], [
+                'house.required' => 'La maison est requise!',
+                'house.integer' => "Ce champ doit être de type entier!",
+            ])->validate();
+        } catch (Exception $e) {
+            Log::error('Erreur de validation des données de maison: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function getLocation(int $locationId): ?Location
+    {
+        try {
+            return Location::where(['visible' => 1])->find($locationId);
+        } catch (QueryException $e) {
+            Log::error('Erreur lors de la récupération de la location: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function getFacture(int $id): ?LocationWaterFacture
+    {
+        try {
+            return LocationWaterFacture::where('visible', 1)->find($id);
+        } catch (QueryException $e) {
+            Log::error('Erreur lors de la récupération de la facture: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function getHouse(int $houseId): ?House
+    {
+        try {
+            return House::where(['visible' => 1])->find($houseId);
+        } catch (QueryException $e) {
+            Log::error('Erreur lors de la récupération de la maison: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function getAgencyAccount(int $agencyId): ?AgencyAccount
+    {
+        try {
+            return AgencyAccount::where(['agency' => $agencyId])->find(env('ELECTRICITY_WATER_ACCOUNT_ID'));
+        } catch (QueryException $e) {
+            Log::error('Erreur lors de la récupération du compte d\'agence: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function prepareFactureData(array $formData, Location $location): ?array
+    {
+        try {
+            $factures = $location->WaterFactures;
+            $startIndex = $factures->isNotEmpty()
+                ? $factures->first()->end_index
+                : $location->Room->water_counter_start_index;
+
+            $consumption = $formData['end_index'] - $startIndex;
+            if ($consumption <= 0) {
+                $this->handleError("Désolé! L'index de fin doit être supérieur à celui de début");
+                return null;
+            }
+
+            $amount = $consumption * $location->Room->unit_price;
+            $user = request()->user();
+
+            return [
+                'location' => $formData['location'],
+                'start_index' => $startIndex,
+                'end_index' => $formData['end_index'],
+                'consomation' => $consumption,
+                'amount' => $amount,
+                'comments' => "Génération de facture d'eau pour le locataire << {$location->Locataire->name} {$location->Locataire->prenom}>> de la maison << {$location->House->name} >> à la date " . now() . " par << {$user->name}>>",
+                'owner' => $user->id,
+            ];
+        } catch (Exception $e) {
+            Log::error('Erreur lors de la préparation des données de facture: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function canCreditAccount(AgencyAccount $account, float $amount): bool
+    {
+        try {
+            $agencyAccountSold = AgencyAccountSold::where(['agency_account' => $account->id, 'visible' => 1])->first();
+            $currentSold = $agencyAccountSold ? $agencyAccountSold->sold : 0;
+            $maxSold = $account->_Account->plafond_max;
+
+            if ($currentSold >= $maxSold) {
+                $this->handleError("Le sold de ce compte ({$account->_Account->name}) a déjà atteint son plafond!");
+                return false;
+            }
+
+            if (($currentSold + $amount) > $maxSold) {
+                $this->handleError("L'ajout de ce montant au sold de ce compte ({$account->_Account->name}) dépasserait son plafond!");
+                return false;
+            }
+
+            return true;
+        } catch (Exception $e) {
+            Log::error('Erreur lors de la vérification du crédit du compte: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function processPayment(LocationWaterFacture $facture, AgencyAccount $agencyAccount): void
+    {
+        try {
+            $facture->paid = true;
+            $facture->save();
+
+            $agencyAccountSold = AgencyAccountSold::where(['agency_account' => $agencyAccount->id, 'visible' => 1])->first();
+            $currentSold = $agencyAccountSold ? $agencyAccountSold->sold : 0;
+
+            if ($agencyAccountSold) {
+                $agencyAccountSold->visible = 0;
+                $agencyAccountSold->delete_at = now();
+                $agencyAccountSold->save();
+            }
+
+            AgencyAccountSold::create([
+                'agency_account' => $agencyAccount->id,
+                'old_sold' => $currentSold,
+                'sold' => $currentSold + $facture->amount,
+                'sold_added' => $facture->amount,
+                'description' => "Paiement de la facture d'eau de montant ({$facture->amount}) pour la maison {$facture->Location->House->name}!!"
+            ]);
+        } catch (QueryException $e) {
+            Log::error('Erreur lors du traitement du paiement: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function createOrUpdateHouseState(House $house): StopHouseWaterState
+    {
+        try {
+            return StopHouseWaterState::create([
+                'house' => $house->id,
+                'owner' => auth()->user()->id,
+                'state_stoped_day' => now(),
+            ]);
+        } catch (QueryException $e) {
+            Log::error('Erreur lors de la création/mise à jour de l\'état de la maison: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function updateHouseLocations(House $house, StopHouseWaterState $state): void
+    {
+        try {
+            $house->Locations->each(function ($location) use ($state) {
+                if (!$location->Room) {
+                    return;
+                }
+
+                $this->updateLocationRoom($location, $state);
+                $this->updateLocationFactures($location, $state);
+                $this->createStateFacture($location, $state);
+            });
+        } catch (Exception $e) {
+            Log::error('Erreur lors de la mise à jour des locations de la maison: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function updateLocationRoom(Location $location, StopHouseWaterState $state): void
+    {
+        try {
+            $locationRoom = $location->Room;
+            $lastFacture = $location->WaterFactures()->first();
+
+            if ($lastFacture) {
+                $locationRoom->water_counter_start_index = $lastFacture->end_index;
+                $locationRoom->save();
+            }
+        } catch (QueryException $e) {
+            Log::error('Erreur lors de la mise à jour de la chambre: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function updateLocationFactures(Location $location, StopHouseWaterState $state): void
+    {
+        try {
+            $location->WaterFactures->each(function ($facture) use ($state) {
+                if (!$facture->state) {
+                    $facture->state = $state->id;
+                    $facture->save();
+                }
+            });
+        } catch (QueryException $e) {
+            Log::error('Erreur lors de la mise à jour des factures: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function createStateFacture(Location $location, StopHouseWaterState $state): void
+    {
+        try {
+            LocationWaterFacture::create([
+                'owner' => request()->user()->id,
+                'location' => $location->id,
+                'end_index' => $location->Room->water_counter_start_index,
+                'amount' => 0,
+                'state_facture' => 1,
+                'state' => $state->id,
+            ]);
+        } catch (QueryException $e) {
+            Log::error('Erreur lors de la création de la facture d\'état: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function handleError(string $message): RedirectResponse
+    {
+        alert()->error("Echec", $message);
+        return back()->withInput();
+    }
+}
