@@ -180,7 +180,9 @@
                                         <i class="bi bi-hand-index-thumb"></i> Gérer
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li><a class="text-dark btn btn-sm" href="/{{$agency['id']}}/caution_html" class="shadow-lg"><i class="bi bi-file-earmark-pdf-fill"></i> Génerer les Cautions</a></li>
+                                        <li>
+                                            <a class="text-dark btn btn-sm" href="{{route('location._ManageCautions',crypId($agency->id))}}" class="shadow-lg"><i class="bi bi-file-earmark-pdf-fill"></i> Génerer les Cautions</a>
+                                        </li>
                                         <li><a target="_blank" href="/{{crypId($agency['id'])}}/manage-agency" class="btn btn-sm bg-warning text-dark text-uppercase">
                                                 <i class="bi bi-house-x-fill"></i> Gérer l'agence
                                             </a>

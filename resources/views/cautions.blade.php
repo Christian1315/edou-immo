@@ -62,11 +62,11 @@
 </head>
 
 <body>
-    <div class="container-fluid">
+    <div class="container-fluid p-5">
         <div class="row">
             <div class="col-12 shadow-lg bg-light">
               
-                <div class="row _header px-5">
+                <div class="row _header pt-5">
                     <table>
                         <thead>
                             <tr>
@@ -78,7 +78,7 @@
                         <tbody>
                             <tr>
                                 <td class="text">
-                                    <img src="{{asset('edou_logo.png')}}" alt="" style="width: 70px;" class="rounded img-fluid">
+                                    <img src="{{public_path('edou_logo.png')}}" alt="" style="width: 70px;" class="rounded img-fluid">
                                 </td>
                                 <td class="text"></td>
                                 <td class="text"></td>
@@ -124,9 +124,9 @@
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td class="bg-secondary"> <strong>{{number_format($cautions["loyer"],0," "," ") }} </strong> </td>
-                            <td class="bg-secondary"> <strong>{{number_format($cautions["electricity"]+$cautions["eau"],0," "," ") }} </strong> </td>
-                            <td class="bg-secondary"> <strong>{{number_format($cautions["eau"],0," "," ") }} </strong> </td>
+                            <td class="bg-secondary"> <strong>{{number_format($totals["cautionLoyer"],0," "," ") }} </strong> </td>
+                            <td class="bg-secondary"> <strong>{{number_format($totals["electricity"]+$totals["water"],0," "," ") }} </strong> </td>
+                            <td class="bg-secondary"> <strong>{{number_format($totals["water"],0," "," ") }} </strong> </td>
                         </tr>
                     </tbody>
                 </table>
