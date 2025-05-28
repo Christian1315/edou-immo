@@ -780,7 +780,10 @@
             $("#encaisserForm").attr("action", `/location/add-paiement`)
             $(".location").val(location.id)
 
-            const date = new Date(location.echeance_date);
+            // const date = new Date(location.echeance_date);
+            const date = new Date(location.latest_loyer_date);
+            date.setMonth(date.getMonth() + 1);
+
             const options = {
                 year: "numeric",
                 month: "long",
@@ -789,7 +792,7 @@
             const formattedDate = date.toLocaleDateString("fr", options);
 
             $(".next_loyer_date").val(formattedDate)
-            console.log(location.locataire)
+
             if (location.locataire.prorata) {
                 $(".prorata").removeClass("d-none")
                 $(".prorata_days").val(location.prorata_days)
