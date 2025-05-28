@@ -36,10 +36,6 @@ Route::get("/debug", function () {
         ->orWhereNull("room")
         ->update(["status" => 3, "room" => null]);
 
-    Room::get()->map(function ($room) {
-        
-    });
-
     return "Opération éffectuée avec succès....";
 });
 

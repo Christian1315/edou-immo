@@ -56,12 +56,22 @@
         .header {
             margin-top: 100px;
         }
+
+        .head-info-left {
+            float: left;
+            width: 60%;
+        }
+
+        .head-info-right {
+            float: left;
+            width: 60%;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid bg-light">
-        <div class="shadow-lg" style="">
+    <div class="container-fluid bg-light px-3">
+        <div class="shadow-lg">
             <!-- HEADER -->
             <div class="row _header px-5">
                 <table>
@@ -75,12 +85,10 @@
                     <tbody>
                         <tr>
                             <td class="text">
-                                <img src="{{public_path('edou_logo.png')}}" alt="" style="width: 70px;" class="rounded img-fluid">
+                                <img src="{{public_path('edou_logo.png')}}" alt="" style="width: 100px;" class="rounded img-fluid">
                             </td>
-                            <td class="text"></td>
-                            <td class="text"></td>
-                            <td class="text"></td>
-                            <td class="text">
+
+                            <td class="text" style="padding-left: 100px!important;">
                                 <h3 class="rapport-title text-uppercase">etat de recouvrement</h3>
                             </td>
                         </tr>
@@ -96,45 +104,35 @@
             @endphp
 
             <!-- infos liés à la maison -->
-            <div class="row">
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text">
-                                <div class="mt-3">
-                                    <h6 class="">Mois de recouvrement: <strong> <em class=""> {{ \Carbon\Carbon::parse($state->created_at)->locale('fr')->isoFormat('D MMMM YYYY') }} </em> </strong> </h6>
-                                    <h6 class="">Mois récouvré: <strong> <em class=""> {{ \Carbon\Carbon::parse($state->recovery_date)->locale('fr')->isoFormat('D MMMM YYYY') }} </em> </strong> </h6>
-                                    <div class="mr-5 p-1" style="border: 2px solid #000;">
-                                        <div class=""><strong class="">Taux = <em class="">{{NumersDivider(count($paid_locataires),count($un_paid_locataires))}} % </em> </div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="text">
-                                <div class="">
-                                    <h6 class="">Maison : <strong> <em class=""> {{$house["name"]}} </em> </strong> </h6>
-                                    <h6 class="">Superviseur : <strong> <em class=""> {{$house->Supervisor->name}} </em> </strong> </h6>
-                                    <h6 class="">Propriétaire : <strong> <em class=""> {{$house->Proprietor->lastname}} {{$house->Proprietor->firstname}} ({{$house->Proprietor->phone}})</em> </strong> </h6>
-                                    <h6 class="">Date d'arrêt: <strong> <em class=""> {{ \Carbon\Carbon::parse($house->PayementInitiations->last()?->state_stoped_day)->locale('fr')->isoFormat('D MMMM YYYY') }} </em> </strong> </h6>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="row px-2">
+                <div class="head-info-left">
+                    <div class="mt-3">
+                        <h6 class="">Mois de recouvrement: <strong> <em class=""> {{ \Carbon\Carbon::parse($state->created_at)->locale('fr')->isoFormat('D MMMM YYYY') }} </em> </strong> </h6>
+                        <h6 class="">Mois récouvré: <strong> <em class=""> {{ \Carbon\Carbon::parse($state->recovery_date)->locale('fr')->isoFormat('D MMMM YYYY') }} </em> </strong> </h6>
+                        <div>
+                            <strong class="">Taux = <em class="">{{NumersDivider(count($paid_locataires),count($un_paid_locataires))}} % </em>
+                        </div>
+                    </div>
+                </div>
+                <div class="head-info-right">
+                    <div class="">
+                        <h6 class="">Maison : <strong> <em class=""> {{$house["name"]}} </em> </strong> </h6>
+                        <h6 class="">Superviseur : <strong> <em class=""> {{$house->Supervisor->name}} </em> </strong> </h6>
+                        <h6 class="">Propriétaire : <strong> <em class=""> {{$house->Proprietor->lastname}} {{$house->Proprietor->firstname}} ({{$house->Proprietor->phone}})</em> </strong> </h6>
+                        <h6 class="">Date d'arrêt: <strong> <em class=""> {{ \Carbon\Carbon::parse($house->PayementInitiations->last()?->state_stoped_day)->locale('fr')->isoFormat('D MMMM YYYY') }} </em> </strong> </h6>
+                    </div>
+                </div>
             </div>
-            <br>
-            <br>
-            <br>
-            <br>
-
         </div>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        
         <!-- les totaux -->
-        <div class="row">
+        <div class="row my-5 px-3">
             <table class="table table-striped table-sm">
                 <thead class="bg_dark">
                     <tr>
@@ -176,7 +174,7 @@
         <br><br><br>
 
         <!-- les locataires -->
-        <div class="row">
+        <div class="row px-3">
             <table class="table table-striped table-sm" style="margin-inline-end: 50px!important;">
                 @if($locations->count()>0)
                 <thead>
@@ -257,7 +255,7 @@
 
         <br>
         <!--  RAPPORT DE RECOUVREMENT -->
-        <div class="row">
+        <div class="row px-3">
             <table class="table table-striped table-sm">
                 <thead>
                     <tr>
