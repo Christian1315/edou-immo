@@ -32,7 +32,7 @@
         }
 
         tr th {
-            font-size: 10px !important;
+            font-size: 15px !important;
         }
 
         td {
@@ -107,8 +107,8 @@
             <div class="row px-2">
                 <div class="head-info-left">
                     <div class="mt-3">
-                        <h6 class="">Mois de recouvrement: <strong> <em class=""> {{ \Carbon\Carbon::parse($state->created_at)->locale('fr')->isoFormat('D MMMM YYYY') }} </em> </strong> </h6>
-                        <h6 class="">Mois récouvré: <strong> <em class=""> {{ \Carbon\Carbon::parse($state->recovery_date)->locale('fr')->isoFormat('D MMMM YYYY') }} </em> </strong> </h6>
+                        <h6 class="">Mois de recouvrement: <strong> <em class=""> {{ \Carbon\Carbon::parse($state->created_at)->locale('fr')->isoFormat('MMMM YYYY') }} </em> </strong> </h6>
+                        <h6 class="">Mois récouvré: <strong> <em class=""> {{ \Carbon\Carbon::parse($state->recovery_date)->locale('fr')->isoFormat('MMMM YYYY') }} </em> </strong> </h6>
                         <div>
                             <strong class="">Taux = <em class="">{{NumersDivider(count($paid_locataires),count($un_paid_locataires))}} % </em>
                         </div>
@@ -130,9 +130,9 @@
         <br>
         <br>
         <br>
-        
+
         <!-- les totaux -->
-        <div class="row my-5 px-3">
+        <div class="row mt-5 px-3">
             <table class="table table-striped table-sm">
                 <thead class="bg_dark">
                     <tr>
@@ -149,23 +149,23 @@
                     <tr class="align-items-center">
                         <td class="text-center"> {{$house["name"]}}</td>
                         <td class="text-center">
-                            <button class="btn btn-sm btn-light shadow-lg "><i class="bi bi-currency-exchange"></i> <strong> {{ number_format($total_revenue,2,","," ") }} fcfa </strong> </button>
+                            <button class="btn btn-sm btn-light shadow-lg "><i class="bi bi-currency-exchange"></i> <strong> {{ number_format($total_revenue,0,","," ") }} fcfa </strong> </button>
                         </td>
 
                         <td class="text-center">
-                            <button class="btn btn-sm btn-light shadow-lg "><i class="bi bi-currency-exchange"></i> <strong> {{number_format($total_commission,2,","," ")}} fcfa </strong> </button>
+                            <button class="btn btn-sm btn-light shadow-lg "><i class="bi bi-currency-exchange"></i> <strong> {{number_format($total_commission,0,","," ")}} fcfa </strong> </button>
                         </td>
 
                         <td class="text-center">
-                            <button class="btn btn-sm btn-light shadow-lg "><i class="bi bi-currency-exchange"></i> <strong> {{number_format($total_expenses,2,","," ")}} fcfa </strong> </button>
+                            <button class="btn btn-sm btn-light shadow-lg "><i class="bi bi-currency-exchange"></i> <strong> {{number_format($total_expenses,0,","," ")}} fcfa </strong> </button>
                         </td>
 
                         <td class="text-center">
-                            <strong class="">{{number_format($locativeCharge,2,","," ")}} fcfa</strong>
+                            <strong class="">{{number_format($locativeCharge,0,","," ")}} fcfa</strong>
                         </td>
 
                         <td class="text-center">
-                            <button class="btn btn-sm btn-light shadow-lg "><i class="bi bi-currency-exchange"></i> <strong> {{number_format($net_amount,2,","," ")}} fcfa </strong> </button>
+                            <button class="btn btn-sm btn-light shadow-lg "><i class="bi bi-currency-exchange"></i> <strong> {{number_format($net_amount,0,","," ")}} fcfa </strong> </button>
                         </td>
                     </tr>
                 </tbody>
@@ -174,7 +174,7 @@
         <br><br><br>
 
         <!-- les locataires -->
-        <div class="row px-3">
+        <div class="row mt-3 px-3">
             <table class="table table-striped table-sm" style="margin-inline-end: 50px!important;">
                 @if($locations->count()>0)
                 <thead>
@@ -198,14 +198,14 @@
                         <td class="text-center"> <small class="btn-light"> <strong> {{$location["Locataire"]["name"]}} {{$location["Locataire"]["prenom"]}}</strong> </small> </td>
                         <td class="text-center">{{$location->Locataire->phone}}</td>
                         <td class="text-center">{{$location->Room->number}}</td>
-                        <td class="text-center"><span class="badge bg-light "> {{number_format($location->Room->total_amount,2,","," ")}} </span></td>
-                        <td class="text-center"><span class="badge bg-light ">{{$location->prorata_amount>0?number_format($location->prorata_amount,2,","," "):'--'}} </span></td>
+                        <td class="text-center"><span class="badge bg-light "> {{number_format($location->Room->total_amount,0,","," ")}} </span></td>
+                        <td class="text-center"><span class="badge bg-light ">{{$location->prorata_amount>0?number_format($location->prorata_amount,0,","," "):'--'}} </span></td>
                         <td class="text-center">{{$location["_locataire"]?($location->prorata_amount>0?'--':$location["nbr_facture_amount_paid"]):00}}</td>
                         <td class="text-center"><span class="badge bg-light ">{{number_format($location["_locataire"]?
                                                 ($location->prorata_amount>0?
                                                     $location->prorata_amount:
                                                     $location["facture_amount_paid"]
-                                                ):00,2,","," ")}}</span></td>
+                                                ):00,0,","," ")}}</span></td>
                         <td class="text-left">
                             <small class="btn-light shadow-lg"> <i class="bi bi-calendar-check-fill"></i> <strong class="">{{ \Carbon\Carbon::parse($location["latest_loyer_date"])->locale('fr')->isoFormat('MMMM YYYY') }} </strong> </small>
                         </td>
@@ -221,7 +221,7 @@
                         <td class="text-center"> <small class="btn-light"> <strong> Vide </strong> </small> </td>
                         <td class="text-center">--</td>
                         <td class="text-center">{{$room->number}}</td>
-                        <td class="text-center"><span class="badge bg-light "> {{number_format($room->total_amount,2,","," ")}} </span></td>
+                        <td class="text-center"><span class="badge bg-light "> {{number_format($room->total_amount,0,","," ")}} </span></td>
                         <td class="text-center"><span class="badge bg-light ">-- </span></td>
                         <td class="text-center">--</td>
                         <td class="text-center"><span class="badge bg-light ">--</span></td>
@@ -239,7 +239,7 @@
                         <td colspan="5" class="text-left">
                             <ul class="">
                                 @forelse($house->CurrentDepenses as $depense)
-                                <li class=""><strong class="">{{number_format($depense->sold_retrieved,2,","," ")}} fcfa</strong> - {{$depense->description}}</li>
+                                <li class=""><strong class="">{{number_format($depense->sold_retrieved,0,","," ")}} fcfa</strong> - {{$depense->description}}</li>
                                 @empty
                                 <li>Aucune dépense éffectuée dans la maison!</li>
                                 @endforelse
