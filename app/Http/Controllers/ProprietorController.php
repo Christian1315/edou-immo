@@ -33,7 +33,6 @@ class ProprietorController extends Controller
         $this->middleware(['auth']);
     }
 
-
     // ################## LES VALIDATIONS #########################
 
     ##======== PROPRIETOR VALIDATION =======##

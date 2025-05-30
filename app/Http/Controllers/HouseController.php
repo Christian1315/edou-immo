@@ -557,18 +557,28 @@ class HouseController extends Controller
 
             $data = $this->prepareHouseStateData($house);
 
+            /**locataires ayant payés dans l'etat */
+            $paid_locataires = collect($data["paid_locataires"]);
+
+            /**locataires a jour */
+            $paidLocators = collect($data["paidLocators"]);
+
+            /**locataires ayant payés à dans l'état et locataires ajour */
+            $paidLocatairesPlusLocataireAjour = $paid_locataires->concat($paidLocators)
+                ->unique();
+
             $pdf = Pdf::loadView('house-state', array_merge($data, [
                 "house" => $data["house"],
                 "locations" => $data["locations"],
                 "state" => $data["state"],
-                "paid_locataires" => $data["paid_locataires"],
-                "un_paid_locataires" => $data["un_paid_locataires"],
+                "paidLocatairesPlusLocataireAjour" => $paidLocatairesPlusLocataireAjour->count(),
+                // "un_paid_locataires" => $data["un_paid_locataires"],
                 "free_rooms" => $data["free_rooms"],
             ]));
-            
+
             // Set PDF orientation to landscape
             $pdf->setPaper('a4', 'landscape');
-            
+
             return $pdf->stream();
         } catch (\Exception $e) {
             Log::error('Error showing house state: ' . $e->getMessage());
@@ -623,7 +633,6 @@ class HouseController extends Controller
             "free_rooms" => $free_rooms
         ]);
 
-        // dd($data["locations"]);
         return $data;
     }
 
@@ -655,11 +664,28 @@ class HouseController extends Controller
      */
     private function calculateStateData(House $house, $locations, HomeStopState $lastState): array
     {
+
         $stateData = $this->calculateFinancialData($house, $locations, $lastState);
         $stateData['paid_locataires'] = $this->getPaidLocataires($locations, $lastState);
         $stateData['un_paid_locataires'] = $this->getUnpaidLocataires($locations, $lastState);
-
+        $stateData["paidLocators"] = $this->paidLocators($locations, $lastState);
         return $stateData;
+    }
+
+    /**
+     * LOCATAIRES A JOUR
+     * @param Collection $locations
+     * @return array
+     */
+
+    function paidLocators($locations, HomeStopState $lastState): array
+    {
+        return $locations
+            ->filter(function ($location) use ($lastState) {
+                return Carbon::parse($location->latest_loyer_date)->format("m") <= Carbon::parse($lastState->stats_stoped_day)->format("m");
+            })->toArray();
+
+        // return [];
     }
 
     /**
@@ -758,49 +784,16 @@ class HouseController extends Controller
 
     /**
      * Get list of tenants who have paid their bills
-     * 
      * @param Collection $locations
      * @param HomeStopState $lastState
      */
+
     private function getPaidLocataires($locations, HomeStopState $lastState): array
     {
         try {
-            $paidLocataires = [];
-
-            foreach ($locations as $location) {
-                $hasUnpaidFactures = false;
-                $totalAmount = 0;
-                $paidAmount = 0;
-
-                // Check all factures for this location
-                foreach ($location->Factures as $facture) {
-                    if ($facture->state === $lastState->id && !$facture->state_facture) {
-                        $totalAmount += $facture->amount;
-
-                        // Check if facture is paid
-                        if ($facture->paid) {
-                            $paidAmount += $facture->amount;
-                        } else {
-                            $hasUnpaidFactures = true;
-                        }
-                    }
-                }
-
-                // If all factures are paid, add tenant to the list
-                if (!$hasUnpaidFactures && $totalAmount > 0) {
-                    $paidLocataires[] = [
-                        'location' => $location,
-                        'tenant' => $location->Tenant,
-                        'total_amount' => $totalAmount,
-                        'paid_amount' => $paidAmount,
-                        'payment_date' => $location->Factures->where('state', $lastState->id)
-                            ->where('paid', true)
-                        // ->max('paid_at')
-                    ];
-                }
-            }
-
-            return $paidLocataires;
+            return $locations->filter(function ($location) use ($lastState) {
+                return $this->getStateFactures($lastState, $location, $lastState->House)->count() > 0;
+            })->toArray();
         } catch (\Exception $e) {
             Log::error('Error getting paid tenants: ' . $e->getMessage());
             throw new \Exception("Erreur lors de la récupération des locataires payés: " . $e->getMessage());
@@ -816,47 +809,9 @@ class HouseController extends Controller
     private function getUnpaidLocataires($locations, HomeStopState $lastState): array
     {
         try {
-            $unpaidLocataires = [];
-
-            foreach ($locations as $location) {
-                $totalAmount = 0;
-                $paidAmount = 0;
-                $unpaidFactures = collect();
-                $lastPaymentDate = null;
-
-                // Check all factures for this location
-                foreach ($location->Factures as $facture) {
-                    if ($facture->state === $lastState->id && !$facture->state_facture) {
-                        $totalAmount += $facture->amount;
-
-                        if ($facture->paid) {
-                            $paidAmount += $facture->amount;
-                            $lastPaymentDate = $facture->paid_at;
-                        } else {
-                            $unpaidFactures[] = [
-                                'facture' => $facture,
-                                'amount' => $facture->amount,
-                                'due_date' => $facture->due_date
-                            ];
-                        }
-                    }
-                }
-
-                // If there are unpaid factures, add tenant to the list
-                if ($unpaidFactures->isNotEmpty()) {
-                    $unpaidLocataires[] = [
-                        'location' => $location,
-                        'tenant' => $location->Tenant,
-                        'total_amount' => $totalAmount,
-                        'paid_amount' => $paidAmount,
-                        'unpaid_amount' => $totalAmount - $paidAmount,
-                        'unpaid_factures' => $unpaidFactures,
-                        'last_payment_date' => $lastPaymentDate,
-                    ];
-                }
-            }
-
-            return $unpaidLocataires;
+            return $locations->filter(function ($location) use ($lastState) {
+                return $this->getStateFactures($lastState, $location, $lastState->House)->count() == 0;
+            })->toArray();
         } catch (\Exception $e) {
             Log::error('Error getting unpaid tenants: ' . $e->getMessage());
             throw new \Exception("Erreur lors de la récupération des locataires impayés: " . $e->getMessage());

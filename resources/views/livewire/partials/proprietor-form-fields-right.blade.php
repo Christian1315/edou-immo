@@ -1,6 +1,6 @@
 <div class="mb-3">
     <label class="form-label">Télécharger le contrat de mandat</label>
-    <input type="file" name="mandate_contrat" class="form-control" required>
+    <input type="file" name="mandate_contrat" class="form-control" >
     @error('mandate_contrat')
     <span class="text-red">{{ $message }}</span>
     @enderror
@@ -16,7 +16,7 @@
 
 <div class="mb-3">
     <label class="form-label">Pays</label>
-    <select class="form-select" name="country" required>
+    <select class="form-select form-control" name="country" required>
         <option value="">Sélectionnez le pays</option>
         @foreach($countries as $country)
             @if($country['id'] == 4)
@@ -33,7 +33,7 @@
 
 <div class="mb-3">
     <label class="form-label">Ville/Commune</label>
-    <select class="form-select" name="city" required>
+    <select class="form-select form-control" name="city" required>
         <option value="">Sélectionnez la ville</option>
         @foreach($cities as $city)
             @if($city['_country']['id'] == 4)
@@ -50,7 +50,7 @@
 
 <div class="mb-3">
     <label class="form-label">Type de carte ID</label>
-    <select class="form-select" name="card_type" required>
+    <select class="form-select form-control" name="card_type" required>
         <option value="">Sélectionnez le type de carte</option>
         @foreach($card_types as $type)
             <option value="{{ $type['id'] }}" {{ old('card_type') == $type['id'] ? 'selected' : '' }}>

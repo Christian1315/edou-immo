@@ -24,7 +24,7 @@
 
 <div class="mb-3">
     <label class="form-label">Email</label>
-    <input type="email" name="email" value="{{ old('email') }}" class="form-control" required>
+    <input type="email" name="email" value="{{ old('email') }}" class="form-control" >
     @error('email')
     <span class="text-red">{{ $message }}</span>
     @enderror
@@ -32,7 +32,7 @@
 
 <div class="mb-3">
     <label class="form-label">Sexe</label>
-    <select class="form-select" name="sexe" required>
+    <select class="form-select form-control" name="sexe" required>
         <option value="">Sélectionnez le sexe</option>
         <option value="Masculin" {{ old('sexe') == 'Masculin' ? 'selected' : '' }}>Masculin</option>
         <option value="Feminin" {{ old('sexe') == 'Feminin' ? 'selected' : '' }}>Feminin</option>
@@ -44,7 +44,7 @@
 
 <div class="mb-3">
     <label class="form-label">Numéro de pièce d'identité</label>
-    <input type="text" name="piece_number" value="{{ old('piece_number') }}" class="form-control" required>
+    <input type="text" name="piece_number" value="{{ old('piece_number') }}" class="form-control">
     @error('piece_number')
     <span class="text-red">{{ $message }}</span>
     @enderror
@@ -52,7 +52,7 @@
 
 <div class="mb-3">
     <label class="form-label">Télécharger la pièce d'identité</label>
-    <input type="file" name="piece_file" class="form-control" required>
+    <input type="file" name="piece_file" class="form-control" >
     @error('piece_file')
     <span class="text-red">{{ $message }}</span>
     @enderror

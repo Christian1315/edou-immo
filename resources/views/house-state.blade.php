@@ -110,7 +110,7 @@
                         <h6 class="">Mois de recouvrement: <strong> <em class=""> {{ \Carbon\Carbon::parse($state->created_at)->locale('fr')->isoFormat('MMMM YYYY') }} </em> </strong> </h6>
                         <h6 class="">Mois récouvré: <strong> <em class=""> {{ \Carbon\Carbon::parse($state->recovery_date)->locale('fr')->isoFormat('MMMM YYYY') }} </em> </strong> </h6>
                         <div>
-                            <strong class="">Taux = <em class="">{{NumersDivider(count($paid_locataires),count($un_paid_locataires))}} % </em>
+                            <strong class="">Trm = <em class="">{{NumersDivider($paidLocatairesPlusLocataireAjour,count($locations))}} % </em>
                         </div>
                     </div>
                 </div>
