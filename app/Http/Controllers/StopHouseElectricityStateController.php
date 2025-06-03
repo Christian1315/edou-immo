@@ -28,6 +28,7 @@ class StopHouseElectricityStateController extends Controller
      * @param int $stateId
      * @return Response|View
      */
+    
     public function ShowStateImprimeHtml(Request $request, int $stateId)
     {
         try {

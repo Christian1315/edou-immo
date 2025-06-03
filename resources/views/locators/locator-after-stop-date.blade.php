@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <h3 class="">Maison : {{$house['name']}} </h3>
             <br>
-            <h6 class=""> Montant total: <b class="text-red"> {{number_format($locationsFiltered["afterStopDateTotal_to_paid"],2,","," ")}} fcfa</b> </h6>
+            <h6 class=""> Montant total: <b class="text-red"> {{number_format($locationsFiltered["afterStopDateTotal_to_paid"],0,","," ")}} fcfa</b> </h6>
 
             <div class="table-responsive shadow-lg p-3">
                 <table id="myTable" class="table table-striped table-sm p-3">
@@ -34,7 +34,7 @@
                             <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["phone"]}}</span></td>
                             <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["adresse"]}}</span></td>
                             <td class="text-center"> <span class="badge bg-light text-red"><i class="bi bi-calendar2-check"></i> {{\Carbon\Carbon::parse($locator["month"])->locale('fr')->isoFormat('D MMMM YYYY')}}</span> </td>
-                            <td class="text-center"> <span class="badge bg-light text-red">{{number_format($locator["amount_paid"],2,","," ")}}</span> </td>
+                            <td class="text-center"> <span class="badge bg-light text-red">{{number_format($locator["amount_paid"],0,","," ")}}</span> </td>
                         </tr>
                         @endforeach
                     </tbody>

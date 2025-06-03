@@ -25,18 +25,18 @@
                             <td class="text-center">{{$loop->index + 1}} </td>
                             <td class="text-center"> <span class="badge bg-light text-dark"> {{$house["name"]}}</span> </td>
                             <td class="text-center">
-                                <strong class="badge bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["total_amount_paid"],2,","," ")}} fcfa </strong>
+                                <strong class="badge bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["total_amount_paid"],0,","," ")}} fcfa </strong>
                             </td>
 
                             <td class="text-center">
-                                <strong class="badge bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["commission"],2,","," ")}} fcfa </strong>
+                                <strong class="badge bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["commission"],0,","," ")}} fcfa </strong>
                             </td>
 
                             <td class="text-center">
-                                <strong class="badge bg-light text-red"><i class="bi bi-currency-exchange"></i> {{number_format($house["last_depenses"],2,","," ")}} fcfa </strong>
+                                <strong class="badge bg-light text-red"><i class="bi bi-currency-exchange"></i> {{number_format($house["last_depenses"],0,","," ")}} fcfa </strong>
                             </td>
                             <td class="text-center">
-                                <strong class="badge bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["_amount"],2,","," ")}} fcfa </strong>
+                                <strong class="badge bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["_amount"],0,","," ")}} fcfa </strong>
                             </td>
 
                             <td class="text-center">

@@ -58,6 +58,7 @@
                 <br><br>
             </div>
         </div>
+
         <div class="row">
             <div class="col-12">
                 <h4 class="">Total: <strong class="text-red"> {{count($factures)}} </strong> </h4>
@@ -76,7 +77,6 @@
                                 <th class="text-center">Echéance</th>
                                 <th class="text-center">Fait le:</th>
                                 <th class="text-center">Commentaire</th>
-                                <!-- <th class="text-center">Status</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -91,7 +91,7 @@
                                 <td class="text-center"><button class="btn btn-sm btn-light">{{$facture["Location"]["Locataire"]["name"]}} {{$facture["Location"]["Locataire"]["prenom"]}} </button> </td>
                                 <td class="text-center"> <a href="{{$facture['facture']}}" class="btn btn-sm btn-light shadow-sm"><i class="bi bi-eye"></i></a>
                                 </td>
-                                <td class="text-center"><span class="badge bg-success text-white"><i class="bi bi-currency-dollar"></i> {{number_format($facture['amount'],2,","," ")}}</span></td>
+                                <td class="text-center"><span class="badge bg-success text-white"><i class="bi bi-currency-dollar"></i> {{number_format($facture['amount'],0,","," ")}}</span></td>
                                 <td class="text-center text-red"><span class="badge bg-light text-red"> <b>{{ \Carbon\Carbon::parse($facture['echeance_date'])->locale('fr')->isoFormat('D MMMM YYYY') }} </b></span> </td>
                                 <td class="text-center text-red"><span class="badge bg-light text-red"> <b>{{ \Carbon\Carbon::parse($facture->created_at)->locale('fr')->isoFormat('D MMMM YYYY') }} </b></span> </td>
                                 <td class="text-center">
@@ -111,7 +111,7 @@
                         <tr>
                             <br />
                             <td class="" colspan="2"><b>Montant Total Encaissé :</b></td>
-                            <td colspan="6" class="text-right"><b id='montantTotal' class="badge bg-red">{{ number_format($montantTotal ?? 0,2,","," ")  }} FCFA</b></td>
+                            <td colspan="6" class="text-right"><b id='montantTotal' class="badge bg-red">{{ number_format($montantTotal ?? 0,0,","," ")  }} FCFA</b></td>
                         </tr>
                     </table>
                 </div>

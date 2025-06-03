@@ -226,13 +226,13 @@
                             <td class="text-center"><span class="badge bg-light text-dark text-bold"> {{$location["Locataire"]["phone"]}}</span></td>
                             <td class="text-center"> <span class="badge bg-warning text-white"> {{$location->Room?$location->Room->water_counter_start_index:null}}</span> </td>
                             <td class="text-center"> <strong class="badge bg-dark text-zhite"> {{$location["end_index"]?$location["end_index"]:0}}</strong> </td>
-                            <td class="text-center"> <strong class=""> <span class="badge bg-light text-dark">{{number_format($location->Room->unit_price,2,',',' ')}}</span> </strong> </td>
-                            <td class="text-center"> <strong class="badge text-red bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["total_un_paid_facture_amount"]? number_format($location["total_un_paid_facture_amount"],2,","," ") :0}} fcfa </strong> </td>
-                            <td class="text-center"> <strong class="badge text-success bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["current_amount"]? number_format($location["current_amount"],2,","," ") :0}} fcfa </strong> </td>
-                            <td class="text-center"> <strong class="badge text-success bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["paid_facture_amount"]? number_format($location["paid_facture_amount"],2,","," ") :0}} fcfa </strong> </td>
-                            <td class="text-center text-red"> <span class="badge bg-light text-dark">{{$location["nbr_un_paid_facture_amount"]? number_format($location["nbr_un_paid_facture_amount"],2,","," ") :0}}</span> </td>
-                            <td class="text-center"> <strong class="badge bg-light text-red"> <i class="bi bi-currency-exchange"></i> {{$location["un_paid_facture_amount"]? number_format($location["un_paid_facture_amount"],2,","," ") :0}} fcfa </strong> </td>
-                            <td class="text-center"> <strong class="badge bg-light text-success"> <i class="bi bi-currency-exchange"></i> {{$location["rest_facture_amount"]? number_format($location["rest_facture_amount"],2,","," ") :0}} fcfa </strong> </td>
+                            <td class="text-center"> <strong class=""> <span class="badge bg-light text-dark">{{number_format($location->Room->unit_price,0,',',' ')}}</span> </strong> </td>
+                            <td class="text-center"> <strong class="badge text-red bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["total_un_paid_facture_amount"]? number_format($location["total_un_paid_facture_amount"],0,","," ") :0}} fcfa </strong> </td>
+                            <td class="text-center"> <strong class="badge text-success bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["current_amount"]? number_format($location["current_amount"],0,","," ") :0}} fcfa </strong> </td>
+                            <td class="text-center"> <strong class="badge text-success bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["paid_facture_amount"]? number_format($location["paid_facture_amount"],0,","," ") :0}} fcfa </strong> </td>
+                            <td class="text-center text-red"> <span class="badge bg-light text-dark">{{$location["nbr_un_paid_facture_amount"]? number_format($location["nbr_un_paid_facture_amount"],0,","," ") :0}}</span> </td>
+                            <td class="text-center"> <strong class="badge bg-light text-red"> <i class="bi bi-currency-exchange"></i> {{$location["un_paid_facture_amount"]? number_format($location["un_paid_facture_amount"],0,","," ") :0}} fcfa </strong> </td>
+                            <td class="text-center"> <strong class="badge bg-light text-success"> <i class="bi bi-currency-exchange"></i> {{$location["rest_facture_amount"]? number_format($location["rest_facture_amount"],0,","," ") :0}} fcfa </strong> </td>
 
                             <td class="text-center">
                                 <div class="dropdown">

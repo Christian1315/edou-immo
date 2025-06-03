@@ -32,7 +32,7 @@
                         </tr>
                         <tr>
                             <td colspan="2" class="bg-warning p-3"> <strong>Montant total en facture: </strong> </td>
-                            <td class="p-3 bg-red">= {{number_format($factures_total_amount,2,","," ")}} fcfa </td>
+                            <td class="p-3 bg-red">= {{number_format($factures_total_amount,0,","," ")}} fcfa </td>
                         </tr>
                     </tbody>
 
@@ -69,7 +69,7 @@
                                     <td class="text-center"><span class="badge bg-light text-dark"> {{$facture->Location->Room?->number}}  </span></td>
                                     <td class="text-center"><span class="badge bg-light text-dark"> {{$facture->Location->Locataire->name}} {{$facture->Location->Locataire->prenom}} </span></td>
                                 
-                                    <td class="text-center"><span class="bg-light badge text-red"> {{number_format($facture->amount,2,","," ")}}</span> </td>
+                                    <td class="text-center"><span class="bg-light badge text-red"> {{number_format($facture->amount,0,","," ")}}</span> </td>
                                     <td class="text-center">
                                         <textarea name="" rows="1" class="form-control" placeholder="{{$facture->comments}}"></textarea>
                                     </td>

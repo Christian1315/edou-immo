@@ -88,14 +88,14 @@
                                 <span class="badge bg-light text-dark">{{$room["House"]["Supervisor"]["name"]}}</span>
                             </td>
                             <td class="text-center">
-                                <span class="badge bg-dark">{{number_format($room["loyer"],2,","," ")}}</span>
+                                <span class="badge bg-dark">{{number_format($room["loyer"],0,","," ")}}</span>
                             </td>
                             <td class="text-center">
-                                <span class="badge bg-warning">{{number_format($room->LocativeCharge(),2,","," ")}}</span>
+                                <span class="badge bg-warning">{{number_format($room->LocativeCharge(),0,","," ")}}</span>
                             </td>
                             <td class="text-center">
                                 <button class="btn btn-sm btn-light text-red">
-                                    {{number_format($room["total_amount"],2,","," ")}} fcfa
+                                    {{number_format($room["total_amount"],0,","," ")}} fcfa
                                 </button>
                             </td>
                             <td class="text-center">{{$room["Type"]['name']}}</td>

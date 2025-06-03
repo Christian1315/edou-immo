@@ -162,7 +162,7 @@
                 <div class="card-body">
                     <h5 class="card-title text-red">{{$agency_account['_Account']['name']}}</h5>
                     <p class="card-text">{{substr($agency_account['_Account']['description'],0,20)}} ...</p>
-                    <h5 class="">Plafond: <strong class="text-red"> {{number_format($agency_account['_Account']["plafond_max"],2,","," ")}}</strong> </h5>
+                    <h5 class="">Plafond: <strong class="text-red"> {{number_format($agency_account['_Account']["plafond_max"],0,","," ")}}</strong> </h5>
 
                     @if($agency_account->AgencyCurrentSold)
                     <input disabled type="text" class="form-control" value="Solde : {{$agency_account->AgencyCurrentSold->sold}}">

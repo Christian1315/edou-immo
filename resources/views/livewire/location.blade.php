@@ -421,7 +421,7 @@
                             <td class="text-center"><span class="text-uppercase badge bg-light text-dark">{{$location["Locataire"]["name"]}} {{$location["Locataire"]["prenom"]}} ({{$location["Locataire"]['phone']}})</span></td>
 
                             <td class="text-center text-red"><small class="@if($location->status==3) text-white @endif"> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($location["latest_loyer_date"])->locale('fr')->isoFormat('MMMM YYYY') }}</small> </td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{number_format($location["loyer"],2,","," ") }}</span></td>
+                            <td class="text-center"><span class="badge bg-light text-dark"> {{number_format($location["loyer"],0,","," ") }}</span></td>
                             <td class="text-center">
                                 @if($location->status!=3)
                                 <span class="text-red text-uppercase badge bg-light text-dark">

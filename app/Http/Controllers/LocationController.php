@@ -1257,6 +1257,7 @@ class LocationController extends Controller
      * @param string $agencyId
      * @return \Illuminate\View\View
      */
+    
     function _ShowPrestationStatistique(Request $request, $agencyId)
     {
         try {

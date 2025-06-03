@@ -30,7 +30,7 @@
                             <td class="text-center"> <strong class="text-dark badge bg-light text-red">{{$initiation->House->name}} </strong></td>
                             <td class="text-center"><span class="badge bg-light text-dark"> {{$initiation->House->Proprietor->lastname}} {{$initiation->House->Proprietor->firstname}}</span> </td>
                             <td class="text-center">
-                                <span class="badge bg-light text-red"><i class="bi bi-currency-exchange"></i> {{number_format($initiation['amount'],2,","," ") }}</span>
+                                <span class="badge bg-light text-red"><i class="bi bi-currency-exchange"></i> {{number_format($initiation['amount'],0,","," ") }}</span>
                             </td>
                             <td class="text-center">
                                 <textarea name="" rows="1" class="form-control" id="">{{$initiation['comments']}}</textarea>
