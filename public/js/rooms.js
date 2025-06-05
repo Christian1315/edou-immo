@@ -112,21 +112,35 @@ function updateRoom(id) {
         .then((response) => {
             const room = response.data;
 
+            alert(room.water)
+            // 
+            $("#update_showWaterInfo").prop('checked',room.water)
+            $("#update_water_discounter").prop('checked',room.water_discounter)
+            $("#update_showWaterConventionnalCounterInputs").prop('checked',room.water_conventionnal_counter)
+            $("#update_forage").prop('checked',room.forage)
+            $("#update_forfait_forage").val(room.forfait_forage)
+            $("#update_unit_price").val(Number(room.unit_price))
+            $("#update_water_counter_start_index").val(room.water_counter_start_index)
+            $("#update_water_counter_number").val(room.water_counter_number)
+            $("#update_water_conventionnel_counter_start_index").val(room.water_conventionnel_counter_start_index)
+
             $("#update_room_fullname").html(room.number);
             $("#loyer").val(room.loyer);
             $("#number").val(room.number);
             $("#gardiennage").val(room.gardiennage);
             $("#rubbish").val(room.rubbish);
             $("#vidange").val(room.vidange);
-            $("#forait_forage").val(room.forait_forage);
-            $("#update_unit_price").val(Number(room.unit_price));
-            $("#water_counter_number").val(room.water_counter_number);
-            $("#water_counter_start_index").val(room.water_counter_start_index);
             $("#cleaning").val(room.cleaning);
             $("#comments").val(room.comments);
-            $("#electricity_counter_number").val(room.electricity_counter_number);
+
+            $("#update_btncheck_electricity").prop('checked',room.electricity)
+            $("#update_electricity_decounter_flexCheckChecked").prop('checked',room.electricity_discounter)
+            $("#update_electricity_card_flexCheckDefault").prop('checked',room.electricity_card_counter)
+
+            $("#update_electricity_card_conven_flexCheckChecked").prop('checked',room.electricity_conventionnal_counter)
+            $("#update_electricity_counter_number").val(room.electricity_counter_number);
             $("#update_electricity_unit_price").val(Number(room.electricity_unit_price));
-            $("#electricity_counter_start_index").val(room.electricity_counter_start_index);
+            $("#update_electricity_counter_start_index").val(room.electricity_counter_start_index);
 
             $("#update_form").attr("action", `/room/${room.id}/update`);
         })
@@ -146,4 +160,7 @@ $(document).ready(function () {
 
     $('#showElectricityInfo_block').toggle(false);
     $('#show_electricity_discountInputs').toggle(false);
+
+
+    // UPDATING 
 }); 

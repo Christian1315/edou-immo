@@ -234,8 +234,8 @@ class RoomController extends Controller
 
     private function canModifyRoom(Room $room): bool
     {
-        return auth()->user()->is_master ||
-            auth()->user()->is_admin ||
+        return auth()->user()->hasRole("Super Administrateur") ||
+            auth()->user()->hasRole("Master") ||
             $room->owner === auth()->id();
     }
 
