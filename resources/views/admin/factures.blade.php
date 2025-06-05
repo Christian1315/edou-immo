@@ -61,7 +61,7 @@
 
         <div class="row">
             <div class="col-12">
-                <h4 class="">Total: <strong class="text-red"> {{count($factures)}} </strong> </h4>
+                <h4 class="">Total: <strong class="text-red"> {{count($factures)}} </strong> | Légende: <span class="border btn btn-sm btn-light text-success"><i class="bi bi-check-circle"></i> Facture validées ({{$factures->where("status",2)->count()}}) </span> <span class="border btn btn-sm btn-light text-warning"><i class="bi bi-check-circle"></i> Factures en attente ({{$factures->where("status",1)->count()}}) </span> <span class="border btn btn-sm btn-secondary"><i class="bi bi-x-circle"></i> Facture rejetées ({{$factures->where("status",3)->count()}}) </span></h4>
                 <div class="table-responsive table-responsive-list shadow-lg">
                     <table id="myTable" class="table table-striped table-sm">
                         <thead class="bg_dark">
@@ -77,12 +77,13 @@
                                 <th class="text-center">Echéance</th>
                                 <th class="text-center">Fait le:</th>
                                 <th class="text-center">Commentaire</th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if(count($factures)>0)
+                            @if($factures->count()>0)
                             @foreach($factures as $facture)
-                            <tr class="align-items-center">
+                            <tr class="align-items-center @if($facture->status==3) bg-secondary @elseif($facture->status==1) bg-warning @endif">
                                 <td class="text-center "><span class="badge text-red bg-light"> {{$facture["facture_code"]?$facture["facture_code"]:"---"}}</span></td>
                                 <td class="text-center text-red"><span class="badge bg-light text-dark"> {{$facture["Location"]["House"]["Supervisor"]["name"]}}</span></td>
                                 <td class="text-center"> <span class="badge bg-dark">{{$facture["Owner"]["name"]}} </span> </td>
@@ -97,7 +98,24 @@
                                 <td class="text-center">
                                     <textarea name="" rows="1" class="form-control" id="" placeholder="{{$facture->comments}}"></textarea>
                                 </td>
-                                <!-- <td class="text-center"><span class="badge @if($facture->status==2) bg-success @elseif($facture->status==3 || $facture->status==4)  bg-danger @else bg-warning @endif">{{$facture->Status->name}} </span></td> -->
+                                <td class="text-center">
+                                    <div class="btn-group dropstart">
+                                        <button class="btn bg-red btn-sm dropdown-toggle" style="z-index: 0;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-kanban-fill"></i> &nbsp; Gérer
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                @if($facture->status==2)
+                                                <span class="text-success">Facture déjà validée</span>
+                                                @else
+                                                <button onclick="manageFacture({{$facture}})" data-bs-toggle="modal" data-bs-toggle="modal" data-bs-target="#updateFacture" class="w-100 btn btn-sm bg-warning">
+                                                    <i class="bi bi-folder-x"></i> Traiter la facture
+                                                </button>
+                                                @endif
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
                             </tr>
                             @endforeach
                             @endif
@@ -119,6 +137,37 @@
         </div>
     </div>
 
+    <!-- MODAL DE GESTION DE FACTURE -->
+    <div class="modal fade" id="updateFacture" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" id="updateStatusForm">
+                    @csrf
+                    <div class="modal-header">
+                        <p class="">
+                            Code : <strong class="text-red" id="facture_code"></strong><br>
+                            Maison : <strong class="text-red" id="facture_house"></strong><br>
+                            Chambre : <strong class="text-red" id="facture_room"></strong><br>
+                            Locataire : <strong class="text-red" id="facture_locataire"></strong><br>
+                        </p>
+                        <button type="button" class="btn btn-sm bg-light text-red" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-circle"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <select class="form-control" name="status" id="" required>
+                            @foreach($factureStatus as $statut)
+                            @continue($statut->id==1 || $statut->id==4)
+                            <option value="{{$statut->id}}">{{$statut->description}} </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="w-100 btn btn-sm bg-red text-white"><i class="bi bi-floppy"></i> Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript">
         $("#facturBody").on('change', function() {
 
@@ -130,6 +179,16 @@
 
             $("#montantTotal").html(__montantTotal.toLocaleString() + " FCFA")
         })
-    </script>
 
+        // TRAITEMENT DE FACTURE
+        async function manageFacture(facture) {
+            console.log(facture)
+            $("#facture_code").html(facture.location.facture_code)
+            $("#facture_house").html(facture.location.house.name)
+            $("#facture_room").html(facture.location.room.number)
+            $("#facture_locataire").html(`${facture.location.locataire.name} ${facture.location.locataire.prenom}`)
+
+            $("#updateStatusForm").attr("action", `/location/${facture.id}/facture-traitement`)
+        }
+    </script>
 </x-templates.agency>

@@ -15,6 +15,7 @@ use App\Http\Controllers\PaiementInitiationController;
 use App\Http\Controllers\ProprietorController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\RoleController;
+use App\Models\Facture;
 use App\Models\Location;
 use App\Models\Room;
 
@@ -32,9 +33,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get("/debug", function () {
-    Location::where("status", 3)
-        ->orWhereNull("room")
-        ->update(["status" => 3, "room" => null]);
+    // Location::where("status", 3)
+    //     ->orWhereNull("room")
+    //     ->update(["status" => 3, "room" => null]);
+
+    Facture::where("status", 1)->update(["status" => 2]);
 
     return "Opération éffectuée avec succès....";
 });
@@ -253,7 +256,7 @@ Route::prefix("location")->group(function () {
         Route::post('{id}/demenage', 'DemenageLocation')->name("location.DemenageLocation"); #DEMENAGEMENT D'UNE LOCATION 
 
         Route::any('add-paiement', '_AddPaiement')->name("location._AddPaiement"); #AJOUT D'UN PAIEMENT
-        Route::post('{id}/updateStatus', 'UpdateFactureStatus')->name("location.UpdateFactureStatus"); #TRAITEMENT DE LA FACTURE CHANGEMENT DE STATUS
+        Route::post('{id}/facture-traitement', 'FactureTraitement')->name("location.FactureTraitement"); #TRAITEMENT DE LA FACTURE
 
 
         // FILTRE LOCATION

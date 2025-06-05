@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agency;
+use App\Models\Facture;
 use App\Models\HomeStopState;
 use App\Models\House;
 use App\Models\Locataire;
@@ -537,7 +538,7 @@ class LocationController extends Controller
                 throw new \Exception("Cette location n'existe pas!");
             }
 
-            if (!auth()->user()->is_master && !auth()->user()->is_admin) {
+            if (!auth()->user()->hasRole("Super Administrateur") && !auth()->user()->hasRole("Master")) {
                 if ($location->owner != $user->id) {
                     throw new \Exception("Cette location ne vous appartient pas!");
                 }
@@ -746,15 +747,62 @@ class LocationController extends Controller
             // Création de la facture
             $facture = $this->createFacture($paymentData);
 
-            // Mise à jour du compte de l'agence
-            $this->updateAgencyAccount($paymentData, $location);
+            ### désormais le solde ne sera touché qu'après validation de la facture
+            // // Mise à jour du compte de l'agence
+            // $this->updateAgencyAccount($paymentData, $location);
 
-            // Mise à jour de la location après le paiement
-            $this->updateLocationAfterPayment($location, $formData);
+            // // Mise à jour de la location après le paiement
+            // $this->updateLocationAfterPayment($location, $formData);
 
             DB::commit();
 
             alert()->success("Succès", "Paiement ajouté avec succès!");
+            return back()->withInput();
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            return back()
+                ->withInput()
+                ->withErrors($e->errors());
+        } catch (\Exception $e) {
+            DB::rollBack();
+            alert()->error("Echec", $e->getMessage());
+            return back()->withInput();
+        }
+    }
+
+    ###____Traitement des factures
+    function FactureTraitement(Request $request, $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $facture = Facture::findOrFail($id);
+
+            $formData = $facture->toArray();
+
+            // Validation des données de paiement
+            $request->validate([
+                "status" => "required|integer"
+            ]);
+
+            // Le solde n'est affecté que pour les factures validées
+            if ($request->status == 2) {
+                // Récupération de la location avec ses relations
+                $location = $this->getLocationWithRelations($formData["location"]);
+
+                // Mise à jour du compte de l'agence
+                $this->updateAgencyAccount($formData, $location);
+
+                // Mise à jour de la location après le paiement
+                $this->updateLocationAfterPayment($location, $formData);
+            }
+
+            // Mise à jour du status de la facture
+            $facture->update(["status" => $request->status]);
+
+            DB::commit();
+
+            alert()->success("Succès", "Traitement éffectué avec succès!");
             return back()->withInput();
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
@@ -1257,7 +1305,7 @@ class LocationController extends Controller
      * @param string $agencyId
      * @return \Illuminate\View\View
      */
-    
+
     function _ShowPrestationStatistique(Request $request, $agencyId)
     {
         try {

@@ -509,10 +509,12 @@
                                         <div>
                                             <ul class="list-group">
                                                 @foreach($location->Factures as $facture)
-                                                <li class="list-group-item mb-3 "> <strong>Code :</strong> {{$facture->facture_code}};
-                                                    <strong>Montant: </strong> {{$facture->amount}};
-                                                    <strong>Fichier: </strong> <a href="{{$facture->facture}}" class="btn btn-sm btn-light" rel="noopener noreferrer"><i class="bi bi-eye"></i></a>;
-                                                    <strong>Date d'écheance: </strong> {{Change_date_to_text($facture->echeance_date)}};
+                                                <li class="list-group-item mb-3 "> 
+                                                    <strong>Code :</strong> {{$facture->facture_code}} <br>
+                                                    <strong>Montant: </strong> {{$facture->amount}} <br>
+                                                    <strong>Fichier: </strong> <a href="{{$facture->facture}}" class="" rel="noopener noreferrer"><i class="bi bi-eye"></i></a><br>
+                                                    <strong>Date d'écheance: </strong> {{Change_date_to_text($facture->echeance_date)}} <br>
+                                                    <strong>Status: </strong> <span class="badge @if($facture->status==1) bg-warning @elseif($facture->status==2) bg-success @else bg-danger @endif "> {{$facture->Status->description}}</span> <br>
                                                     <strong>Description: </strong> <textarea class="form-control" name="" rows="1" placeholder="{{$facture->comments}}" id=""></textarea>
                                                 </li>
                                                 @endforeach

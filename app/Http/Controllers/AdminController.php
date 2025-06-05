@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Agency;
 use App\Models\Facture;
+use App\Models\FactureStatus;
 use App\Models\Location;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -284,7 +285,7 @@ class AdminController extends Controller
     {
         try {
             $user = request()->user();
-            
+
             // Validation des données
             $validated = $request->validate([
                 "date" => ["required", "date"],
@@ -301,7 +302,7 @@ class AdminController extends Controller
 
             // Filtrage des factures avec une requête plus efficace
             $factures = Facture::whereDate('created_at', $validated['date'])->get();
-            
+
             if ($factures->isEmpty()) {
                 alert()->info("Information", "Aucune facture trouvée pour cette date");
                 return back()->withInput();
@@ -324,7 +325,6 @@ class AdminController extends Controller
             session()->flash("any_date", $validated['date']);
             alert()->success("Succès", "Filtre effectué avec succès!");
             return back()->withInput()->with(["locators" => $locators]);
-
         } catch (ValidationException $e) {
             return back()
                 ->withInput()
@@ -415,7 +415,12 @@ class AdminController extends Controller
         try {
             $agency = Agency::where("visible", 1)->findOrFail(deCrypId($agencyId));
 
-            $query = Facture::whereIn("location", $agency->_Locations->pluck("id"));
+            $query = Facture::with(["Location"])
+                ->whereIn("location", $agency->_Locations
+                    ->where("status", "!=", 3)
+                    ->pluck("id"))
+                ->where("state_facture", false);
+
 
             if ($request->isMethod('POST')) {
                 $validated = $request->validate([
@@ -450,8 +455,10 @@ class AdminController extends Controller
 
             $montantTotal = $factures->sum("amount");
             $users = User::select('id', 'name')->get();
+            // Factures status
+            $factureStatus = FactureStatus::get();
 
-            return view("admin.factures", compact("agency", "factures", "montantTotal", "users"));
+            return view("admin.factures", compact("agency", "factures", "montantTotal", "users", "factureStatus"));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             alert()->error("Echec", "Cette agence n'existe pas!");
             return back()->withInput();

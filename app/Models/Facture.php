@@ -27,7 +27,10 @@ class Facture extends Model
 
         "state",
         "state_facture",
-        "echeance_date"
+        "echeance_date",
+
+        "prorata_days",
+        "prorata_amount"
     ];
 
     function Owner(): BelongsTo
