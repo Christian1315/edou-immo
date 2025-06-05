@@ -90,9 +90,8 @@
                                 <td class="text-center"> <span class="badge bg-light text-dark">{{$facture["Location"]["House"]["name"]}} </span> </td>
                                 <td class="text-center"> <span class="badge bg-light text-dark">{{$facture->Location->Room?$facture->Location->Room->number:"deménagé"}} </span> </td>
                                 <td class="text-center"><button class="btn btn-sm btn-light">{{$facture["Location"]["Locataire"]["name"]}} {{$facture["Location"]["Locataire"]["prenom"]}} </button> </td>
-                                <td class="text-center"> <a href="{{$facture['facture']}}" class="btn btn-sm btn-light shadow-sm"><i class="bi bi-eye"></i></a>
-                                </td>
-                                <td class="text-center"><span class="badge bg-success text-white"><i class="bi bi-currency-dollar"></i> {{number_format($facture['amount'],0,","," ")}}</span></td>
+                                <td class="text-center"> <a href="{{$facture['facture']}}" class="btn btn-sm btn-light shadow-sm"><i class="bi bi-eye"></i></a></td>
+                                <td class="text-center">{{number_format($facture['amount'],0,","," ")}}</td>
                                 <td class="text-center text-red"><span class="badge bg-light text-red"> <b>{{ \Carbon\Carbon::parse($facture['echeance_date'])->locale('fr')->isoFormat('D MMMM YYYY') }} </b></span> </td>
                                 <td class="text-center text-red"><span class="badge bg-light text-red"> <b>{{ \Carbon\Carbon::parse($facture->created_at)->locale('fr')->isoFormat('D MMMM YYYY') }} </b></span> </td>
                                 <td class="text-center">
