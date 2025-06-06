@@ -62,6 +62,8 @@
         <div class="row">
             <div class="col-12">
                 <h4 class="">Total: <strong class="text-red"> {{count($factures)}} </strong> | Légende: <span class="border btn btn-sm btn-light text-success"><i class="bi bi-check-circle"></i> Facture validées ({{$factures->where("status",2)->count()}}) </span> <span class="border btn btn-sm btn-light text-warning"><i class="bi bi-check-circle"></i> Factures en attente ({{$factures->where("status",1)->count()}}) </span> <span class="border btn btn-sm btn-secondary"><i class="bi bi-x-circle"></i> Facture rejetées ({{$factures->where("status",3)->count()}}) </span></h4>
+                <h5 class="">Totale encaissé : <b id='montantTotal' class="badge bg-red">{{ number_format($montantTotal ?? 0,0,","," ")  }} FCFA</b> </h5>
+
                 <div class="table-responsive table-responsive-list shadow-lg">
                     <table id="myTable" class="table table-striped table-sm">
                         <thead class="bg_dark">
@@ -119,17 +121,6 @@
                             @endforeach
                             @endif
                         </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <table class="table table-bordered table-sm">
-                        <tr>
-                            <br />
-                            <td class="" colspan="2"><b>Montant Total Encaissé :</b></td>
-                            <td colspan="6" class="text-right"><b id='montantTotal' class="badge bg-red">{{ number_format($montantTotal ?? 0,0,","," ")  }} FCFA</b></td>
-                        </tr>
                     </table>
                 </div>
             </div>

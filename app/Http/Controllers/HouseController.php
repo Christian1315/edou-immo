@@ -770,13 +770,15 @@ class HouseController extends Controller
             $factures = Facture::where([
                 "location" => $location->id,
                 "state" => $state->id,
-                "state_facture" => 0
+                "state_facture" => 0,
+                "status" => 2,//seules les factures validées
             ])->get();
         } else {
             $factures = Facture::where([
                 "location" => $location->id,
                 "old_state" => $house->PayementInitiations->last()?->old_state,
-                "state_facture" => 0
+                "state_facture" => 0,
+                "status" => 2,//seules les factures validées
             ])->get();
         }
 

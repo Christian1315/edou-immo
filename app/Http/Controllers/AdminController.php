@@ -417,9 +417,9 @@ class AdminController extends Controller
 
             $query = Facture::with(["Location"])
                 ->whereIn("location", $agency->_Locations
-                    ->where("status", "!=", 3)
+                    ->where("status", "!=", 3)//on tient pas compte des locations demenagées
                     ->pluck("id"))
-                ->where("state_facture", false);
+                ->where("state_facture", false);//on tient pas comptes des factures generée pour clotuer un étt
 
 
             if ($request->isMethod('POST')) {
@@ -437,7 +437,8 @@ class AdminController extends Controller
 
                 $factures = $query
                     ->where("owner", $validated['user'])
-                    ->whereBetween("created_at", [$validated['debut'], $validated['fin']])
+                    ->whereDate("created_at", ">=", $validated['debut'])
+                    ->whereDate("created_at", "<=", $validated['fin'])
                     ->get();
 
                 if ($factures->isEmpty()) {
@@ -447,8 +448,6 @@ class AdminController extends Controller
                 }
 
                 alert()->success("Succès", "Filtre effectué avec succès");
-                return back()
-                    ->withInput();
             } else {
                 $factures = $query->get();
             }

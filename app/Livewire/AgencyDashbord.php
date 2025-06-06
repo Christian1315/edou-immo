@@ -22,7 +22,6 @@ class AgencyDashbord extends Component
 
     public function mount(Agency $agency): void
     {
-        set_time_limit(0);
         $this->current_agency = $agency;
 
         $this->agency = Agency::with([
