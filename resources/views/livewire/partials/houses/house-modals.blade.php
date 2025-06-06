@@ -24,7 +24,7 @@
                 <h6 class="modal-title" id="updateModalLabel">
                     Modifier <strong><em class="text-red" id="update_house_fullname"></em></strong>
                 </h6>
-                <button type="button" class="btn btn-sm text-red" data-bs-dismiss="modal" ><i class="bi bi-x-circle"></i></button>
+                <button type="button" class="btn btn-sm text-red" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i></button>
             </div>
             <div class="modal-body">
                 <form id="update-update_form" method="post" class="needs-validation" novalidate>
@@ -54,7 +54,7 @@
                         <div class="col-6">
                             <div class="mb-3">
                                 <label for="proprio_payement_echeance_date" class="form-label">Date d'échéance du propriétaire</label>
-                                <input type="date" id="update-proprio_payement_echeance_date" name="proprio_payement_echeance_date" class="form-control" >
+                                <input type="date" id="update-proprio_payement_echeance_date" name="proprio_payement_echeance_date" class="form-control">
                             </div>
 
                             <div class="mb-3 d-flex paid_blocked d-none">
@@ -68,6 +68,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-6">
                             <div class="mb-3">
                                 <label for="commission_percent" class="form-label">Commission (en %)</label>
@@ -77,6 +78,35 @@
                                 <label for="locative_commission" class="form-label">Commission charge locatives (en %)</label>
                                 <input type="number" id="update-locative_commission" name="locative_commission" class="form-control" min="0" max="100" step="0.01">
                             </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label for="" class="d-block">Superviseur</label>
+                                <select class="form-select form-control" value="{{ old('supervisor') }}"
+                                    name="supervisor" aria-label="Default select example">
+                                    @foreach (supervisors() as $supervisor)
+                                    <option value="{{ $supervisor['id'] }}">{{ $supervisor['name'] }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @error('supervisor')
+                                <span class="text-red"> {{ $message }} </span>
+                                @enderror
+                            </div><br>
+                            <div class="mb-3">
+                                <label for="" class="d-block">Propriétaire</label>
+                                <select class="form-select form-control"
+                                    name="proprietor" aria-label="Default select example">
+                                    @foreach ($proprietors as $proprietor)
+                                    <option value="{{ $proprietor['id'] }}">{{ $proprietor['lastname'] }}
+                                        {{ $proprietor['firstname'] }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @error('proprietor')
+                                <span class="text-red"> {{ $message }} </span>
+                                @enderror
+                            </div><br>
                         </div>
                     </div>
                     <div class="modal-footer">
