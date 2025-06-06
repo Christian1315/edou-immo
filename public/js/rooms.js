@@ -112,7 +112,6 @@ function updateRoom(id) {
         .then((response) => {
             const room = response.data;
 
-            alert(room.water)
             // 
             $("#update_showWaterInfo").prop('checked',room.water)
             $("#update_water_discounter").prop('checked',room.water_discounter)

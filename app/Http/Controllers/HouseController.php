@@ -192,7 +192,8 @@ class HouseController extends Controller
 
         $formData["pre_paid"] = $request->pre_paid ? true : false;
         $formData["post_paid"] = $request->post_paid ? true : false;
-        $formData["locative_commission"] = $request->locative_commission ?: self::DEFAULT_COMMISSION;
+        $formData["commission_percent"] = $request->commission_percent ?? self::DEFAULT_COMMISSION;
+        $formData["locative_commission"] = $request->locative_commission ?? self::DEFAULT_COMMISSION;
         $formData["owner"] = $user->id;
 
         if ($request->hasFile('image')) {
