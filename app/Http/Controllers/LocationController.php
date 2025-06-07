@@ -654,7 +654,7 @@ class LocationController extends Controller
      * @param int $locationId
      * @return \Illuminate\Http\RedirectResponse
      */
-    function DemenageLocation(Request $request, $locationId)
+    function DemenageLocation(Request $request)
     {
         try {
             DB::beginTransaction();
@@ -674,7 +674,7 @@ class LocationController extends Controller
             // Récupération de la location avec ses relations
             $location = Location::with(['House', 'Locataire'])
                 ->where('visible', 1)
-                ->find($locationId);
+                ->find($request->locationId);
 
             if (!$location) {
                 throw new \Exception("Cette location n'existe pas!");
@@ -707,7 +707,8 @@ class LocationController extends Controller
             DB::commit();
 
             alert()->success("Succès", "Locataire déménagé avec succès");
-            return back();
+            return back()
+                ->withInput();
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
             return back()

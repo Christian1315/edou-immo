@@ -473,10 +473,6 @@
                                         </li>
                                         @endcan
 
-                                        <li>
-                                            <a href="{{$location['img_contrat']}}" class="btn btn-sm text-dark btn-light w-100" rel="noopener noreferrer"><i class="bi bi-eye"></i> Contrat de location </a>
-                                        </li>
-
                                         @can("location.generate.cautions.state")
                                         <li>
                                             <a target="_blank" href="{{route('location._ManageLocationCautions',$location->id)}}" class="btn btn-sm text-dark btn-light w-100" rel="noopener noreferrer"><i class="bi bi-file-earmark-pdf"></i> Etats des cautions </a>
@@ -509,7 +505,7 @@
                                         <div>
                                             <ul class="list-group">
                                                 @foreach($location->Factures as $facture)
-                                                <li class="list-group-item mb-3 "> 
+                                                <li class="list-group-item mb-3 ">
                                                     <strong>Code :</strong> {{$facture->facture_code}} <br>
                                                     <strong>Montant: </strong> {{$facture->amount}} <br>
                                                     <strong>Fichier: </strong> <a href="{{$facture->facture}}" class="" rel="noopener noreferrer"><i class="bi bi-eye"></i></a><br>
@@ -629,9 +625,10 @@
                         <strong>Locataire: <em class="text-red location_locataire"></em> </strong>
                     </div>
                 </div>
-                <form id="demenageForm" method="POST" class="shadow-lg p-3 animate__animated animate__bounce p-3">
+                <form action="{{route('location.DemenageLocation')}}" id="demenageForm" method="POST" class="shadow-lg p-3 animate__animated animate__bounce p-3">
                     @csrf
                     @method("POST")
+                    <input type="hidden" name="locationId" id="locationId">
                     <div class="p-2">
                         <textarea name="move_comments" id="move_comments" required class="form-control" placeholder="Donner une raison justifiant ce déménagement"></textarea>
                     </div>
@@ -767,17 +764,27 @@
         })
 
         function demenage(location) {
+            console.log("Location object:", location);
+            
             $(".location_name").html(location.house.name)
-            $(".location_room").html(location.room.number)
+            $(".location_room").html(location.room ? location.room.number : "---")
             $(".location_locataire").html(location.locataire.name + " " + location.locataire.prenom)
-
-            $("#demenageForm").attr("action", `/location/${location.id}/demenage`)
+            
+            // Vérifier si l'élément existe
+            const locationIdInput = document.getElementById("locationId");
+            if (locationIdInput) {
+                locationIdInput.value = location.id;
+                console.log("Input value set to:", locationIdInput.value);
+            } else {
+                console.error("Element with id 'locationId' not found!");
+            }
         }
 
         function encaisser(location) {
             $(".location_name").html(location.house.name)
             $(".location_room").html(location.room.number)
             $(".location_locataire").html(location.locataire.name + " " + location.locataire.prenom)
+            $("#locationsId").val(location.id)
 
             $("#encaisserForm").attr("action", `/location/add-paiement`)
             $(".location").val(location.id)

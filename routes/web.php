@@ -253,11 +253,10 @@ Route::prefix("location")->group(function () {
         Route::post('add', '_AddLocation')->name("location._AddLocation"); #AJOUT D'UNE LOCATION
         Route::patch('{id}/update', 'UpdateLocation')->name("location.UpdateLocation"); #MODIFICATION D'UNE LOCATION
         Route::get('/location/{location}/imprimer', "Imprimer")->name("location.imprimer");
-        Route::post('{id}/demenage', 'DemenageLocation')->name("location.DemenageLocation"); #DEMENAGEMENT D'UNE LOCATION 
+        Route::post('/demenage', 'DemenageLocation')->name("location.DemenageLocation"); #DEMENAGEMENT D'UNE LOCATION 
 
         Route::any('add-paiement', '_AddPaiement')->name("location._AddPaiement"); #AJOUT D'UN PAIEMENT
         Route::post('{id}/facture-traitement', 'FactureTraitement')->name("location.FactureTraitement"); #TRAITEMENT DE LA FACTURE
-
 
         // FILTRE LOCATION
         Route::post('{agency}/location_filtre_by_supervisor', 'FiltreBySupervisor')->name("location.FiltreBySupervisor"); #FILTRER PAR SUPERVISEUR
