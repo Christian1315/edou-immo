@@ -33,11 +33,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get("/debug", function () {
-    // Location::where("status", 3)
-    //     ->orWhereNull("room")
-    //     ->update(["status" => 3, "room" => null]);
+    Location::where("status", 3)
+        ->orWhereNull("room")
+        ->update(["status" => 3, "room" => null]);
 
-    Facture::where("status", 1)->update(["status" => 2]);
+    // Facture::where("status", 1)->update(["status" => 2]);
 
     return "Opération éffectuée avec succès....";
 });
