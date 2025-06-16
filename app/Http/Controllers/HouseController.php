@@ -738,15 +738,19 @@ class HouseController extends Controller
             $locativeCharge += $house->LocativeCharge();
 
             // Calculate commission
-            $totalCommission = ($totalRevenue * $house->locative_commission) / 100;
+            $totalCommission = ($totalRevenue * $house->commission_percent) / 100;
+
+            // Calculate commission charge locative
+            $chargeCommission = ($locativeCharge * $house->locative_commission) / 100;
 
             // Calculate net amount
-            $netAmount = $totalRevenue - ($totalExpenses + $totalCommission);
+            $netAmount = $totalRevenue - ($totalExpenses + $totalCommission + $chargeCommission);
 
             return [
                 'total_revenue' => $totalRevenue,
                 'total_expenses' => $totalExpenses,
                 'total_commission' => $totalCommission,
+                'locative_commission' => $chargeCommission,
                 'net_amount' => $netAmount,
                 'locativeCharge' => $locativeCharge
             ];
@@ -771,14 +775,14 @@ class HouseController extends Controller
                 "location" => $location->id,
                 "state" => $state->id,
                 "state_facture" => 0,
-                "status" => 2,//seules les factures validées
+                "status" => 2, //seules les factures validées
             ])->get();
         } else {
             $factures = Facture::where([
                 "location" => $location->id,
                 "old_state" => $house->PayementInitiations->last()?->old_state,
                 "state_facture" => 0,
-                "status" => 2,//seules les factures validées
+                "status" => 2, //seules les factures validées
             ])->get();
         }
 

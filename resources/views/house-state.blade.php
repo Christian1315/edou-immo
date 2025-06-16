@@ -141,6 +141,7 @@
                         <th class="text-center">Commission</th>
                         <th class="text-center">Dépense totale</th>
                         <th class="text-center">Charge locatives</th>
+                        <th class="text-center">Charge Commission</th>
                         <th class="text-center">Net à payer</th>
                         {{-- <th class="text-center">Date d'arrêt d'état</th> --}}
                     </tr>
@@ -162,6 +163,10 @@
 
                         <td class="text-center">
                             <strong class="">{{number_format($locativeCharge,0,","," ")}} fcfa</strong>
+                        </td>
+
+                        <td class="text-center">
+                            <strong class="">{{number_format($locative_commission,0,","," ")}} fcfa</strong>
                         </td>
 
                         <td class="text-center">
