@@ -594,6 +594,7 @@ class HouseController extends Controller
      * @param int $houseId
      * @return House|null
      */
+
     private function getHouseWithRelations($houseId): ?House
     {
         return House::with([
@@ -744,7 +745,8 @@ class HouseController extends Controller
             $chargeCommission = ($locativeCharge * $house->locative_commission) / 100;
 
             // Calculate net amount
-            $netAmount = $totalRevenue - ($totalExpenses + $totalCommission + $chargeCommission);
+            // $netAmount = $totalRevenue - ($totalExpenses + $totalCommission + $chargeCommission);
+            $netAmount = $totalRevenue - ($totalExpenses + $totalCommission);
 
             return [
                 'total_revenue' => $totalRevenue,

@@ -21,7 +21,8 @@
         "simplesoftwareio/simple-qrcode": "~2",
         "spatie/browsershot": "^5.0",
         "spatie/laravel-pdf": "^1.5",
-        "spatie/laravel-permission": "^6.16"
+        "spatie/laravel-permission": "^6.16",
+        "cloudinary/cloudinary_php": "^2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
