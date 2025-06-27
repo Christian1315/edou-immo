@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class HouseController extends Controller
 {
@@ -478,6 +479,8 @@ class HouseController extends Controller
             $data = $this->processHouseData($request, $formData, $user);
             $house->update($data);
 
+            Cache::forget('house_detail_last_state_' . $house->id);
+            
             DB::commit();
             alert()->success("Succès", "Maison modifiée avec succès!");
             return back()->withInput();

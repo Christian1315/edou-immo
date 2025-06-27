@@ -62,4 +62,13 @@ class Facture extends Model
     {
         return $this->belongsTo(HomeStopState::class, "state");
     }
+
+    /**
+     * Scope pour récupérer les factures d'un état donné pour une liste de locations
+     */
+    public function scopeForHouseLastState($query, $locationIds, $stateId) {
+        return $query->whereIn('location', $locationIds)
+                     ->where('state', $stateId)
+                     ->where('state_facture', 0);
+    }
 }

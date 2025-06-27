@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Cache;
 
 function supervisors()
 {
@@ -280,7 +281,7 @@ function GET_HOUSE_DETAIL($house)
         $house_factures = $house_factures->concat($location_factures);
         $house_amounts = $house_amounts->concat($location_factures->map(function ($facture) use ($location) {
             return $location->prorata_amount ?
-            $location->prorata_amount:$facture->amount;
+                $location->prorata_amount : $facture->amount;
         }));
 
         // Add tenant information
@@ -351,6 +352,75 @@ function calculateRoomStatistics($house)
 
 #######____GET HOUSE DETAIL ======######
 function GET_HOUSE_DETAIL_FOR_THE_LAST_STATE($house)
+{
+    $cacheKey = 'house_detail_last_state_' . $house->id;
+    return Cache::remember($cacheKey, 60, function () use ($house) {
+        // Pour profiler, active Laravel Debugbar et regarde les requêtes SQL générées
+        $house->load([
+            'PayementInitiations',
+            'States.CdrAccountSolds',
+            'CurrentDepenses',
+            'Locations.Room',
+            'Locations.House',
+            'Locations.Locataire',
+        ]);
+
+        $house_last_state = $house->States->last();
+        $locations = $house->Locations->where('status', '!=', 3);
+        $locationIds = $locations->pluck('id');
+
+        $house_factures = collect();
+        $house_amounts = collect();
+        if ($house_last_state && $locationIds->count() > 0) {
+            $factures = \App\Models\Facture::select(['id', 'location', 'amount'])
+                ->forHouseLastState($locationIds, $house_last_state->id)
+                ->get();
+            $house_factures = $factures;
+            $house_amounts = $factures->pluck('amount');
+        }
+
+        $facturesByLocation = $house_factures->groupBy('location');
+        foreach ($locations as $location) {
+            $locFactures = $facturesByLocation->get($location->id, collect());
+            $location->_locataire = [
+                'nbr_month_paid' => $locFactures->count(),
+                'nbr_facture_amount_paid' => $locFactures->sum('amount'),
+                'houses' => $location->House,
+                'rooms' => $location->Room
+            ];
+        }
+
+        $last_state_depenses = collect();
+        if ($house_last_state) {
+            $last_state_depenses = collect($house_last_state->CdrAccountSolds)->pluck('sold_retrieved');
+        }
+        $current_state_depenses = collect($house->CurrentDepenses)->pluck('sold_retrieved');
+
+        $roomStats = calculateRoomStatistics($house);
+
+        $total_amount_paid = $house_amounts->sum();
+        $commission = ($total_amount_paid * $house->commission_percent) / 100;
+        $net_to_paid = $total_amount_paid - ($last_state_depenses->sum() + $commission);
+
+        return array_merge($house->toArray(), [
+            'last_depenses' => $last_state_depenses->sum(),
+            'actuel_depenses' => $current_state_depenses->sum(),
+            'total_amount_paid' => $total_amount_paid,
+            'house_last_state' => $house_last_state,
+            'nbr_month_paid' => $house_factures->count(),
+            'commission' => $commission,
+            'net_to_paid' => $net_to_paid,
+            'payement_initiations_last' => $house->PayementInitiations->last(),
+            'busy_rooms' => $roomStats['busy_rooms'],
+            'frees_rooms' => $roomStats['frees_rooms'],
+            'busy_rooms_at_first_month' => $roomStats['busy_rooms_at_first_month'],
+            'frees_rooms_at_first_month' => $roomStats['frees_rooms_at_first_month'],
+            '_amount' => $net_to_paid != 0 ? $net_to_paid : ($house->PayementInitiations->last()?->amount ?? 0)
+        ]);
+    });
+}
+
+function GET_HOUSE_DETAIL_FOR_THE_LAST_STATE_OLD($house)
 {
     $house->load("PayementInitiations");
 
