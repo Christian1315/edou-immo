@@ -154,7 +154,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("Erreur lors de l'ajout d'un utilisateur: " . $e->getMessage());
-            alert()->error('Echec', "Une erreur est survenue lors de l'ajout de l'utilisateur!");
+            alert()->error('Echec', "Une erreur est survenue lors de l'ajout de l'utilisateur! ". $e->getMessage());
             return redirect()->back();
         }
     }

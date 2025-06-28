@@ -479,8 +479,9 @@ class HouseController extends Controller
             $data = $this->processHouseData($request, $formData, $user);
             $house->update($data);
 
+            // suppression des caches liés au chatgement de la page Paiements propriétaires
             Cache::forget('house_detail_last_state_' . $house->id);
-            
+
             DB::commit();
             alert()->success("Succès", "Maison modifiée avec succès!");
             return back()->withInput();
