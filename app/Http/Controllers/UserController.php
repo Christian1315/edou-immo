@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\AgentAccountSupervisor;
-use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
@@ -14,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Role as ModelsRole;
 
 class UserController extends Controller
 {
@@ -127,7 +127,7 @@ class UserController extends Controller
             $create_user = User::create($formData);
 
             if ($request->role) {
-                $role = Role::findOrFail($request->role);
+                $role = ModelsRole::findOrFail($request->role);
                 $user->assignRole($role->name);
             }
 
