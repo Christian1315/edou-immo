@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Agency;
 use App\Models\Facture;
 use App\Models\FactureStatus;
+use App\Models\House;
 use App\Models\Location;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -186,8 +188,28 @@ class AdminController extends Controller
         if (!$agency) {
             alert()->error("Echec", "Cette agence n'existe pas!");
         };
+
+        if ($request->isMethod("POST")) {
+            if ($request->house) {
+                $_house = House::find($request->house);
+                if (!$_house) {
+                    alert()->error("Echec", "Cette maison n'existe pas!");
+                }
+
+                $house = Collection::make(GET_HOUSE_DETAIL_FOR_THE_LAST_STATE($_house));
+            }
+        } else {
+            $house = null;
+        }
+
+        $houses = House::get();
+
         ####____
-        return view("admin.paiements", compact("agency"));
+        return view("admin.paiements", compact([
+            'agency',
+            'house',
+            'houses'
+        ]));
     }
 
     function Electricity(Request $request, $agencyId)
@@ -417,9 +439,9 @@ class AdminController extends Controller
 
             $query = Facture::with(["Location"])
                 ->whereIn("location", $agency->_Locations
-                    ->where("status", "!=", 3)//on tient pas compte des locations demenagées
+                    ->where("status", "!=", 3) //on tient pas compte des locations demenagées
                     ->pluck("id"))
-                ->where("state_facture", false);//on tient pas comptes des factures generée pour clotuer un étt
+                ->where("state_facture", false); //on tient pas comptes des factures generée pour clotuer un étt
 
 
             if ($request->isMethod('POST')) {

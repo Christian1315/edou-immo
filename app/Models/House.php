@@ -89,7 +89,7 @@ class House extends Model
         return $this->Locations()
             ->where('status', '!=', self::STATUS_DELETED)
             ->get()
-            ->sum(fn($location) => $location->Room->LocativeCharge());
+            ->sum(fn($location) => $location->Room?->LocativeCharge());
     }
 
     public function _Agency(): BelongsTo

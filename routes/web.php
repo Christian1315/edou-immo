@@ -142,7 +142,10 @@ Route::controller(AdminController::class)->group(function () {
     ###___GENERALES ROUTES
     Route::get('count', "AccountSold")->name("count");
     Route::get('setting', "Setting")->name("setting");
-    Route::get('/{agency}/paiement', "Paiement")->name("paiement");
+
+    Route::match(["GET", "POST"], '/{agency}/paiement', "Paiement")->name("paiement");
+    Route::get('/{agency}/paiement/{house?}', "Paiement")->name("paiementForAHouse");
+
     Route::get('/{agency}/initiation', "AgencyInitiation")->name("agency-initiation");
 
     Route::match(["GET", "POST"], '/{agency}/factures', "LocationFactures")->name("locationFacture");

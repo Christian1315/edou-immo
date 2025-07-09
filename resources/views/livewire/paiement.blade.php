@@ -1,10 +1,26 @@
 <div>
+    <div class="row d-flex justify-content-center">
+        <div class="col-6">
+            <form action="{{route('paiement',['agency'=>crypId($current_agency->id)])}}" method="POST" class="border shadow shadow-sm p-3">
+                @csrf
+                <select name="house" id="" class="form-control">
+                    @foreach($houses as $house)
+                    <option value="{{$house->id}}" class="">{{$house->name}}</option>
+                    @endforeach
+                </select>
+
+                <button class="btn btn-sm bg-red mt-3 w-100"><i class="bi bi-search"></i> Afficher</button>
+            </form>
+        </div>
+    </div>
+
+    @if($house)
     <!-- TABLEAU DE LISTE -->
     <div class="row">
         <div class="col-12">
             <div class="table-responsive table-responsive-list shadow-lg">
                 <table id="myTable" class="table table-striped table-sm">
-                    <h4 class="">Total: <strong class="text-red"> {{count($houses)}} </strong> </h4>
+                    <h4 class="">Total: <strong class="text-red"> 1 </strong> </h4>
                     <thead class="bg_dark">
                         <tr>
                             <th class="text-center">N°</th>
@@ -20,23 +36,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($houses as $house)
                         <tr class="align-items-center">
-                            <td class="text-center">{{$loop->index + 1}} </td>
+                            <td class="text-center">1 </td>
                             <td class="text-center"> <span class="badge bg-light text-dark"> {{$house["name"]}}</span> </td>
                             <td class="text-center">
-                                <strong class="badge bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["total_amount_paid"],0,","," ")}} fcfa </strong>
+                                <strong class="badge bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["total_amount_paid"],2,","," ")}} fcfa </strong>
                             </td>
 
                             <td class="text-center">
-                                <strong class="badge bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["commission"],0,","," ")}} fcfa </strong>
+                                <strong class="badge bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["commission"],2,","," ")}} fcfa </strong>
                             </td>
 
                             <td class="text-center">
-                                <strong class="badge bg-light text-red"><i class="bi bi-currency-exchange"></i> {{number_format($house["last_depenses"],0,","," ")}} fcfa </strong>
+                                <strong class="badge bg-light text-red"><i class="bi bi-currency-exchange"></i> {{number_format($house["last_depenses"],2,","," ")}} fcfa </strong>
                             </td>
                             <td class="text-center">
-                                <strong class="badge bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["_amount"],0,","," ")}} fcfa </strong>
+                                <strong class="badge bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["_amount"],2,","," ")}} fcfa </strong>
                             </td>
 
                             <td class="text-center">
@@ -83,12 +98,14 @@
                                 @endcan
                             </td>
                         </tr>
-                        @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
+    @else
+    <p class="text-center border">Aucune maison affichée!</p>
+    @endif
 
     <!-- ###### MODEL DE PAIEMENT AU PROPRIETAIRE ###### -->
     <div class="modal fade" id="paid" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

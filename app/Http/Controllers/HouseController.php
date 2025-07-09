@@ -475,7 +475,6 @@ class HouseController extends Controller
                 throw new \Exception("Cette Maison n'existe pas!");
             }
 
-
             $data = $this->processHouseData($request, $formData, $user);
             $house->update($data);
 
@@ -670,11 +669,11 @@ class HouseController extends Controller
      */
     private function calculateStateData(House $house, $locations, HomeStopState $lastState): array
     {
-
         $stateData = $this->calculateFinancialData($house, $locations, $lastState);
         $stateData['paid_locataires'] = $this->getPaidLocataires($locations, $lastState);
         $stateData['un_paid_locataires'] = $this->getUnpaidLocataires($locations, $lastState);
         $stateData["paidLocators"] = $this->paidLocators($locations, $lastState);
+
         return $stateData;
     }
 
@@ -702,7 +701,7 @@ class HouseController extends Controller
      * @param HomeStopState $lastState
      * @return array
      */
-    private function calculateFinancialData(House $house, $locations, HomeStopState $lastState): array
+    private function calculateFinancialData(House $house, $locations, HomeStopState $lastState)
     {
         try {
             $totalRevenue = 0;
@@ -739,6 +738,7 @@ class HouseController extends Controller
             // Calculate expenses from account movements
             $totalExpenses += $lastState->CdrAccountSolds->sum("sold_retrieved");
 
+            // dd($house->Locations);
             // Locative charge
             $locativeCharge += $house->LocativeCharge();
 

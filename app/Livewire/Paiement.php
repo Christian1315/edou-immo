@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Agency;
 use App\Models\House;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
@@ -13,20 +14,38 @@ class Paiement extends Component
     /**
      * The current agency instance
      */
-    public Agency $current_agency;
+    public $current_agency;
 
     /**
      * Collection of houses for the current agency
      */
-    public Collection $houses;
+    public $houses;
+
+    /**
+     * Collection de toutes les maisons
+     */
+    public Collection $allHouses;
+
+    /**
+     * Current house
+     */
+    public $house_got;
+
+    /**
+     * Current house traited
+     */
+    public $house;
+
 
     /**
      * Mount the component with the given agency
      */
-    public function mount(Agency $agency): void
+    public function mount($agency, $house): void
     {
-        set_time_limit(0);
         $this->current_agency = $agency;
+        $this->house_got = $house;
+
+        $this->houses = House::get();
         $this->refreshHouses();
     }
 
@@ -36,13 +55,11 @@ class Paiement extends Component
     public function refreshHouses(): void
     {
         try {
-            $this->houses = $this->current_agency->_Houses->map(function (House $house) {
-                return GET_HOUSE_DETAIL_FOR_THE_LAST_STATE($house); 
-            });
-
+            if ($this->house_got) {
+                $this->house = EloquentCollection::make(GET_HOUSE_DETAIL_FOR_THE_LAST_STATE($this->house_got));
+            }
         } catch (\Exception $e) {
             session()->flash('error', 'Erreur lors du rafraîchissement des maisons: ' . $e->getMessage());
-            $this->houses = collect();
         }
     }
 
