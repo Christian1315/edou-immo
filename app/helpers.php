@@ -532,7 +532,7 @@ function nombre_en_lettres($nombre)
         if ($reste == 1 && $dizaine != 8) {
             $lettre .= '-et-un';
         } elseif ($reste > 0) {
-            $lettre .= '-' . $unites[$reste];
+            $lettre .= ' ' . $unites[$reste];
         }
         return $lettre;
     }
@@ -542,7 +542,7 @@ function nombre_en_lettres($nombre)
         $reste = $nombre % 100;
         $lettre = ($centaine > 1 ? $unites[$centaine] . '-' : '') . 'cent';
         if ($reste > 0) {
-            $lettre .= '-' . nombre_en_lettres($reste);
+            $lettre .= ' ' . nombre_en_lettres($reste);
         }
         return $lettre;
     }
@@ -550,9 +550,9 @@ function nombre_en_lettres($nombre)
     if ($nombre < 1000000) {
         $mille = intval($nombre / 1000);
         $reste = $nombre % 1000;
-        $lettre = ($mille > 1 ? nombre_en_lettres($mille) . '-' : '') . 'mille';
+        $lettre = ($mille > 1 ? nombre_en_lettres($mille) . ' ' : '') . 'mille';
         if ($reste > 0) {
-            $lettre .= '-' . nombre_en_lettres($reste);
+            $lettre .= ' ' . nombre_en_lettres($reste);
         }
         return $lettre;
     }
@@ -562,7 +562,7 @@ function nombre_en_lettres($nombre)
         $reste = $nombre % 1000000;
         $lettre = nombre_en_lettres($million) . ' million' . ($million > 1 ? 's' : '');
         if ($reste > 0) {
-            $lettre .= '-' . nombre_en_lettres($reste);
+            $lettre .= ' ' . nombre_en_lettres($reste);
         }
         return $lettre;
     }
