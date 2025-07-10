@@ -150,7 +150,7 @@
 
         <br>
         <h3 class="text-center">
-            Arrêté le présent état à la somme de <strong class="text-dark">{{nombre_en_lettres($total_cautions + $location->frais_peiture)??'zéro' }} Fcfa</strong>
+            Arrêté le présent état à la somme de <strong class="text-dark">({{nombre_en_lettres($total_cautions + $location->frais_peiture)??'zéro' }} Fcfa)</strong>
         </h3>
 
         <br>
