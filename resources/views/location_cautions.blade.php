@@ -116,7 +116,7 @@
                     <tbody>
                         <tr>
                             <td class="text-center">{{$location->House->name}}</td>
-                            <td class="text-center">{{$location->Room->number}}</td>
+                            <td class="text-center">{{$location->Room?$location->Room->number:'---'}}</td>
                             <td class="text-center">{{$location->Locataire->name}} {{$location->Locataire->prenom}}</td>
                             <td class="text-center text-red"><small class="text-red"> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($location->integration_date)->locale('fr')->isoFormat('D MMMM YYYY') }}</small> </td>
                             <td class="text-center"> <strong class="d-block">{{number_format($cautions['loyer'],0," "," ")}} </strong> ({{$location->caution_number}}X{{$location->loyer}})</td>
