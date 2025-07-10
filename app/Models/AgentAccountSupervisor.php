@@ -9,7 +9,6 @@ class AgentAccountSupervisor extends Model
 {
     use HasFactory;
 
-
     protected $fillable = [
         "agent_account",
         "supervisor"

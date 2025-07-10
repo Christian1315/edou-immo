@@ -10,6 +10,7 @@ use App\Models\Country;
 use App\Models\Departement;
 use App\Models\Locataire;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -88,17 +89,12 @@ class Locator extends Component
         $this->old_locators = $agency_locators;
     }
 
-    public function refreshThisAgencyHouses(): void
-    {
-        $this->houses = $this->current_agency->_Houses;
-    }
 
     public function mount(Agency $agency): void
     {
         $this->current_agency = $agency;
 
         $this->refreshThisAgencyLocators();
-        $this->refreshThisAgencyHouses();
 
         $this->card_types = CardType::all();
         $this->countries = Country::all();

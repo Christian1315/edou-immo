@@ -9,13 +9,11 @@ use App\Models\CardType;
 use App\Models\City;
 use App\Models\Country;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
-use Livewire\WithFileUploads;
 
 class Proprietor extends Component
 {
-    use WithFileUploads;
-
     public $current_agency;
     public Collection $proprietors;
     public int $proprietors_count = 0;
@@ -28,11 +26,16 @@ class Proprietor extends Component
     /**
      * Refresh the proprietors list for the current agency
      */
+
     public function refreshThisAgencyProprietors(): void
     {
-        $agency = Agency::with('_Proprietors')->findOrFail($this->current_agency['id']);
+        $agency = Agency::with('_Proprietors')
+            ->findOrFail($this->current_agency['id']);
+
         $this->proprietors = $agency->_Proprietors;
-        $this->proprietors_count = $this->proprietors->count();
+
+        $this->proprietors_count = $this->proprietors
+            ->count();
     }
 
     /**
@@ -42,7 +45,7 @@ class Proprietor extends Component
     {
         $this->current_agency = $agency;
         $this->refreshThisAgencyProprietors();
-        
+
         // Load all required data in a single query for each model
         $this->countries = Country::all();
         $this->cities = City::all();

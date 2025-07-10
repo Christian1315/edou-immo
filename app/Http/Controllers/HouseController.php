@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 class HouseController extends Controller
@@ -218,9 +219,23 @@ class HouseController extends Controller
     {
         try {
             $agency = Agency::findOrFail($agency);
-            $supervisor = User::findOrFail($request->supervisor);
+            $user = Auth::user();
 
-            $houses = $agency->_Houses->where("supervisor", $request->supervisor);
+            if ($user->hasRole("Gestionnaire de compte")) {
+                /** Pour une Gestionnaire de compte, on recupère juste les 
+                 * maisons de ses superviseurs
+                 */
+                $supervisorsIds = $user->supervisors->pluck("id")
+                    ->toArray();
+
+                $houses = $agency->_Houses
+                    ->whereIn("supervisor", $supervisorsIds);
+            } else {
+                $houses = $agency->_Houses;
+            }
+
+            /** */
+            $houses = $houses->where("supervisor", $request->supervisor);
 
             if ($houses->isEmpty()) {
                 alert()->error("Echèc", "Aucun résultat trouvé");
@@ -249,7 +264,21 @@ class HouseController extends Controller
                 throw new \Exception("Cette agence n'existe pas!");
             }
 
-            $houses = $agency->_Houses->whereBetween("created_at", [$request->debut, $request->fin]);
+            $user = Auth::user();
+            if ($user->hasRole("Gestionnaire de compte")) {
+                /** Pour une Gestionnaire de compte, on recupère juste les 
+                 * maisons de ses superviseurs
+                 */
+                $supervisorsIds = $user->supervisors->pluck("id")
+                    ->toArray();
+
+                $houses = $agency->_Houses
+                    ->whereIn("supervisor", $supervisorsIds);
+            } else {
+                $houses = $agency->_Houses;
+            }
+
+            $houses = $houses->whereBetween("created_at", [$request->debut, $request->fin]);
 
             if (count($houses) == 0) {
                 throw new \Exception("Aucun résultat trouvé");

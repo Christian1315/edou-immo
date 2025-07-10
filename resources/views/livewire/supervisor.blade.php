@@ -29,7 +29,7 @@
                                 <button class="btn btn-sm btn-light" onclick="showAgentModal({{$supervisor->id}})" data-bs-toggle="modal" data-bs-target="#supervisorAgentModal"><i class="bi bi-list-check"></i></button>
                             </td>
                             <td class="text-center">
-                                <button class="btn text-dark btn-sm bg-light mx-1" onclick="affectToAgent({{$supervisor->id}})" data-bs-toggle="modal" data-bs-target="#affectationModal"><i class="bi bi-link"></i>Affecter à un agent comptable</button>
+                                <button class="btn text-dark btn-sm bg-light mx-1" onclick="affectToAgent({{$supervisor->id}})" data-bs-toggle="modal" data-bs-target="#affectationModal"><i class="bi bi-link"></i>Affecter à un Gestionnaire de compte</button>
                             </td>
                         </tr>
                         @endforeach
@@ -108,9 +108,7 @@
                 }
 
                 $("#agentsBody").append(content)
-
                 $('#supervisorAgentModal').modal('show');
-
             }).catch((error) => {
                 alert("une erreure s'est produite")
                 console.log(error)

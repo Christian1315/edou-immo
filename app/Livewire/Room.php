@@ -6,6 +6,7 @@ use App\Models\RoomNature;
 use App\Models\RoomType;
 use App\Models\Agency;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -15,7 +16,7 @@ class Room extends Component
 
     private const DELETE_ROOM_TITLE = 'Suppression de la chambre!';
     private const DELETE_ROOM_TEXT = 'Voulez-vous vraiment supprimer cette chambre?';
-   
+
     public Agency $agency;
     public Agency $current_agency;
 
@@ -64,9 +65,23 @@ class Room extends Component
     public function refreshThisAgencyRooms(): void
     {
         confirmDelete(self::DELETE_ROOM_TITLE, self::DELETE_ROOM_TEXT);
+        $user = Auth::user();
 
-        $this->rooms = $this->current_agency->_Proprietors
-            ->flatMap(fn($proprio) => $proprio->Houses)
+        if ($user->hasRole("Gestionnaire de compte")) {
+            /** Pour une Gestionnaire de compte, on recupère juste les 
+             * maisons de ses superviseurs
+             */
+            $supervisorsIds = $user->supervisors->pluck("id")
+                ->toArray();
+            $houses = $this->current_agency->_Proprietors
+                ->flatMap(fn($proprio) => $proprio->Houses
+                    ->whereIn("supervisor", $supervisorsIds));
+        } else {
+            $houses = $this->current_agency->_Proprietors
+                ->flatMap(fn($proprio) => $proprio->Houses);
+        }
+
+        $this->rooms = $houses
             ->flatMap(fn($house) => $house->Rooms);
 
         $this->rooms_count = $this->rooms->count();
@@ -74,9 +89,19 @@ class Room extends Component
 
     public function refreshThisAgencyHouses(): void
     {
+        $user = Auth::user();
 
-        $this->houses = $this->current_agency->_Proprietors
-            ->flatMap(fn($proprio) => $proprio->Houses);
+        if ($user->hasRole("Gestionnaire de compte")) {
+            /** Pour une Gestionnaire de compte, on recupère juste les 
+             * maisons de ses superviseurs
+             */
+            $supervisorsIds = $user->supervisors->pluck("id")
+                ->toArray();
+            $this->houses = $this->current_agency
+                ->_Houses->whereIn("supervisor", $supervisorsIds);
+        } else {
+            $this->houses = $this->current_agency->_Houses;
+        }
     }
 
     public function render()

@@ -106,7 +106,7 @@ class User extends Authenticatable
 
     function supervisors(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, "agent_account_supervisors", "agent_account", "supervisor")->where(["visible" => 1]);
+        return $this->belongsToMany(User::class, "agent_account_supervisors", "agent_account", "supervisor");
     }
 
     function SupervisorHouses(): HasMany

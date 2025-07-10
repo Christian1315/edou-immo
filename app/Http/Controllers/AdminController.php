@@ -435,7 +435,8 @@ class AdminController extends Controller
     function LocationFactures(Request $request, $agencyId)
     {
         try {
-            $agency = Agency::where("visible", 1)->findOrFail(deCrypId($agencyId));
+            $agency = Agency::where("visible", 1)
+                ->findOrFail(deCrypId($agencyId));
 
             $query = Facture::with(["Location"])
                 ->whereIn("location", $agency->_Locations
@@ -471,6 +472,24 @@ class AdminController extends Controller
 
                 alert()->success("Succès", "Filtre effectué avec succès");
             } else {
+
+                if ($request->status) {
+                    // dd($request->status);
+                    switch ($request->status) {
+                        case "valide":
+                            $query->where("status", 2);
+                            // dd($query->where("status", 2)->get());
+                            break;
+                        case "en_attente":
+                            $query->where("status", 1);
+                            break;
+                        case "rejetee":
+                            $query->where("status", 3);
+                            break;
+                        default:
+                            $query;
+                    }
+                }
                 $factures = $query->get();
             }
 

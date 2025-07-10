@@ -10,9 +10,10 @@
         <!-- TABLEAU DE LISTE -->
         <div class="row">
             <div class="col-12">
-                <small>
+                <small class="d-flex">
                     <!-- <button data-bs-toggle="modal" data-bs-target="#ShowSearchLocatorsByHouseForm" class="btn btn-sm bg-light text-dark text-uppercase"><i class="bi bi-file-pdf-fill"></i> Prestation par période</button> -->
                     <button data-bs-toggle="modal" data-bs-target="#filtreByUserAndPeriod" class="btn btn-sm bg-light text-dark text-uppercase"><i class="bi bi-file-pdf-fill"></i> Filtrer par période et utilisateur</button>
+                    <a href="{{route('locationFacture',crypId($agency->id))}}" class="btn btn-sm bg-light text-dark text-uppercase"><i class="bi bi-file-pdf-fill"></i> Actualiser</a>
                 </small>
 
                 <!-- FILTRE BY PERIOD -->
@@ -56,14 +57,42 @@
                     </div>
                 </div>
                 <br><br>
+
+                <!-- FILTRER PAR ETAT DES FACTURES -->
+                <div class="modal fade" id="filtreByFactureStatus" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <p class="" id="exampleModalLabel">Filter par statut</p>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{route('locationFacture',crypId($agency->id))}}" method="GET">
+                                    @csrf
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <select name="status" required class="form-control">
+                                                <option value="valide">Validée</option>
+                                                <option value="en_attente">En attente</option>
+                                                <option value="rejetee">Rejetée</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="text-center">
+                                        <button type="submit" class="w-100 text-center bg-red btn btn-sm"><i class="bi bi-funnel"></i> Filtrer</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="row">
             <div class="col-12">
-                <h4 class="">Total: <strong class="text-red"> {{count($factures)}} </strong> | Légende: <span class="border btn btn-sm btn-light text-success"><i class="bi bi-check-circle"></i> Facture validées ({{$factures->where("status",2)->count()}}) </span> <span class="border btn btn-sm btn-light text-warning"><i class="bi bi-check-circle"></i> Factures en attente ({{$factures->where("status",1)->count()}}) </span> <span class="border btn btn-sm btn-secondary"><i class="bi bi-x-circle"></i> Facture rejetées ({{$factures->where("status",3)->count()}}) </span></h4>
-                <h5 class="">Totale encaissé : <b id='montantTotal' class="badge bg-red">{{ number_format($montantTotal ?? 0,0,","," ")  }} FCFA</b> </h5>
-
+                <h4 class="">Total: <strong class="text-red"> {{count($factures)}} </strong> | Légende: <span class="border btn btn-sm btn-light text-success" data-bs-toggle="modal" data-bs-target="#filtreByFactureStatus"><i class="bi bi-check-circle"></i> Facture validées ({{$factures->where("status",2)->count()}}) </span> <span class="border btn btn-sm btn-light text-warning" data-bs-toggle="modal" data-bs-target="#filtreByFactureStatus"><i class="bi bi-check-circle"></i> Factures en attente ({{$factures->where("status",1)->count()}}) </span> <span class="border btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#filtreByFactureStatus"><i class="bi bi-x-circle"></i> Facture rejetées ({{$factures->where("status",3)->count()}}) </span></h4>
+                <h5 class="">Totale encaissé :  <b id='montantTotal' class="badge bg-red">{{ number_format($montantTotal ?? 0,0,","," ")  }} FCFA</b> </h5>
                 <div class="table-responsive table-responsive-list shadow-lg">
                     <table id="myTable" class="table table-striped table-sm">
                         <thead class="bg_dark">

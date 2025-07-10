@@ -10,6 +10,7 @@ use App\Models\HouseType;
 use App\Models\Quarter;
 use App\Models\Zone;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -57,8 +58,21 @@ class House extends Component
      */
     private function loadAgencyData(): void
     {
+        $user = Auth::user();
+
+        if ($user->hasRole("Gestionnaire de compte")) {
+            /** Pour une Gestionnaire de compte, on recupère juste les 
+             * maisons de ses superviseurs
+             */
+            $supervisorsIds = $user->supervisors->pluck("id")
+                ->toArray();
+            $this->houses = $this->current_agency
+                ->_Houses->whereIn("supervisor", $supervisorsIds);
+        } else {
+            $this->houses = $this->current_agency->_Houses;
+        }
+
         $this->proprietors = $this->current_agency->_Proprietors;
-        $this->houses = $this->current_agency->_Houses;
         $this->houses_count = $this->houses->count();
     }
 

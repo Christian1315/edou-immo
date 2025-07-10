@@ -243,7 +243,7 @@
                         <td colspan="3" class=" text-center"><strong> Détails des dépenses: </strong></td>
                         <td colspan="5" class="text-left">
                             <ul class="">
-                                @forelse($house->CurrentDepenses as $depense)
+                                @forelse($state->CdrAccountSolds as $depense)
                                 <li class=""><strong class="">{{number_format($depense->sold_retrieved,0,","," ")}} fcfa</strong> - {{$depense->description}}</li>
                                 @empty
                                 <li>Aucune dépense éffectuée dans la maison!</li>
