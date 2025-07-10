@@ -27,7 +27,7 @@
             /* --bs-bg-opacity: 0.5 */
         }
 
-        .text-red {
+        .text-dark {
             color: #cc3301;
         }
 
@@ -118,7 +118,7 @@
                             <td class="text-center">{{$location->House->name}}</td>
                             <td class="text-center">{{$location->Room?$location->Room->number:'---'}}</td>
                             <td class="text-center">{{$location->Locataire->name}} {{$location->Locataire->prenom}}</td>
-                            <td class="text-center text-red"><small class="text-red"> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($location->integration_date)->locale('fr')->isoFormat('D MMMM YYYY') }}</small> </td>
+                            <td class="text-center text-dark"><small class="text-dark"> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($location->integration_date)->locale('fr')->isoFormat('D MMMM YYYY') }}</small> </td>
                             <td class="text-center"> <strong class="d-block">{{number_format($cautions['loyer'],0," "," ")}} </strong> ({{$location->caution_number}}X{{$location->loyer}})</td>
                             <td class="text-center">{{number_format($cautions['eau'] + $cautions['electricite'],0," "," ")}} ({{$cautions['eau']}}+{{$cautions['electricite']}})</td>
                             <td class="text-center bg-light text-dark">{{number_format($location->frais_peiture,0," "," ") }}</td>
@@ -126,7 +126,7 @@
                         </tr>
 
                         <tr>
-                            <td class="bg-red shadow-lg">Totaux: </td>
+                            <td class="bg-secondary text-white shadow-lg">Totaux: </td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -150,7 +150,7 @@
 
         <br>
         <p class="text-center">
-            Arrêté le présent état à la somme de <em class="text-red">{{nombre_en_lettres($total_cautions + $location->frais_peiture)??'zéro' }} Fcfa</em>
+            Arrêté le présent état à la somme de <strong class="text-dark">{{nombre_en_lettres($total_cautions + $location->frais_peiture)??'zéro' }} Fcfa</strong>
         </p>
 
         <br>
