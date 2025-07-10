@@ -180,12 +180,12 @@ class HouseController extends Controller
 
     /**
      * Process house data
-     * 
      * @param Request $request
      * @param array $formData
      * @param User $user
      * @return array
      */
+
     private function processHouseData(Request $request, array $formData, User $user): array
     {
         if ($request->pre_paid == $request->post_paid) {
@@ -210,11 +210,11 @@ class HouseController extends Controller
 
     /**
      * Filter houses by supervisor
-     * 
      * @param Request $request
      * @param int $agency
      * @return \Illuminate\Http\RedirectResponse
      */
+
     public function FiltreHouseBySupervisor(Request $request, $agency)
     {
         try {
@@ -225,6 +225,7 @@ class HouseController extends Controller
                 /** Pour une Gestionnaire de compte, on recupère juste les 
                  * maisons de ses superviseurs
                  */
+
                 $supervisorsIds = $user->supervisors->pluck("id")
                     ->toArray();
 
@@ -244,7 +245,6 @@ class HouseController extends Controller
 
             session()->flash("filteredHouses", $houses);
             alert()->success("Succès", "Maisons filtrées par superviseur avec succès!");
-
             return back()->withInput();
         } catch (\Exception $e) {
             Log::error('Error filtering houses by supervisor: ' . $e->getMessage());
@@ -399,7 +399,6 @@ class HouseController extends Controller
 
     /**
      * Create or update house state
-     * 
      * @param array $formData
      * @param House $house
      * @return HomeStopState
@@ -442,6 +441,7 @@ class HouseController extends Controller
      * @param HomeStopState $state
      * @return void
      */
+    
     private function updateFacturesAndAccounts(House $house, HomeStopState $state): void
     {
         foreach ($house->Locations as $location) {

@@ -496,3 +496,76 @@ function GET_HOUSE_DETAIL_FOR_THE_LAST_STATE_OLD($house)
         '_amount' => $net_to_paid != 0 ? $net_to_paid : ($house->PayementInitiations->last()?->amount ?? 0)
     ]);
 }
+
+function nombre_en_lettres($nombre)
+{
+    $unites = [
+        '', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf',
+        'dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize',
+        'dix-sept', 'dix-huit', 'dix-neuf'
+    ];
+    $dizaines = [
+        '', '', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante',
+        'soixante', 'quatre-vingt', 'quatre-vingt'
+    ];
+
+    if (!is_numeric($nombre)) {
+        return false;
+    }
+
+    if ($nombre < 0) {
+        return 'moins ' . nombre_en_lettres(-$nombre);
+    }
+
+    if ($nombre < 20) {
+        return $unites[$nombre];
+    }
+
+    if ($nombre < 100) {
+        $dizaine = intval($nombre / 10);
+        $reste = $nombre % 10;
+        if ($dizaine == 7 || $dizaine == 9) {
+            $dizaine--;
+            $reste += 10;
+        }
+        $lettre = $dizaines[$dizaine];
+        if ($reste == 1 && $dizaine != 8) {
+            $lettre .= '-et-un';
+        } elseif ($reste > 0) {
+            $lettre .= '-' . $unites[$reste];
+        }
+        return $lettre;
+    }
+
+    if ($nombre < 1000) {
+        $centaine = intval($nombre / 100);
+        $reste = $nombre % 100;
+        $lettre = ($centaine > 1 ? $unites[$centaine] . '-' : '') . 'cent';
+        if ($reste > 0) {
+            $lettre .= '-' . nombre_en_lettres($reste);
+        }
+        return $lettre;
+    }
+
+    if ($nombre < 1000000) {
+        $mille = intval($nombre / 1000);
+        $reste = $nombre % 1000;
+        $lettre = ($mille > 1 ? nombre_en_lettres($mille) . '-' : '') . 'mille';
+        if ($reste > 0) {
+            $lettre .= '-' . nombre_en_lettres($reste);
+        }
+        return $lettre;
+    }
+
+    if ($nombre < 1000000000) {
+        $million = intval($nombre / 1000000);
+        $reste = $nombre % 1000000;
+        $lettre = nombre_en_lettres($million) . ' million' . ($million > 1 ? 's' : '');
+        if ($reste > 0) {
+            $lettre .= '-' . nombre_en_lettres($reste);
+        }
+        return $lettre;
+    }
+
+    return 'nombre trop grand';
+}

@@ -248,7 +248,6 @@ class LocationController extends Controller
             $total_cautions = array_sum($cautions);
 
             alert()->success('Succès', "Cautions générées avec succès!");
-            // return view("location_cautions", compact("location", "cautions", "total_cautions"));
 
             $pdf = Pdf::loadView("location_cautions", compact("location", "cautions", "total_cautions"));
 
