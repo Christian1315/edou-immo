@@ -9,12 +9,19 @@ use App\Notifications\SendNotification;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Cache;
 
 function supervisors()
 {
     $users = User::with(["account_agents"])->get()->filter(function ($user) {
+        if (Auth::user()->hasRole("Gestionnaire de compte")) {
+            /** Pour un Gestionnaire de compte, on recupère juste ses superviseurs
+             */
+            return in_array($user->id, Auth::user()->supervisors->toArray());
+        }
+
         return $user->hasRole('Superviseur');
     });
     return $users;

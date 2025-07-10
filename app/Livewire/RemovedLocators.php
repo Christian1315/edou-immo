@@ -5,6 +5,8 @@ namespace App\Livewire;
 use App\Models\Agency;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 
@@ -25,23 +27,25 @@ class RemovedLocators extends Component
     public ?string $house = null;
 
     /**
-     * Refresh the list of supervisors
-     * @return void
-     */
-    public function refreshSupervisors(): void
-    {
-        $this->supervisors = User::get()
-            ->filter(fn($user) => $user->hasRole("Superviseur"))
-            ->unique()->values();
-    }
-
-    /**
      * Refresh the list of houses for the current agency
      * @return void
      */
     public function refreshThisAgencyHouses(): void
     {
-        $this->houses = $this->current_agency->_Houses;
+        $user = Auth::user();
+
+        if ($user->hasRole("Gestionnaire de compte")) {
+            /** Pour une Gestionnaire de compte, on recupère juste les 
+             * maisons de ses superviseurs
+             */
+
+            $supervisorsIds = $user->supervisors->pluck("id")
+                ->toArray();
+            $this->houses = $this->current_agency
+                ->_Houses->whereIn("supervisor", $supervisorsIds);
+        } else {
+            $this->houses = $this->current_agency->_Houses;
+        }
     }
 
     /**
@@ -50,13 +54,32 @@ class RemovedLocators extends Component
      */
     public function refreshThisAgencyLocators(): void
     {
-        $agency = Agency::findOrFail($this->current_agency->id);
+        $now = Carbon::now()->startOfDay();
+        $user = Auth::user();
 
-        $locataires = $agency->_Locations
+        $query = $this->current_agency->_Locations;
+
+        if ($user->hasRole("Gestionnaire de compte")) {
+            /** Pour un Gestionnaire de compte, on recupère juste les 
+             * locations ayant les maisons de ses superviseurs
+             */
+
+            $supervisorsIds = $user->supervisors->pluck("id")
+                ->toArray();
+
+            $locations = $query->where(function ($location) use ($supervisorsIds) {
+                $location->House->whereIn("supervisor", $supervisorsIds);
+            });
+        } else {
+            $locations = $query;
+        }
+
+        $locataires = $locations
             ->where("status", 3)
             ->map(function ($query) {
                 return $query;
             });
+
 
         Session::forget("filteredLocators");
 
@@ -75,7 +98,6 @@ class RemovedLocators extends Component
         $this->current_agency = $agency;
 
         $this->refreshThisAgencyLocators();
-        $this->refreshSupervisors();
         $this->refreshThisAgencyHouses();
     }
 

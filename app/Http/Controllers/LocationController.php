@@ -26,6 +26,7 @@ use App\Traits\LocationValidationTrait;
 use App\Traits\LocationPaymentTrait;
 use App\Traits\LocationStateTrait;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class LocationController extends Controller
 {
@@ -999,14 +1000,18 @@ class LocationController extends Controller
     function FiltreByHouse(Request $request, Agency $agency)
     {
         try {
+            $user = Auth::user();
+
             // Validation de la maison
             $house = House::find($request->house);
             if (!$house) {
                 throw new \Exception("Cette maison n'existe pas!");
             }
 
+            $query = $agency->_Locations();
+
             // Récupération des locations avec eager loading
-            $locations_filtred = $agency->_Locations()
+            $locations_filtred = $query
                 ->with(['House', 'Room', 'Locataire'])
                 ->where('status', '!=', 3)
                 ->where('house', $request->house)

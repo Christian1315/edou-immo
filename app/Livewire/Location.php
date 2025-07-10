@@ -98,13 +98,29 @@ class Location extends Component
     public function refreshThisAgencyLocations(): void
     {
         $user = auth()->user();
+
         /**
          * un superviseur ne vera que ces 
          * locations à lui
          */
-        $this->locations = $user->hasRole("Superviseur") ?
-            $this->current_agency->_Locations->filter(fn($location) => $location->House->supervisor == $user->id) :
-            $this->current_agency->_Locations;
+
+        if ($user->hasRole("Gestionnaire de compte")) {
+            /** Pour un Gestionnaire de compte, on recupère juste les 
+             * locations ayant les maisons de ses superviseurs
+             */
+
+            $supervisorsIds = $user->supervisors->pluck("id")
+                ->toArray();
+
+            $this->locations = $this->current_agency
+                ->_Locations->where(function ($query) use ($supervisorsIds) {
+                    $query->House->whereIn("supervisor", $supervisorsIds);
+                });
+        } else {
+            $this->locations = $user->hasRole("Superviseur") ?
+                $this->current_agency->_Locations->filter(fn($location) => $location->House->supervisor == $user->id) :
+                $this->current_agency->_Locations;
+        }
 
         $this->locations_count = $this->locations->count();
     }

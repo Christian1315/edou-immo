@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class PaidLocators extends Component
 {
@@ -23,7 +24,20 @@ class PaidLocators extends Component
      */
     public function refreshThisAgencyHouses(): void
     {
-        $this->houses = $this->current_agency->_Houses;
+        $user = Auth::user();
+
+        if ($user->hasRole("Gestionnaire de compte")) {
+            /** Pour une Gestionnaire de compte, on recupère juste les 
+             * maisons de ses superviseurs
+             */
+
+            $supervisorsIds = $user->supervisors->pluck("id")
+                ->toArray();
+            $this->houses = $this->current_agency
+                ->_Houses->whereIn("supervisor", $supervisorsIds);
+        } else {
+            $this->houses = $this->current_agency->_Houses;
+        }
     }
 
     /**
@@ -32,11 +46,33 @@ class PaidLocators extends Component
     public function refreshThisAgencyLocators(): void
     {
         $now = Carbon::now()->startOfDay();
-        $this->locators = $this->current_agency->_Locations
-            ->filter(function ($location) use ($now) {
-                return $now < Carbon::parse($location->echeance_date);
+        $user = Auth::user();
+        $query = $this->current_agency->_Locations;
+
+
+        if ($user->hasRole("Gestionnaire de compte")) {
+            /** Pour un Gestionnaire de compte, on recupère juste les 
+             * locations ayant les maisons de ses superviseurs
+             */
+
+            $supervisorsIds = $user->supervisors->pluck("id")
+                ->toArray();
+
+            $this->locators = $query->where(function ($location) use ($supervisorsIds) {
+                $location->House->whereIn("supervisor", $supervisorsIds);
             })
-            ->values();
+                ->filter(function ($location) use ($now) {
+                    return $now < Carbon::parse($location->echeance_date);
+                })
+                ->values();
+        } else {
+            $this->locators = $query
+                ->filter(function ($location) use ($now) {
+                    return $now < Carbon::parse($location->echeance_date);
+                })
+                ->values();
+        }
+
 
         $this->locators_count = count($this->locators);
     }
