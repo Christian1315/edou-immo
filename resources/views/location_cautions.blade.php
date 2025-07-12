@@ -88,8 +88,8 @@
                                 <img src="{{public_path('edou_logo.png')}}" alt="" style="width: 100px;" class="rounded img-fluid">
                             </td>
 
-                            <td class="text" style="padding-left: 200px!important;">
-                                <h3 class="rapport-title text-uppercase">etat de caution</h3>
+                            <td class="text" style="padding-left: 100px!important;">
+                                <h3 class="rapport-title text-uppercase">etat de caution eau/électricité</h3>
                             </td>
                         </tr>
                     </tbody>
