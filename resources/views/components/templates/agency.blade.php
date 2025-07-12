@@ -44,7 +44,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 &nbsp;
-                <span>EDOU SERVICES</span>
+                <span>{{str_replace('_','-',env('APP_NAME'))}}</span>
             </a>
 
             <marquee class="text-uppercase" behavior="alternate" style="font-size: 15px;font-weight: bold;">

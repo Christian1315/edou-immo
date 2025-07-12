@@ -479,11 +479,11 @@
                                         </li>
                                         @endcan
 
-                                        @can("location.generate.proratas.state")
+                                        <!-- @can("location.generate.proratas.state")
                                         <li>
                                             <a target="_blank" @style(["pointer-events:none"=>!$location->Locataire->prorata,"cursor:default"=>!$location->Locataire->prorata]) data-role="disabled" href="{{route('location._ManageLocationProrata',$location->id)}}" class="btn btn-sm text-dark btn-light w-100" rel="noopener noreferrer"><i class="bi bi-file-earmark-pdf"></i> Etats des proratas </a>
                                         </li>
-                                        @endcan
+                                        @endcan -->
                                     </ul>
                                 </div>
                             </td>

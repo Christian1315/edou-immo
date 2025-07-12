@@ -88,8 +88,8 @@
                                 <img src="{{public_path('edou_logo.png')}}" alt="" style="width: 100px;" class="rounded img-fluid">
                             </td>
 
-                            <td class="text" style="padding-left: 100px!important;">
-                                <h3 class="rapport-title text-uppercase">état de caution</h3>
+                            <td class="text" style="padding-left: 200px!important;">
+                                <h3 class="rapport-title text-uppercase">etat de caution</h3>
                             </td>
                         </tr>
                     </tbody>
@@ -133,6 +133,7 @@
                             <td class="bg-light text-dark text-center"> <strong>{{number_format($cautions['loyer'],0," "," ")}} </strong> </td>
                             <td class="bg-light text-dark text-center"> <strong>{{number_format($cautions['eau'] + $cautions['electricite'],0," "," ")}} </strong> </td>
                             <td class="bg-light text-dark text-center"> <strong>{{number_format($location->frais_peiture,0," "," ")}} </strong> </td>
+                            <td class="bg-light text-dark text-center"> </td>
                         </tr>
 
                     </tbody>
@@ -150,7 +151,7 @@
 
         <br>
         <h3 class="text-center">
-            Arrêté le présent état à la somme de <strong class="text-dark">({{nombre_en_lettres($total_cautions + $location->frais_peiture)??'zéro' }} Fcfa)</strong>
+            Arrêté le présent état à la somme de <strong class="text-dark">({{nombre_en_lettres($total_cautions + $location->frais_peiture)==""?'zéro':nombre_en_lettres($total_cautions + $location->frais_peiture) }} Fcfa)</strong>
         </h3>
 
         <br>

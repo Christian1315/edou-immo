@@ -35,7 +35,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 &nbsp;
-                <span>EDOU SERVICES </span>
+                <span>{{str_replace('_','-',env('APP_NAME'))}} </span>
             </a>
 
             <input class="mx-2 rounded form-control form-control-dark w-100 bg-light search--bar" type="text" placeholder="Recherche" aria-label="searh">
@@ -56,7 +56,7 @@
                 <div class="offcanvas bg-dark offcanvas-start" style="width: 250px!important;" data-bs-scroll="true" tabindex="-1" id="offcanvasSideBar" aria-labelledby="offcanvasWithBothOptionsLabel">
                     <div class="offcanvas-header">
                         <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">
-                            EDOU SERVICES
+                            {{str_replace('_','-',env('APP_NAME'))}}
                         </h5>
                         <button type="button" class="btn-close text-red btn btn-sm btn-light" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x"></i></button>
                     </div>
