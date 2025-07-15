@@ -89,7 +89,7 @@
                             </td>
 
                             <td class="text" style="padding-left: 100px!important;">
-                                <h3 class="rapport-title text-uppercase">etat de caution eau/électricité</h3>
+                                <h3 class="rapport-title text-uppercase">etat de caution</h3>
                             </td>
                         </tr>
                     </tbody>
@@ -108,7 +108,7 @@
                             <th scope="col" class="text-center">Locataire</th>
                             <th scope="col" class="text-center">Date d'integration</th>
                             <th scope="col" class="text-center">Caution Loyer</th>
-                            <th scope="col" class="text-center">Caution Eau / Electrique</th>
+                            <th scope="col" class="text-center">Caution Eau/Électricité</th>
                             <th scope="col" class="text-center">Frais de peinture</th>
                             <th scope="col" class="text-center">Totaux(fcfa) </th>
                         </tr>
@@ -117,7 +117,7 @@
                         <tr>
                             <td class="text-center">{{$location->House->name}}</td>
                             <td class="text-center">{{$location->Room?$location->Room->number:'---'}}</td>
-                            <td class="text-center">{{$location->Locataire->name}} {{$location->Locataire->prenom}}</td>
+                            <td class="text-center">{{$location->Locataire->name}} {{$location->Locataire->prenom}} ({{$location->Locataire->phone}})</td>
                             <td class="text-center text-dark"><strong class="text-dark"> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($location->integration_date)->locale('fr')->isoFormat('D MMMM YYYY') }}</strong> </td>
                             <td class="text-center"> <strong class="d-block">{{number_format($cautions['loyer'],0," "," ")}} </strong> ({{$location->caution_number}}X{{$location->loyer}})</td>
                             <td class="text-center">{{number_format($cautions['eau'] + $cautions['electricite'],0," "," ")}} ({{$cautions['eau']}}+{{$cautions['electricite']}})</td>

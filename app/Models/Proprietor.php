@@ -108,7 +108,6 @@ class Proprietor extends Model
     public function Houses(): HasMany
     {
         return $this->hasMany(House::class, 'proprietor')
-            ->where('visible', self::VISIBLE)
             ->with(['Rooms', 'Locations', 'Type', 'Supervisor', 'Proprietor']);
     }
 }

@@ -543,70 +543,70 @@
                         <strong>Chambre: <em class="text-red location_room"> </em> </strong> <br>
                         <strong>Locataire: <em class="text-red location_locataire"></em> </strong>
                     </div>
-                </div>
-                <form method="POST" id="encaisserForm" class="shadow-lg p-3 animate__animated animate__bounce p-3" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="location" class="location">
-
-                    <div class="row p-3">
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label>Type de paiement </label>
-                                <select name="type" class="form-select form-control" aria-label="Default select example">
-                                    @foreach($paiements_types as $type)
-                                    <option value="{{$type['id']}}" name="type">{{$type["name"]}}</option>
-                                    @endforeach
-                                </select>
-                                @error('type')
-                                <span class="text-red">{{$message}}</span>
-                                @enderror
-                            </div>
-                            <div class="mb-3">
-                                <span>Date ou mois pour lequel vous voulez encaisser pour cette location</span>
-                                <input disabled class="form-control next_loyer_date">
-                            </div>
-
-                            <div class="d-none prorata">
-                                <span class="text-primary">Ce locataire est un prorata(veuillez renseigner ses infos)</span>
-                                <br>
+                    <form method="POST" id="encaisserForm" class="shadow-lg p-3 animate__animated animate__bounce p-3" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="location" class="location">
+    
+                        <div class="row p-3">
+                            <div class="col-md-12">
                                 <div class="mb-3">
-                                    <label for="" class="d-block">Nbre de jour du prorata</label>
-                                    <input type="number" name="prorata_days" placeholder="Nbre de jour du prorata ..." class="form-control prorata_days">
-                                    @error('prorata_days')
+                                    <label>Type de paiement </label>
+                                    <select name="type" class="form-select form-control" aria-label="Default select example">
+                                        @foreach($paiements_types as $type)
+                                        <option value="{{$type['id']}}" name="type">{{$type["name"]}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('type')
                                     <span class="text-red">{{$message}}</span>
                                     @enderror
                                 </div>
                                 <div class="mb-3">
-                                    <label for="" class="d-block">Montant du prorata</label>
-                                    <input type="number" name="prorata_amount" placeholder="Montant du prorata ..." class="form-control prorata_amount">
-                                    @error('prorata_amount')
+                                    <span>Date ou mois pour lequel vous voulez encaisser pour cette location</span>
+                                    <input disabled class="form-control next_loyer_date">
+                                </div>
+    
+                                <div class="d-none prorata">
+                                    <span class="text-primary">Ce locataire est un prorata(veuillez renseigner ses infos)</span>
+                                    <br>
+                                    <div class="mb-3">
+                                        <label for="" class="d-block">Nbre de jour du prorata</label>
+                                        <input type="number" name="prorata_days" placeholder="Nbre de jour du prorata ..." class="form-control prorata_days">
+                                        @error('prorata_days')
+                                        <span class="text-red">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="" class="d-block">Montant du prorata</label>
+                                        <input type="number" name="prorata_amount" placeholder="Montant du prorata ..." class="form-control prorata_amount">
+                                        @error('prorata_amount')
+                                        <span class="text-red">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="" class="d-block">Date du prorata</label>
+                                        <input name="prorata_date" type="date" class="form-control prorata_date" hidden>
+                                        <input disabled type="date" class="form-control prorata_date">
+                                    </div>
+                                </div>
+    
+                                <div class="mb-3">
+                                    <span>Uploader la facture ici</span> <br>
+                                    <input type="file" name="facture" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="" class="d-block">Code de facture</label>
+                                    <input value="{{old('facture_code')}}" name="facture_code" placeholder="Code facture ...." class="form-control facture_code">
+                                    @error('facture_code')
                                     <span class="text-red">{{$message}}</span>
                                     @enderror
                                 </div>
-                                <div class="mb-3">
-                                    <label for="" class="d-block">Date du prorata</label>
-                                    <input name="prorata_date" type="date" class="form-control prorata_date" hidden>
-                                    <input disabled type="date" class="form-control prorata_date">
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <span>Uploader la facture ici</span> <br>
-                                <input type="file" name="facture" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label for="" class="d-block">Code de facture</label>
-                                <input value="{{old('facture_code')}}" name="facture_code" placeholder="Code facture ...." class="form-control facture_code">
-                                @error('facture_code')
-                                <span class="text-red">{{$message}}</span>
-                                @enderror
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="w-100 btn btn-sm bg-red"><i class="bi bi-check-all"></i> Valider</button>
-                    </div>
-                </form>
+                        <div class="modal-footer">
+                            <button type="submit" class="w-100 btn btn-sm bg-red"><i class="bi bi-check-all"></i> Valider</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -765,11 +765,11 @@
 
         function demenage(location) {
             console.log("Location object:", location);
-            
+
             $(".location_name").html(location.house.name)
             $(".location_room").html(location.room ? location.room.number : "---")
             $(".location_locataire").html(location.locataire.name + " " + location.locataire.prenom)
-            
+
             // Vérifier si l'élément existe
             const locationIdInput = document.getElementById("locationId");
             if (locationIdInput) {

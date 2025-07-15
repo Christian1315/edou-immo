@@ -36,7 +36,7 @@ class Agency extends Model
 
     function _Proprietors(): HasMany
     {
-        return $this->hasMany(Proprietor::class, "agency")->where(["visible" => 1])->with(["Owner", "City", "Country", "TypeCard", "Houses", "Agency"]);
+        return $this->hasMany(Proprietor::class, "agency")->where(["visible" => 1]);
     }
 
     function _Users(): HasMany

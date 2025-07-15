@@ -3,12 +3,17 @@
 namespace App\Livewire;
 
 use App\Models\Agency;
+use App\Models\LocationType;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 
 class AgencyDashbord extends Component
 {
     public Agency $agency;
     public Agency $current_agency;
+
+    public Collection $locations;
+    public Collection $types;
 
     public int $proprietors_count = 0;
     public int $houses_count = 0;
@@ -36,23 +41,72 @@ class AgencyDashbord extends Component
 
     private function calculateStatistics(): void
     {
-        // Propriétaires
-        $this->proprietors_count = $this->agency->_Proprietors->count();
+        $user = auth()->user();
 
-        // Maisons
-        $houses = $this->agency->_Proprietors->flatMap->houses;
-        $this->houses_count = $houses->count();
+        if ($user->hasRole("Superviseur")) {
 
-        // Locataires et Locations
-        $this->locators_count = $this->agency->_Locataires->count();
-        $this->locations_count = $this->agency->_Locations->count();
+            // Propriétaires
+            $this->proprietors_count = $this->agency->_Proprietors()
+                ->whereHas("houses", function ($house) use ($user) {
+                    $house->where("supervisor", $user->id);
+                })->count();
 
-        // Factures et Paiements
-        $this->factures_count = $this->agency->_Locations->flatMap->Factures->count();
-        $this->paiement_count = $this->houses_count;
+            // Maisons
+            $this->houses_count = $this->agency->_Proprietors
+                ->flatMap->houses
+                ->where("supervisor", $user->id)
+                ->count();
 
-        // Chambres
-        $this->rooms_count = $houses->flatMap->rooms->count();
+            // Locataires 
+            $this->locators_count = $this->agency->_Locataires->count();
+
+            // Locations
+            $this->locations = $this->agency->_Locations;
+
+            //types
+            $this->types = LocationType::get();
+
+            // $this->locations = $this->current_agency->_Locations
+            //     ->filter(fn($location) => $location->House->supervisor == $user->id);
+
+            // $this->locations_count = $this->locations
+            //     ->filter(fn($location) => $location->House->supervisor == $user->id)
+            //     ->count();
+
+            // Factures et Paiements
+            $this->factures_count = $this->locations->flatMap
+                ->Factures
+                ->count();
+
+            $this->paiement_count = 0;
+
+            // Chambres
+            $this->rooms_count = $this->agency->_Proprietors
+                ->flatMap->houses
+                ->where("supervisor", $user->id)
+                ->flatMap->rooms->count();
+
+        } else {
+            // Propriétaires
+            $this->proprietors_count = $this->agency->_Proprietors->count();
+
+            // Maisons
+            $houses = $this->agency->_Proprietors->flatMap->houses;
+            $this->houses_count = $houses->count();
+
+            // Locataires et Locations
+            $this->locations = $this->agency->_Locations;
+
+            $this->locators_count = $this->agency->_Locataires->count();
+            $this->locations_count = $this->locations->count();
+
+            // Factures et Paiements
+            $this->factures_count = $this->agency->_Locations->flatMap->Factures->count();
+            $this->paiement_count = $this->houses_count;
+
+            // Chambres
+            $this->rooms_count = $houses->flatMap->rooms->count();
+        }
     }
 
     public function render()

@@ -225,7 +225,9 @@ class LocationController extends Controller
     {
         try {
             // Validation de la location
-            $location = Location::where("visible", 1)->find($locationId);
+            $location = Location::with("Locataire")
+                ->find($locationId);
+
             if (!$location) {
                 throw new \Exception("Cette location n'existe pas!");
             }

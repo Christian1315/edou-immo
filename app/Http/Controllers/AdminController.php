@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agency;
+use App\Models\CardType;
+use App\Models\City;
+use App\Models\Country;
 use App\Models\Facture;
 use App\Models\FactureStatus;
 use App\Models\House;
@@ -81,7 +84,6 @@ class AdminController extends Controller
 
         $agency = Agency::where("visible", 1)->find($id);
         ####____
-
         ###___
         return view("admin.manage-agency", compact("agency"));
     }
