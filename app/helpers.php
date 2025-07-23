@@ -1,10 +1,12 @@
 <?php
 
 use App\Models\Facture;
+use App\Models\Product;
 use App\Models\Right;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Notifications\SendNotification;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -13,20 +15,16 @@ use Illuminate\Support\Facades\Cache;
 
 function supervisors()
 {
-    dd(Auth::user()->roles);
-    
-    if (Auth::user()->hasRole("Gestionnaire de compte")) {
-        /** Pour un Gestionnaire de compte, on recupère juste ses superviseurs
-         */
-        return User::with(["account_agents"])->get()
-            ->filter(function ($user) {
-                return in_array($user->id, Auth::user()
-                    ->supervisors->pluck("id")->toArray());
-            });
-    } else {
-        # code...
-        return User::with(["account_agents"])->get();
-    }
+    $users = User::with(["account_agents"])->get()->filter(function ($user) {
+        if (Auth::user()->hasRole("Gestionnaire de compte")) {
+            /** Pour un Gestionnaire de compte, on recupère juste ses superviseurs
+             */
+            return in_array($user->id, Auth::user()->supervisors->toArray());
+        }
+
+        return $user->hasRole('Superviseur');
+    });
+    return $users;
 }
 
 function IS_USER_HAS_ACCOUNT_CHIEF_ROLE($user)
@@ -502,38 +500,13 @@ function GET_HOUSE_DETAIL_FOR_THE_LAST_STATE_OLD($house)
 function nombre_en_lettres($nombre)
 {
     $unites = [
-        '',
-        'un',
-        'deux',
-        'trois',
-        'quatre',
-        'cinq',
-        'six',
-        'sept',
-        'huit',
-        'neuf',
-        'dix',
-        'onze',
-        'douze',
-        'treize',
-        'quatorze',
-        'quinze',
-        'seize',
-        'dix-sept',
-        'dix-huit',
-        'dix-neuf'
+        '', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf',
+        'dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize',
+        'dix-sept', 'dix-huit', 'dix-neuf'
     ];
     $dizaines = [
-        '',
-        '',
-        'vingt',
-        'trente',
-        'quarante',
-        'cinquante',
-        'soixante',
-        'soixante',
-        'quatre-vingt',
-        'quatre-vingt'
+        '', '', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante',
+        'soixante', 'quatre-vingt', 'quatre-vingt'
     ];
 
     if (!is_numeric($nombre)) {
