@@ -127,8 +127,14 @@ class UserController extends Controller
             $create_user = User::create($formData);
 
             if ($request->role) {
-                $role = ModelsRole::findOrFail($request->role);
-                $user->assignRole($role->name);
+                $role = ModelsRole::firstWhere("name",$request->role);
+
+                if (!$role) {
+                    throw new Exception("Ce rôle n'existe pas!");
+                }
+
+                DB::table('model_has_roles')->where('model_id', $user->id)->delete();
+                $create_user->assignRole($request->input("role"));
             }
 
             try {
@@ -139,7 +145,6 @@ class UserController extends Controller
                 );
             } catch (\Throwable $th) {
                 Log::error("Erreur lors de l'envoi de notification: " . $th->getMessage());
-                // On continue l'exécution même si l'envoi de notification échoue
             }
 
             DB::commit();
@@ -154,8 +159,8 @@ class UserController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error("Erreur lors de l'ajout d'un utilisateur: " . $e->getMessage());
-            alert()->error('Echec', "Une erreur est survenue lors de l'ajout de l'utilisateur! ". $e->getMessage());
-            return redirect()->back();
+            alert()->error('Echec', "Une erreure est survenue lors de l'ajout de l'utilisateur! " . $e->getMessage());
+            return redirect()->back()->withInput();
         }
     }
 

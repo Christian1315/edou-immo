@@ -69,7 +69,7 @@
                                 <select name="role" id="role" class="select2 form-control mb-1">
                                     @foreach($allRoles as $role)
                                     @continue($role->id==1)
-                                    <option value="{{$role->id}}">{{$role->name}} </option>
+                                    <option value="{{ $role->name }}">{{$role->name}} </option>
                                     @endforeach
                                 </select>
                             </div>
