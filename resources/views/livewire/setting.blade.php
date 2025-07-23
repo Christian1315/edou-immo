@@ -109,7 +109,7 @@
                         @if(auth()->user()->hasRole('Super Administrateur'))
                         <tr class="align-items-center my-2 ">
                             <td class="text-center">{{$loop->index + 1}} </td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$user["name"]}}</span> </td>
+                            <td class="text-center"><span class="badge bg-light text-dark"> {{$user["name"]}} ({{$user?->username}})</span> </td>
                             <td class="text-center"><span class="badge bg-dark text-white">{{$user["email"]}} </span> </td>
                             <td class="text-center"> <span class="badge bg-light text-dark">{{$user["phone"]}} </span> </td>
                             <td class="text-center">
