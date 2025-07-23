@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Cache;
 
 function supervisors()
 {
+    dd(Auth::user()->roles);
+    
     if (Auth::user()->hasRole("Gestionnaire de compte")) {
         /** Pour un Gestionnaire de compte, on recupère juste ses superviseurs
          */
