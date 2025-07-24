@@ -57,7 +57,6 @@ class UnPaidLocators extends Component
             /** Pour un Gestionnaire de compte, on recupère juste les 
              * locations ayant les maisons de ses superviseurs
              */
-
             $supervisorsIds = $user->supervisors->pluck("id")
                 ->toArray();
 
@@ -75,7 +74,6 @@ class UnPaidLocators extends Component
                 })
                 ->values();
         }
-
 
         $this->locators_count = count($this->locators);
     }

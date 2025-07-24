@@ -441,7 +441,7 @@ class HouseController extends Controller
      * @param HomeStopState $state
      * @return void
      */
-    
+
     private function updateFacturesAndAccounts(House $house, HomeStopState $state): void
     {
         foreach ($house->Locations as $location) {
@@ -595,16 +595,27 @@ class HouseController extends Controller
 
             /**locataires a jour */
             $paidLocators = collect($data["paidLocators"]);
+            // dd($paidLocators);
+
+            /**locataires non payer mais à jour */
+            $getNonPayerEtAJour = collect($data["getNonPayerEtAJour"]);
 
             /**locataires ayant payés à dans l'état et locataires ajour */
-            $paidLocatairesPlusLocataireAjour = $paid_locataires->concat($paidLocators)
-                ->unique();
+            // $paidLocatairesPlusLocataireAjour = $paid_locataires->concat($paidLocators)
+            //     ->unique();
+
+            /**locataires payés et (locataires non payé mais ajour) */
+            $unPaidLocatairesPlusLocataireAjour = $paid_locataires->concat($getNonPayerEtAJour)
+                // ->unique()
+                ;
+
+            // dd($paidLocatairesPlusLocataireAjour->count());
 
             $pdf = Pdf::loadView('house-state', array_merge($data, [
                 "house" => $data["house"],
                 "locations" => $data["locations"],
                 "state" => $data["state"],
-                "paidLocatairesPlusLocataireAjour" => $paidLocatairesPlusLocataireAjour->count(),
+                "unPaidLocatairesPlusLocataireAjour" => $unPaidLocatairesPlusLocataireAjour->count(),
                 // "un_paid_locataires" => $data["un_paid_locataires"],
                 "free_rooms" => $data["free_rooms"],
             ]));
@@ -702,6 +713,7 @@ class HouseController extends Controller
         $stateData['paid_locataires'] = $this->getPaidLocataires($locations, $lastState);
         $stateData['un_paid_locataires'] = $this->getUnpaidLocataires($locations, $lastState);
         $stateData["paidLocators"] = $this->paidLocators($locations, $lastState);
+        $stateData["getNonPayerEtAJour"] = $this->getNonPayerEtAJour($locations, $lastState);
 
         return $stateData;
     }
@@ -716,7 +728,7 @@ class HouseController extends Controller
     {
         return $locations
             ->filter(function ($location) use ($lastState) {
-                return Carbon::parse($location->latest_loyer_date)->format("m") <= Carbon::parse($lastState->stats_stoped_day)->format("m");
+                return Carbon::parse($location->latest_loyer_date)->format("m/Y") <= Carbon::parse($lastState->stats_stoped_day)->format("m/Y");
             })->toArray();
 
         // return [];
@@ -853,6 +865,29 @@ class HouseController extends Controller
         try {
             return $locations->filter(function ($location) use ($lastState) {
                 return $this->getStateFactures($lastState, $location, $lastState->House)->count() == 0;
+            })->toArray();
+        } catch (\Exception $e) {
+            Log::error('Error getting unpaid tenants: ' . $e->getMessage());
+            throw new \Exception("Erreur lors de la récupération des locataires impayés: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Non payés mais à jour
+     * 
+     * @param Collection $locations
+     * @param HomeStopState $lastState
+     */
+    private function getNonPayerEtAJour($locations, HomeStopState $lastState): array
+    {
+        try {
+            return $locations->filter(function ($location) use ($lastState) {
+                return (
+                    /**Locations non payés & Locations à jour */
+                    $this->getStateFactures($lastState, $location, $lastState->House)
+                    ->count() == 0 &&
+                    Carbon::parse($location->latest_loyer_date)->format("m/Y") < Carbon::parse($lastState->stats_stoped_day)->format("m/Y")
+                );
             })->toArray();
         } catch (\Exception $e) {
             Log::error('Error getting unpaid tenants: ' . $e->getMessage());

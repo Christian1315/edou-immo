@@ -110,7 +110,7 @@
                         <h6 class="">Mois de recouvrement: <strong> <em class=""> {{ \Carbon\Carbon::parse($state->created_at)->locale('fr')->isoFormat('MMMM YYYY') }} </em> </strong> </h6>
                         <h6 class="">Mois récouvré: <strong> <em class=""> {{ \Carbon\Carbon::parse($state->recovery_date)->locale('fr')->isoFormat('MMMM YYYY') }} </em> </strong> </h6>
                         <div>
-                            <strong class="">Trm = <em class="">{{NumersDivider($paidLocatairesPlusLocataireAjour,count($locations))}} % </em>
+                            <strong class="">Trm = <em class="">{{number_format(NumersDivider($unPaidLocatairesPlusLocataireAjour,count($locations)),2,"."," ")}} % </em>
                         </div>
                     </div>
                 </div>
@@ -197,6 +197,9 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <tr class="text-center">
+                        <td colspan="9">Les Chambres Occupées ({{$locations->count()}})</td>
+                    </tr>
                     <!-- locations -->
                     @foreach($locations as $location)
                     <tr class="align-items-center">
@@ -220,6 +223,10 @@
                     </tr>
                     @endforeach
 
+                    <tr class="text-center">
+                        <td colspan="9">Les Chambres libres ({{$free_rooms->count()}})</td>
+                    </tr>
+
                     <!-- chambres libres -->
                     @foreach($free_rooms as $room)
                     <tr class="align-items-center">
@@ -241,7 +248,7 @@
 
                     <tr>
                         <td colspan="3" class=" text-center"><strong> Détails des dépenses: </strong></td>
-                        <td colspan="5" class="text-left">
+                        <td colspan="6" class="text-left">
                             <ul class="">
                                 @forelse($state->CdrAccountSolds as $depense)
                                 <li class=""><strong class="">{{number_format($depense->sold_retrieved,0,","," ")}} fcfa</strong> - {{$depense->description}}</li>
