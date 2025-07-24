@@ -389,13 +389,14 @@
             $removed_locators = $locations->where("status", 3);; ?>
 
             <h4 class="">Total: <strong class="text-red"> {{session("locations_filtred")?count(session("locations_filtred")): $locations_count}} </strong> | Légende: <button class="btn btn-sm btn-warning text-uppercase" data-bs-toggle="modal" data-bs-target="#serchBySupervisor" onclick="searchPaidBySuperviseur()">{{count($unpaid_locators)}} Impayé(s) <span class="bagde bg-light shadow rounded p-1"><i class="bi bi-file-earmark-pdf-fill"></i> Imprimer</span> </button> <button class="btn btn-sm btn-secondary text-uppercase">{{count($removed_locators)}} Démenagé(s)</button> <button class="btn btn-sm btn-light text-uppercase">{{count($paid_locators)}} à jour</button> | <button class="btn btn-sm btn-light text-uppercase" data-bs-toggle="modal" data-bs-target="#serchBySupervisor" onclick="searchAllBySupervisor()"> {{count($locations)}} Tous <span class="bagde bg-dark shadow shadow rounded p-1"><i class="bi bi-file-earmark-pdf-fill"></i> Imprimer</span></button> </h4>
-            <div class="table-responsive table-responsive-list shadow-lg">
-                <table id="myTable" class="table table-striped table-sm">
+            <div class="p-3 table table-responsive table-responsive-list shadow">
+                <table id="myTable" class="table-striped">
                     <div id="buttons"></div>
                     <thead class="bg_dark">
                         <tr>
                             <!-- <th class="text-center">N°</th> -->
-                            <th class="text-center">Maison / Propriétaire</th>
+                            <th class="text-center">Maison</th>
+                            <th class="text-center">Propriétaire</th>
                             <th class="text-center">Superviseur</th>
                             <th class="text-center">Chambre</th>
                             <th class="text-center">Locataire</th>
@@ -415,16 +416,17 @@
                         @endphp
                         <tr class="align-items-center @if($location->status==3) bg-secondary text-white @elseif($location_echeance_date < $now) bg-warning @endif ">
                             <!-- <td class="text-center">{{$loop->index+1}} </td> -->
-                            <td class="text-left"><span class="badge bg-dark">{{$location->id}} {{$location["House"]["name"]}} / {{$location->House->Proprietor->firstname}} {{$location->House->Proprietor->lastname}} </span></td>
-                            <td class="text-center"> <span class="text-uppercase badge bg-light text-dark">{{ $location->House->Supervisor->name }} </span> </td>
+                            <td class="text-left"><span class=" bg-light text-dark">{{$location["House"]["name"]}} </span></td>
+                            <td class="text-left"><span class=" bg-light text-dark">{{$location->House->Proprietor->firstname}} {{$location->House->Proprietor->lastname}} </span></td>
+                            <td class="text-center"> <span class="text-uppercase ">{{ $location->House->Supervisor->name }} </span> </td>
                             <td class="text-center">{{$location->Room?$location->Room->number:"---"}}</td>
-                            <td class="text-center"><span class="text-uppercase badge bg-light text-dark">{{$location["Locataire"]["name"]}} {{$location["Locataire"]["prenom"]}} ({{$location["Locataire"]['phone']}})</span></td>
+                            <td class="text-center"><span class="text-uppercase   bg-light text-dark">{{$location["Locataire"]["name"]}} {{$location["Locataire"]["prenom"]}} ({{$location["Locataire"]['phone']}})</span></td>
 
                             <td class="text-center text-red"><small class="@if($location->status==3) text-white @endif"> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($location["latest_loyer_date"])->locale('fr')->isoFormat('MMMM YYYY') }}</small> </td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{number_format($location["loyer"],0,","," ") }}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{number_format($location["loyer"],0,","," ") }}</span></td>
                             <td class="text-center">
                                 @if($location->status!=3)
-                                <span class="text-red text-uppercase badge bg-light text-dark">
+                                <span class="text-red text-uppercase  bg-light text-dark">
                                     <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($location["echeance_date"])->locale('fr')->isoFormat('D MMMM YYYY') }}<small class="text-dark">({{ $location->pre_paid?"PRE_PAYE":"" }} {{ $location->post_paid ? "POST_PAYE":'' }})</small>
                                 </span>
                                 @else
@@ -510,7 +512,7 @@
                                                     <strong>Montant: </strong> {{$facture->amount}} <br>
                                                     <strong>Fichier: </strong> <a href="{{$facture->facture}}" class="" rel="noopener noreferrer"><i class="bi bi-eye"></i></a><br>
                                                     <strong>Date d'écheance: </strong> {{Change_date_to_text($facture->echeance_date)}} <br>
-                                                    <strong>Status: </strong> <span class="badge @if($facture->status==1) bg-warning @elseif($facture->status==2) bg-success @else bg-danger @endif "> {{$facture->Status->description}}</span> <br>
+                                                    <strong>Status: </strong> <span class=" @if($facture->status==1) bg-warning @elseif($facture->status==2) bg-success @else bg-danger @endif "> {{$facture->Status->description}}</span> <br>
                                                     <strong>Description: </strong> <textarea class="form-control" name="" rows="1" placeholder="{{$facture->comments}}" id=""></textarea>
                                                 </li>
                                                 @endforeach

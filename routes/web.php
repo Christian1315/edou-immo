@@ -18,7 +18,7 @@ use App\Http\Controllers\RoleController;
 use App\Models\Facture;
 use App\Models\Location;
 use App\Models\Room;
-
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,14 +32,29 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get("/debug", function () {
-    Location::where("status", 3)
-        ->orWhereNull("room")
-        ->update(["status" => 3, "room" => null]);
 
-    // Facture::where("status", 1)->update(["status" => 2]);
+Route::prefix("debug")->group(function () {
+    Route::get("/{id}/roles", function ($id) {
+        $user = User::findOrFail($id);
+        return response()->json($user->roles->pluck("name"));
+        return "Opération éffectuée avec succès....";
+    });
 
-    return "Opération éffectuée avec succès....";
+    Route::get("/{id}/supervisors", function ($id) {
+        $current_user = User::findOrFail($id);
+
+        return User::with(["account_agents"])->get()
+            ->filter(function ($user) use ($current_user) {
+                if ($current_user->hasRole("Gestionnaire de compte")) {
+                    // dd(in_array($user->id, $current_user->supervisors->pluck("id")->toArray()));
+                    /** Pour un Gestionnaire de compte, on recupère juste ses superviseurs
+                     */
+                    return in_array($user->id, $current_user->supervisors->pluck("id")->toArray());
+                }else {
+                    return $user->hasRole('Superviseur');
+                }
+            });
+    });
 });
 
 ######============ HOME ROUTE ============#########################

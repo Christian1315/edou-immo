@@ -63,7 +63,7 @@
                             </td>
                             <td class="px-4">
                                 <div class="d-flex align-items-center">
-                                    <span class="badge bg-light text-dark">
+                                    <span class=" bg-light text-dark">
                                         <i class="fas fa-calendar text-muted me-2"></i>
                                         {{ \Carbon\Carbon::parse($role->created_at)->locale('fr')->isoFormat('D MMMM YYYY') }}
                                     </span>
@@ -106,7 +106,7 @@
                                         <i class="bi bi-x-circle"></i>
                                     </button>
                                     @else
-                                    <span class="badge rounded-pill" style="background-color: #cc3301; color: #FFB800;">
+                                    <span class=" rounded-pill" style="background-color: #cc3301; color: #FFB800;">
                                         <i class="fas fa-lock me-1"></i>Rôle système protégé
                                     </span>
                                     @endif

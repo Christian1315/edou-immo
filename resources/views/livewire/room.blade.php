@@ -82,16 +82,16 @@
                                 <i class="bi {{$room->buzzy() ? 'text-red' : 'text-primary'}} bi-geo-alt-fill"></i>
                             </td>
                             <td class="text-center">
-                                <span class="badge bg-light text-dark">{{$room["House"]["name"]}}</span>
+                                <span class=" bg-light text-dark">{{$room["House"]["name"]}}</span>
                             </td>
                             <td class="text-center">
-                                <span class="badge bg-light text-dark">{{$room["House"]["Supervisor"]["name"]}}</span>
+                                <span class=" bg-light text-dark">{{$room["House"]["Supervisor"]["name"]}}</span>
                             </td>
                             <td class="text-center">
-                                <span class="badge bg-dark">{{number_format($room["loyer"],0,","," ")}}</span>
+                                <span class=" bg-dark">{{number_format($room["loyer"],0,","," ")}}</span>
                             </td>
                             <td class="text-center">
-                                <span class="badge bg-warning">{{number_format($room->LocativeCharge(),0,","," ")}}</span>
+                                <span class=" bg-warning">{{number_format($room->LocativeCharge(),0,","," ")}}</span>
                             </td>
                             <td class="text-center">
                                 <button class="btn btn-sm btn-light text-red">

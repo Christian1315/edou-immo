@@ -33,11 +33,11 @@
                         @foreach(session("locators")?session()->get("locators"):$locators as $locator)
                         <tr class="align-items-center">
                             <td class="text-center">{{$loop->index+1}}</td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["name"]}}</span></td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["prenom"]}}</span></td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["phone"]}}</span></td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["adresse"]}}</span></td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["email"]}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$locator["name"]}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$locator["prenom"]}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$locator["phone"]}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$locator["adresse"]}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$locator["email"]}}</span></td>
                         </tr>
                         @endforeach
                     </tbody>

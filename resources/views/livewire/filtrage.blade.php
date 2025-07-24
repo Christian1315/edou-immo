@@ -64,12 +64,12 @@
                                 @foreach($factures as $facture)
                                 <tr class="align-items-center">
                                     <td class="text-center">{{$loop->index+1}}</td>
-                                    <td class="text-center"><span class="badge bg-light text-dark"> {{$facture->Owner->name}} </span></td>
-                                    <td class="text-center"><span class="badge bg-light text-dark"> {{$facture->Location->House->name}} </span></td>
-                                    <td class="text-center"><span class="badge bg-light text-dark"> {{$facture->Location->Room?->number}}  </span></td>
-                                    <td class="text-center"><span class="badge bg-light text-dark"> {{$facture->Location->Locataire->name}} {{$facture->Location->Locataire->prenom}} </span></td>
+                                    <td class="text-center"><span class=" bg-light text-dark"> {{$facture->Owner->name}} </span></td>
+                                    <td class="text-center"><span class=" bg-light text-dark"> {{$facture->Location->House->name}} </span></td>
+                                    <td class="text-center"><span class=" bg-light text-dark"> {{$facture->Location->Room?->number}}  </span></td>
+                                    <td class="text-center"><span class=" bg-light text-dark"> {{$facture->Location->Locataire->name}} {{$facture->Location->Locataire->prenom}} </span></td>
                                 
-                                    <td class="text-center"><span class="bg-light badge text-red"> {{number_format($facture->amount,0,","," ")}}</span> </td>
+                                    <td class="text-center"><span class="bg-light  text-red"> {{number_format($facture->amount,0,","," ")}}</span> </td>
                                     <td class="text-center">
                                         <textarea name="" rows="1" class="form-control" placeholder="{{$facture->comments}}"></textarea>
                                     </td>

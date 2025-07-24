@@ -19,7 +19,9 @@ function supervisors()
         if (Auth::user()->hasRole("Gestionnaire de compte")) {
             /** Pour un Gestionnaire de compte, on recupère juste ses superviseurs
              */
-            return in_array($user->id, Auth::user()->supervisors->toArray());
+            return in_array($user->id, Auth::user()->supervisors
+                ->pluck("id")
+                ->toArray());
         }
 
         return $user->hasRole('Superviseur');
@@ -500,13 +502,38 @@ function GET_HOUSE_DETAIL_FOR_THE_LAST_STATE_OLD($house)
 function nombre_en_lettres($nombre)
 {
     $unites = [
-        '', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf',
-        'dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize',
-        'dix-sept', 'dix-huit', 'dix-neuf'
+        '',
+        'un',
+        'deux',
+        'trois',
+        'quatre',
+        'cinq',
+        'six',
+        'sept',
+        'huit',
+        'neuf',
+        'dix',
+        'onze',
+        'douze',
+        'treize',
+        'quatorze',
+        'quinze',
+        'seize',
+        'dix-sept',
+        'dix-huit',
+        'dix-neuf'
     ];
     $dizaines = [
-        '', '', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante',
-        'soixante', 'quatre-vingt', 'quatre-vingt'
+        '',
+        '',
+        'vingt',
+        'trente',
+        'quarante',
+        'cinquante',
+        'soixante',
+        'soixante',
+        'quatre-vingt',
+        'quatre-vingt'
     ];
 
     if (!is_numeric($nombre)) {

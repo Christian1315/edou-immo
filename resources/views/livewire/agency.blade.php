@@ -159,10 +159,10 @@
                         @foreach($agencies as $agency)
                         <tr class="align-items-center text-center">
                             <td class="text-center">{{$loop->index+1}}</td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$agency["name"]}} </span></td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$agency["phone"]}} </span></td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$agency["email"]}} </span></td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$agency->city}} </span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$agency["name"]}} </span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$agency["phone"]}} </span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$agency["email"]}} </span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$agency->city}} </span></td>
                             <td class="text-center">
                                 @if($agency->rccm_file)
                                 <a href="{{$agency->rccm_file}}" class="btn btn-sm text-danger" rel="noopener noreferrer"><i class="bi bi-eye"></i></a>

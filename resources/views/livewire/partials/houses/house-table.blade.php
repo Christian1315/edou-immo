@@ -20,7 +20,7 @@
         <tr class="align-items-center">
             <td class="text-center">{{ $loop->index + 1 }}</td>
             <td class="text-center">
-                <span class="badge bg-light text-dark">
+                <span class="bg-light text-dark">
                     {{ $house['name'] }}
                     <span class="text-red">
                         {{ $house->pre_paid == 1 ? 'prépayé' : '' }}

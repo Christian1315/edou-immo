@@ -24,14 +24,21 @@
         <link href="{{ asset('fichiers/dashbord.css') }}" rel="stylesheet">
         <link href="{{ asset('fichiers/base.css') }}" rel="stylesheet">
 
+        <!-- overlayScrollbars -->
+        <link rel="stylesheet" href="{{ asset('plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+
+        <!-- DataTables -->
+        <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+
         <!-- select2 -->
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-        <script src="https://cdn.datatables.net/1.13.10/css/jquery.dataTables.css"></script>
-
+        <!-- <script src="https://cdn.datatables.net/1.13.10/css/jquery.dataTables.css"></script> -->
 
         @livewireStyles
     </head>
@@ -312,7 +319,6 @@
                     <x-alert />
 
                     <!-- ALERT -->
-
                     {{ $slot }}
 
                     {{-- MODAL DE CHANGEMENT DE MOT DE PASE --}}
@@ -359,10 +365,27 @@
     </script>
     <script src="{{ asset('fichiers/axios.min.js') }}"></script>
 
-    <script src="https://cdn.datatables.net/1.13.10/js/jquery.dataTables.js"></script>
+    <!-- <script src="https://cdn.datatables.net/1.13.10/js/jquery.dataTables.js"></script> -->
+
+    <!-- overlayScrollbars -->
+    <script src="{{ asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+
     <!-- API DE GESTION DES SUM DES COLUMS DES DATATABLES -->
     <script src="https://cdn.datatables.net/plug-ins/2.1.8/api/sum().js"></script>
 
+    <!-- DataTables  & Plugins -->
+    <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <!-- <script src="{{asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script> -->
+    <script src="{{asset('plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('plugins/jszip/jszip.min.js')}}"></script>
+    <script src="{{asset('plugins/pdfmake/pdfmake.min.js')}}"></script>
+    <script src="{{asset('plugins/pdfmake/vfs_fonts.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
 
     <!-- #### DATA TABLES -->
     <script>
@@ -375,6 +398,7 @@
 
         $(function() {
             $("#myTable").DataTable({
+                    "paging": true,
                     "responsive": true,
                     "lengthChange": true,
                     "autoWidth": true,

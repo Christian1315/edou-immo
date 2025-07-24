@@ -58,9 +58,9 @@
                         @foreach((session()->get("locators_filtred") ? session()->get("locators_filtred") : $locators) as $locator)
                         <tr class="align-items-center">
                             <td class="text-center">{{ $loop->index + 1 }}</td>
-                            <td class="text-center"><span class="badge bg-dark">{{ $locator["name"] }}</span></td>
+                            <td class="text-center"><span class=" bg-dark">{{ $locator["name"] }}</span></td>
                             <td class="text-center">{{ $locator["prenom"] }}</td>
-                            <td class="text-center"><span class="badge text-dark bg-light">{{ $locator["phone"] }}</span></td>
+                            <td class="text-center"><span class=" text-dark bg-light">{{ $locator["phone"] }}</span></td>
                             
                             <!-- Avaliseur Column -->
                             <td class="text-center">
@@ -94,7 +94,7 @@
                                         <ul class="list-group">
                                             @foreach ($locator->Locations as $location)
                                                 <li class="list-group-item">
-                                                    <span class="badge bg-dark text-white">{{ $location->House->Supervisor->name }}</span>
+                                                    <span class=" bg-dark text-white">{{ $location->House->Supervisor->name }}</span>
                                                 </li>
                                             @endforeach
                                         </ul>

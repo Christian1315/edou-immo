@@ -10,6 +10,15 @@
         <link rel="shortcut icon" href="{{asset('images/edou_logo.png')}}" type="image/x-icon">
         <link href="{{asset('fichiers/bootstrap.css')}}" rel="stylesheet">
 
+        <!-- overlayScrollbars -->
+        <link rel="stylesheet" href="{{ asset('plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+
+        <!-- DataTables -->
+        <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+
+
         <link rel="stylesheet" href="{{asset('fichiers/icon-font.min.css')}}">
         <link rel="stylesheet" href="{{asset('fichiers/animate.min.css')}}" />
 
@@ -23,7 +32,7 @@
         <link href="{{asset('fichiers/dashbord.css')}}" rel="stylesheet">
         <link href="{{asset('fichiers/base.css')}}" rel="stylesheet">
 
-        <script src="https://cdn.datatables.net/1.13.10/css/jquery.dataTables.css"></script>
+        <!-- <script src="https://cdn.datatables.net/1.13.10/css/jquery.dataTables.css"></script> -->
 
         @livewireStyles
     </head>
@@ -202,7 +211,8 @@
     <script src="{{asset('fichiers/popper.min.js')}}"></script>
     <script src="{{asset('fichiers/bootstrap.min.js')}}"></script>
 
-    <script src="https://cdn.datatables.net/1.13.10/js/jquery.dataTables.js"></script>
+    <!-- <script src="https://cdn.datatables.net/1.13.10/js/jquery.dataTables.js"></script> -->
+
     <!-- API DE GESTION DES SUM DES COLUMS DES DATATABLES -->
     <script src="https://cdn.datatables.net/plug-ins/2.1.8/api/sum().js"></script>
 
@@ -210,13 +220,26 @@
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js" integrity="sha512-yDlE7vpGDP7o2eftkCiPZ+yuUyEcaBwoJoIhdXv71KZWugFqEphIS3PU60lEkFaz8RxaVsMpSvQxMBaKVwA5xg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
     <script src="{{ asset('fichiers/axios.min.js') }}"></script>
 
+    <!-- DataTables  & Plugins -->
+    <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <!-- <script src="{{asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script> -->
+    <script src="{{asset('plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('plugins/jszip/jszip.min.js')}}"></script>
+    <script src="{{asset('plugins/pdfmake/pdfmake.min.js')}}"></script>
+    <script src="{{asset('plugins/pdfmake/vfs_fonts.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
+
     <!-- #### DATA TABLES -->
     <script>
         // In your Javascript (external .js resource or <script> tag)
         $(document).ready(function() {
             $('.select2').select2();
         });
-
 
         $(function() {
             $("#myTable").DataTable({

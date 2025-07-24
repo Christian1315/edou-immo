@@ -56,3 +56,15 @@ a.return>strong {
 .documentation {
     background-color: #6b00e4 !important;
 }
+
+/* les dataTables */
+.dt-buttons button {
+    background-color: #000 !important;
+    color: #fff !important;
+    border-color: #fff !important;
+}
+
+span{
+    padding: 1px!important;
+    border-radius: 5px!important;
+}

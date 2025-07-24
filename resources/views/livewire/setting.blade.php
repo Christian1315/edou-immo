@@ -109,13 +109,13 @@
                         @if(auth()->user()->hasRole('Super Administrateur'))
                         <tr class="align-items-center my-2 ">
                             <td class="text-center">{{$loop->index + 1}} </td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$user["name"]}} ({{$user?->username}})</span> </td>
-                            <td class="text-center"><span class="badge bg-dark text-white">{{$user["email"]}} </span> </td>
-                            <td class="text-center"> <span class="badge bg-light text-dark">{{$user["phone"]}} </span> </td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$user["name"]}} ({{$user?->username}})</span> </td>
+                            <td class="text-center"><span class=" bg-dark text-white">{{$user["email"]}} </span> </td>
+                            <td class="text-center"> <span class=" bg-light text-dark">{{$user["phone"]}} </span> </td>
                             <td class="text-center">
                                 {{$user->_Agency?$user->_Agency->name:'---'}}
                             </td>
-                            <td class="text-center text-red"> <span class="badge bg-light text-red"> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($user["created_at"])->locale('fr')->isoFormat('D MMMM YYYY') }}</span></small></th>
+                            <td class="text-center text-red"> <span class=" bg-light text-red"> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($user["created_at"])->locale('fr')->isoFormat('D MMMM YYYY') }}</span></small></th>
 
                             <td class="text-center">
                                 <div class="btn-group dropstart">
@@ -142,13 +142,13 @@
                         @if($user->id!=1)
                         <tr @if($user->is_archive) disabled @endif class="align-items-center my-2 @if($user->is_archive) shadow bg-secondary @endif" @if($user->is_archive) style="background-color:#F6F6F6;border: solid 1px #000" @endif>
                             <td class="text-center">{{$loop->index + 1}} </td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$user["name"]}} ({{$user?->username}})</span> </td>
-                            <td class="text-center"><span class="badge bg-dark text-white">{{$user["email"]}} </span> </td>
-                            <td class="text-center"> <span class="badge bg-light text-dark">{{$user["phone"]}} </span> </td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$user["name"]}} ({{$user?->username}})</span> </td>
+                            <td class="text-center"><span class=" bg-dark text-white">{{$user["email"]}} </span> </td>
+                            <td class="text-center"> <span class=" bg-light text-dark">{{$user["phone"]}} </span> </td>
                             <td class="text-center">
                                 {{$user->_Agency?$user->_Agency->name:'---'}}
                             </td>
-                            <td class="text-center text-red"> <span class="badge bg-light text-red"> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($user["created_at"])->locale('fr')->isoFormat('D MMMM YYYY') }}</span></small></th>
+                            <td class="text-center text-red"> <span class=" bg-light text-red"> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($user["created_at"])->locale('fr')->isoFormat('D MMMM YYYY') }}</span></small></th>
 
                             <td class="text-center">
                                 <div class="btn-group dropstart">

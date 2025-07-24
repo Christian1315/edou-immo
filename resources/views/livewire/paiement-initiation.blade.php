@@ -22,27 +22,27 @@
                         @foreach($initiations as $initiation)
                         <tr class="align-items-center">
                             <td class="text-center">{{$loop->index + 1}} @if($initiation->Status->id==1) <i class="text-warning bi bi-geo-alt"></i> @else <i class="text-success bi bi-geo-alt"></i>@endif </td>
-                            <td class="text-center"> <strong class="text-dark badge bg-light text-dark">
+                            <td class="text-center"> <strong class="text-dark  bg-light text-dark">
                                     {{$initiation->House->States->last()?
                                     \Carbon\Carbon::parse($initiation->House->States->last()->stats_stoped_day)->locale('fr')->isoFormat('D MMMM YYYY'):
                                     $initiation->stats_stoped_day
                                 }} </strong></td>
-                            <td class="text-center"> <strong class="text-dark badge bg-light text-red">{{$initiation->House->name}} </strong></td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$initiation->House->Proprietor->lastname}} {{$initiation->House->Proprietor->firstname}}</span> </td>
+                            <td class="text-center"> <strong class="text-dark  bg-light text-red">{{$initiation->House->name}} </strong></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$initiation->House->Proprietor->lastname}} {{$initiation->House->Proprietor->firstname}}</span> </td>
                             <td class="text-center">
-                                <span class="badge bg-light text-red"><i class="bi bi-currency-exchange"></i> {{number_format($initiation['amount'],0,","," ") }}</span>
+                                <span class=" bg-light text-red"><i class="bi bi-currency-exchange"></i> {{number_format($initiation['amount'],0,","," ") }}</span>
                             </td>
                             <td class="text-center">
                                 <textarea name="" rows="1" class="form-control" id="">{{$initiation['comments']}}</textarea>
                             </td>
                             <td class="text-center">
-                                <span class="badge @if($initiation['Status']['id']==2) bg-success @else bg-red  @endif" @if($initiation['Status']['id']==3) title="{{$initiation->rejet_comments}}" @elseif($initiation['Status']['id']==2) disabled @endif> @if($initiation->Status->id==3) <i class="bi bi-eye"></i> @else <i class="bi bi-check-circle"></i>@endif {{$initiation->Status->name}}</span>
+                                <span class=" @if($initiation['Status']['id']==2) bg-success @else bg-red  @endif" @if($initiation['Status']['id']==3) title="{{$initiation->rejet_comments}}" @elseif($initiation['Status']['id']==2) disabled @endif> @if($initiation->Status->id==3) <i class="bi bi-eye"></i> @else <i class="bi bi-check-circle"></i>@endif {{$initiation->Status->name}}</span>
                             </td>
                             <td class="text-center d-flex">
                                 @if($initiation['Status']["id"]==2)
-                                <span class="text-dark bg-light badge">Déjà validé</span>
+                                <span class="text-dark bg-light ">Déjà validé</span>
                                 @elseif($initiation['Status']["id"]==3)
-                                <span class="text-success badge">Déjà rejetée</span>
+                                <span class="text-success ">Déjà rejetée</span>
                                 @elseif($initiation['Status']["id"]==1)
 
                                 @can("proprio.payement.validate")

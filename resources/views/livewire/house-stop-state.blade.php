@@ -113,9 +113,9 @@
                             <td class="text-center"> <button class="btn btn-sm btn-light"> <strong> {{$location["Locataire"]["name"]}} {{$location["Locataire"]["prenom"]}}</strong> </button> </td>
                             <td class="text-center">{{$location["Locataire"]["phone"]}}</td>
                             <td class="text-center">{{$location["Room"]["number"]}}</td>
-                            <td class="text-center"><span class="badge bg-light text-red"> {{number_format($location["Room"]["total_amount"],0,","," ")}} </span></td>
+                            <td class="text-center"><span class=" bg-light text-red"> {{number_format($location["Room"]["total_amount"],0,","," ")}} </span></td>
                             <td class="text-center">{{$location["_locataire"]?($location->prorata_amount>0?'Prorata':$location["_locataire"]["nbr_month_paid"]):0}}</td>
-                            <td class="text-center"><span class="badge bg-light text-red"> {{number_format($location["_locataire"]?($location->prorata_amount>0?$location->prorata_amount:$location["_locataire"]["nbr_facture_amount_paid"]):0,0,","," ")}} </span></td>
+                            <td class="text-center"><span class=" bg-light text-red"> {{number_format($location["_locataire"]?($location->prorata_amount>0?$location->prorata_amount:$location["_locataire"]["nbr_facture_amount_paid"]):0,0,","," ")}} </span></td>
                             <td class="text-center">
                                 <button class="btn btn-sm btn-light shadow-lg"> <i class="bi bi-calendar-check-fill"></i> <strong>{{ \Carbon\Carbon::parse($location["latest_loyer_date"])->locale('fr')->isoFormat('MMMM YYYY') }}</strong> </button>
                             </td>

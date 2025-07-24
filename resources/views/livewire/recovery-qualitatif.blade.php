@@ -63,13 +63,13 @@
                     <tbody>
                         @foreach($locators as $locator)
                         <tr class="align-items-center">
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["name"]}}</span></td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["prenom"]}}</span></td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["phone"]}}</span></td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["adresse"]}}</span></td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["email"]}}</span></td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["locator_location"]["House"]["name"]}}</span></td>
-                            <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["locator_location"]["House"]["Supervisor"]["name"]}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$locator["name"]}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$locator["prenom"]}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$locator["phone"]}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$locator["adresse"]}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$locator["email"]}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$locator["locator_location"]["House"]["name"]}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$locator["locator_location"]["House"]["Supervisor"]["name"]}}</span></td>
                         </tr>
                         @endforeach
                     </tbody>

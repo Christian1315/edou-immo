@@ -38,24 +38,24 @@
                     <tbody>
                         <tr class="align-items-center">
                             <td class="text-center">1 </td>
-                            <td class="text-center"> <span class="badge bg-light text-dark"> {{$house["name"]}}</span> </td>
+                            <td class="text-center"> <span class=" bg-light text-dark"> {{$house["name"]}}</span> </td>
                             <td class="text-center">
-                                <strong class="badge bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["total_amount_paid"],2,","," ")}} fcfa </strong>
+                                <strong class=" bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["total_amount_paid"],2,","," ")}} fcfa </strong>
                             </td>
 
                             <td class="text-center">
-                                <strong class="badge bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["commission"],2,","," ")}} fcfa </strong>
+                                <strong class=" bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["commission"],2,","," ")}} fcfa </strong>
                             </td>
 
                             <td class="text-center">
-                                <strong class="badge bg-light text-red"><i class="bi bi-currency-exchange"></i> {{number_format($house["last_depenses"],2,","," ")}} fcfa </strong>
+                                <strong class=" bg-light text-red"><i class="bi bi-currency-exchange"></i> {{number_format($house["last_depenses"],2,","," ")}} fcfa </strong>
                             </td>
                             <td class="text-center">
-                                <strong class="badge bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["_amount"],2,","," ")}} fcfa </strong>
+                                <strong class=" bg-light text-success"><i class="bi bi-currency-exchange"></i> {{number_format($house["_amount"],2,","," ")}} fcfa </strong>
                             </td>
 
                             <td class="text-center">
-                                <strong class="badge bg-light text-dark"> <i class="bi bi-calendar-check"></i>
+                                <strong class=" bg-light text-dark"> <i class="bi bi-calendar-check"></i>
                                     {{$house["house_last_state"]?
                                         \Carbon\Carbon::parse(date($house["house_last_state"]["stats_stoped_day"]))->locale('fr')->isoFormat('D MMMM YYYY') : 
                                         ($house["payement_initiations_last"]? 
@@ -68,15 +68,15 @@
                             <td class="text-center d-flex">
                                 @if($house['house_last_state'])
                                 @if($house["house_last_state"]->proprietor_paid)
-                                <span aria-disabled="true" class="badge bg-light text-success">Payé</span>
+                                <span aria-disabled="true" class=" bg-light text-success">Payé</span>
                                 @else
-                                <span class="badge bg-light text-red"> Non payé</span>
+                                <span class=" bg-light text-red"> Non payé</span>
                                 @endif
                                 @endif
 
                                 @if($house["payement_initiations_last"])
                                 @if($house["payement_initiations_last"]->status==3)
-                                <span aria-disabled="true" class="badge bg-light text-red">mais Rejeté</span>
+                                <span aria-disabled="true" class=" bg-light text-red">mais Rejeté</span>
                                 @endif
                                 @endif
                             </td>

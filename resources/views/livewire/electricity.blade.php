@@ -215,18 +215,18 @@
                         @foreach(session()->get("locations_filtred") ? session()->get("locations_filtred"):$locations as $location)
                         <tr class="align-items-center">
                             <td class="text-center">{{$loop->iteration}}</td>
-                            <td class="text-center"> <span class="badge bg-dark text-white">{{$location["Locataire"]["name"]}} {{$location["Locataire"]["prenom"]}} </span> </td>
-                            <td class="text-center"><span class="badge bg-light text-dark text-bold"> {{$location["House"]["name"]}} ({{$location->House->Supervisor->name}})</span></td>
-                            <td class="text-center"><span class="badge bg-light text-dark text-bold"> {{$location["Locataire"]["phone"]}}</span></td>
-                            <td class="text-center"> <span class="badge bg-warning text-white"> {{$location->Room?$location->Room->electricity_counter_start_index:'--'}}</span> </td>
-                            <td class="text-center"> <strong class="badge bg-dark text-white"> {{$location["end_index"]?$location["end_index"]:0}}</strong> </td>
-                            <td class="text-center"> <strong class=""> <span class="badge bg-light text-dark">{{number_format($location->Room->electricity_unit_price,0,',',' ')}}</span> </strong> </td>
-                            <td class="text-center"> <strong class="badge bg-light text-red "> <i class="bi bi-currency-exchange"></i> {{$location["total_un_paid_facture_amount"]? number_format($location["total_un_paid_facture_amount"],0,","," ") :0}} </strong> </td>
-                            <td class="text-center"> <strong class="badge text-success bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["current_amount"]? number_format($location["current_amount"],0,","," ") :0}} </strong> </td>
-                            <td class="text-center"> <strong class="badge text-success bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["paid_facture_amount"]? number_format($location["paid_facture_amount"],0,","," ") :0}} </strong> </td>
-                            <td class="text-center text-red"> <span class="badge bg-light text-dark"> {{$location["nbr_un_paid_facture_amount"]? number_format($location["nbr_un_paid_facture_amount"],0,","," ") :0}}</span></td>
-                            <td class="text-center"> <strong class="badge text-red bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["un_paid_facture_amount"]? number_format($location["un_paid_facture_amount"],0,","," ") :0}} </strong> </td>
-                            <td class="text-center"> <strong class="badge text-success bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["rest_facture_amount"]? number_format($location["rest_facture_amount"],0,","," ") :0}} </strong> </td>
+                            <td class="text-center"> <span class=" bg-dark text-white">{{$location["Locataire"]["name"]}} {{$location["Locataire"]["prenom"]}} </span> </td>
+                            <td class="text-center"><span class=" bg-light text-dark text-bold"> {{$location["House"]["name"]}} ({{$location->House->Supervisor->name}})</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark text-bold"> {{$location["Locataire"]["phone"]}}</span></td>
+                            <td class="text-center"> <span class=" bg-warning text-white"> {{$location->Room?$location->Room->electricity_counter_start_index:'--'}}</span> </td>
+                            <td class="text-center"> <strong class=" bg-dark text-white"> {{$location["end_index"]?$location["end_index"]:0}}</strong> </td>
+                            <td class="text-center"> <strong class=""> <span class=" bg-light text-dark">{{number_format($location->Room->electricity_unit_price,0,',',' ')}}</span> </strong> </td>
+                            <td class="text-center"> <strong class=" bg-light text-red "> <i class="bi bi-currency-exchange"></i> {{$location["total_un_paid_facture_amount"]? number_format($location["total_un_paid_facture_amount"],0,","," ") :0}} </strong> </td>
+                            <td class="text-center"> <strong class=" text-success bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["current_amount"]? number_format($location["current_amount"],0,","," ") :0}} </strong> </td>
+                            <td class="text-center"> <strong class=" text-success bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["paid_facture_amount"]? number_format($location["paid_facture_amount"],0,","," ") :0}} </strong> </td>
+                            <td class="text-center text-red"> <span class=" bg-light text-dark"> {{$location["nbr_un_paid_facture_amount"]? number_format($location["nbr_un_paid_facture_amount"],0,","," ") :0}}</span></td>
+                            <td class="text-center"> <strong class=" text-red bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["un_paid_facture_amount"]? number_format($location["un_paid_facture_amount"],0,","," ") :0}} </strong> </td>
+                            <td class="text-center"> <strong class=" text-success bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["rest_facture_amount"]? number_format($location["rest_facture_amount"],0,","," ") :0}} </strong> </td>
 
                             <td class="text-center">
                                 <div class="dropdown">
@@ -413,8 +413,8 @@
                             <strong>Description: </strong> <textarea class="form-control" name="" rows="1" placeholder="${facture.comments}" id=""></textarea> ;
                             <strong>Statut :</strong>
                             ${facture.paid?
-                                '<span class="badge bg-success">Payé </span>':
-                                `<span class="badge bg-red">Impayé </span> <br> <a href="/electricity_facture/${facture.id}/payement" class="btn btn-sm bg-red"> <i class="bi bi-currency-exchange"></i> Payer maintenant</a>`
+                                '<span class=" bg-success">Payé </span>':
+                                `<span class=" bg-red">Impayé </span> <br> <a href="/electricity_facture/${facture.id}/payement" class="btn btn-sm bg-red"> <i class="bi bi-currency-exchange"></i> Payer maintenant</a>`
                             }
                         </li>
                     `
