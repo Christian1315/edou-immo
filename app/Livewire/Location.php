@@ -113,13 +113,18 @@ class Location extends Component
                 ->toArray();
 
             $this->locations = $this->current_agency
-                ->_Locations->where(function ($query) use ($supervisorsIds) {
+                ->_Locations
+                ->where("status", "!=", 3)
+                ->where(function ($query) use ($supervisorsIds) {
                     $query->House->whereIn("supervisor", $supervisorsIds);
                 });
         } else {
             $this->locations = $user->hasRole("Superviseur") ?
-                $this->current_agency->_Locations->filter(fn($location) => $location->House->supervisor == $user->id) :
-                $this->current_agency->_Locations;
+                $this->current_agency->_Locations
+                ->where("status", "!=", 3)
+                ->filter(fn($location) => $location->House->supervisor == $user->id) :
+                $this->current_agency->_Locations
+                ->where("status", "!=", 3);
         }
 
         $this->locations_count = $this->locations->count();
