@@ -10,8 +10,8 @@
 /public/img_contrats
 /public/img_prestations
 /public/pieces
-/public/plugins
-# /public/dist
+# /public/plugins
+/public/dist
 /public/room_images
 /public/mandate_contrats
 
