@@ -886,7 +886,7 @@ class HouseController extends Controller
                     /**Locations non payés & Locations à jour */
                     $this->getStateFactures($lastState, $location, $lastState->House)
                     ->count() == 0 &&
-                    Carbon::parse($location->latest_loyer_date)->format("m/Y") < Carbon::parse($lastState->stats_stoped_day)->format("m/Y")
+                    Carbon::parse($location->latest_loyer_date)->format("m/Y") <= Carbon::parse($lastState->stats_stoped_day)->format("m/Y")
                 );
             })->toArray();
         } catch (\Exception $e) {
