@@ -11,7 +11,7 @@
 /public/img_prestations
 /public/pieces
 /public/plugins
-/public/dist
+# /public/dist
 /public/room_images
 /public/mandate_contrats
 
