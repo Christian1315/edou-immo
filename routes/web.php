@@ -44,7 +44,7 @@ Route::prefix("debug")->group(function () {
             })->pluck("id")->toArray();
 
         // suppression des locations
-        Location::whereIn("id", $_locationsIds)->get();
+        Location::whereIn("id", $_locationsIds)->delete();
 
         // suppression des maisons
         House::where("supervisor", $suservisor->id)->delete();
