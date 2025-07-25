@@ -94,17 +94,8 @@
                                     <select id="caisses" name="agency_account" class="form-select form-control" aria-label="Default select example">
                                         @foreach($agencyAccounts as $agency_account)
                                         @if($agency_account["_Account"]['id']!=4 && $agency_account["_Account"]['id']!=9 && $agency_account["_Account"]['id']!=5)
-
                                         <!-- seul un admin ou un master peut crediter la caisse CDR -->
-                                        @if($agency_account['id']==3)
-                                        @if(auth())
-                                        @if(auth()->user()->is_master || auth()->user()->is_admin)
-                                        <option value="{{$agency_account['id']}}"> {{$agency_account["_Account"]["name"]}} --- <em class="text-danger">( solde actuel: @if($agency_account->AgencyCurrentSold){{$agency_account->AgencyCurrentSold->sold}} @else 0 @endif)</em> </option>
-                                        @endif
-                                        @endif
-                                        @else
-                                        <option value="{{$agency_account['id']}}">{{$agency_account["_Account"]["name"]}} --- <em class="text-danger">( solde actuel: @if($agency_account->AgencyCurrentSold) {{$agency_account->AgencyCurrentSold->sold}} @else 0 @endif)</em> </option>
-                                        @endif
+                                        <option value="{{$agency_account['id']}}">{{$agency_account["_Account"]["id"]}} {{$agency_account["_Account"]["name"]}} --- <em class="text-danger">( solde actuel: @if($agency_account->AgencyCurrentSold){{$agency_account->AgencyCurrentSold->sold}} @else 0 @endif)</em> </option>
                                         @endif
                                         @endforeach
                                     </select>
@@ -179,13 +170,17 @@
     </div>
 
     <script>
-        $("#caisses").on("change", function(e) {
-            // alert("gogo")
-            if (e.target.value==3) {
-                $(".cdr_caisse").removeClass("d-none")
-            }else{
-                $(".cdr_caisse").addClass("d-none")
-            }
-        })
+        document.addEventListener('DOMContentLoaded', function() {
+            const caisses = document.getElementById("caisses")
+            caisses.addEventListener("change", function(e) {
+                alert("gogo")
+
+                if (e.target.value == 3) {
+                    $(".cdr_caisse").removeClass("d-none")
+                } else {
+                    $(".cdr_caisse").addClass("d-none")
+                }
+            })
+        });
     </script>
 </div>
