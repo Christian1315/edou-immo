@@ -592,14 +592,14 @@ class HouseController extends Controller
 
             /**locataires ayant payés dans l'etat */
             $paid_locataires = collect($data["paid_locataires"]);
+            // dd($paid_locataires);
 
             /**locataires a jour */
-            $paidLocators = collect($data["paidLocators"]);
-            // dd($paidLocators);
+            // $paidLocators = collect($data["paidLocators"]);
 
             /**locataires non payer mais à jour */
             $getNonPayerEtAJour = collect($data["getNonPayerEtAJour"]);
-
+            // dd($getNonPayerEtAJour);
             /**locataires ayant payés à dans l'état et locataires ajour */
             // $paidLocatairesPlusLocataireAjour = $paid_locataires->concat($paidLocators)
             //     ->unique();
@@ -607,7 +607,7 @@ class HouseController extends Controller
             /**locataires payés et (locataires non payé mais ajour) */
             $unPaidLocatairesPlusLocataireAjour = $paid_locataires->concat($getNonPayerEtAJour)
                 // ->unique()
-                ;
+            ;
 
             // dd($paidLocatairesPlusLocataireAjour->count());
 
@@ -886,7 +886,8 @@ class HouseController extends Controller
                     /**Locations non payés & Locations à jour */
                     $this->getStateFactures($lastState, $location, $lastState->House)
                     ->count() == 0 &&
-                    Carbon::parse($location->latest_loyer_date)->format("m/Y") <= Carbon::parse($lastState->stats_stoped_day)->format("m/Y")
+                    (Carbon::parse($location->latest_loyer_date)->format("m/Y") <= Carbon::parse($lastState->stats_stoped_day)->format("m/Y")
+                    || Carbon::parse($location->latest_loyer_date)->format("Y") >= Carbon::parse($lastState->stats_stoped_day)->format("Y"))
                 );
             })->toArray();
         } catch (\Exception $e) {
