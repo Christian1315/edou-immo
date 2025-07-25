@@ -56,7 +56,7 @@ class Agency extends Model
 
     function _Locataires(): HasMany
     {
-        return $this->hasMany(Locataire::class, "agency")->with(["Locations"])->where("visible", 1);
+        return $this->hasMany(Locataire::class, "agency")->with(["Locations"]);
     }
 
     function _Locations(): HasMany
