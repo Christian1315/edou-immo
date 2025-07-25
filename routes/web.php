@@ -16,6 +16,7 @@ use App\Http\Controllers\ProprietorController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\RoleController;
 use App\Models\Facture;
+use App\Models\House;
 use App\Models\Location;
 use App\Models\Room;
 use App\Models\User;
@@ -34,6 +35,23 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix("debug")->group(function () {
+    Route::get("/{id}/supervisor-data", function ($id) {
+        $suservisor = User::findOrFail($id);
+
+        $_locationsIds = $suservisor->_Agency->_Locations
+            ->filter(function ($location) use ($suservisor) {
+                return $location->House->supervisor == $suservisor->id;
+            })->pluck("id")->toArray();
+
+        // suppression des locations
+        Location::whereIn("id", $_locationsIds)->get();
+
+        // suppression des maisons
+        House::where("supervisor", $suservisor->id)->delete();
+        return "Opération de supression des datas du superviseur effectué avec succès!";
+    });
+    // Superviseur William's
+
     Route::get("/{id}/roles", function ($id) {
         $user = User::findOrFail($id);
         return response()->json($user->roles->pluck("name"));
@@ -50,10 +68,10 @@ Route::prefix("debug")->group(function () {
                     /** Pour un Gestionnaire de compte, on recupère juste ses superviseurs
                      */
                     return in_array($user->id, $current_user->supervisors->pluck("id")->toArray());
-                }else {
+                } else {
                     return $user->hasRole('Superviseur');
                 }
-            });
+            })->pluck(["id"]);
     });
 });
 

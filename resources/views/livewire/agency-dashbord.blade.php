@@ -12,7 +12,7 @@
 
     <!-- ###### MODEL D'ENCAISSEMENT ###### -->
     <div class="modal fade" id="encaisse" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h6 class="modal-title fs-5" id="exampleModalLabel">Encaissement </h6>
@@ -26,9 +26,10 @@
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label>Location </label>
-                                    <select name="location" class="form-select form-control" onchange="encaisser(this)">
+                                    <select name="location" class="form-select form-control select2" onchange="encaisser(this)" id="select-search">
                                         @foreach($locations as $location)
                                         <option
+                                            class="item"
                                             @if($location->status==3) disabled class='bg-secondary text-white' @endif
                                             value="{{$location->id}}"
                                             data-house-name="{{$location->House?->name}}"
@@ -55,7 +56,7 @@
                                     <select name="type" class="form-select form-control">
                                         @foreach($types as $type)
                                         <option value="{{$type->id}}">
-                                           {{$type->name}}
+                                            {{$type->name}}
                                         </option>
                                         @endforeach
                                     </select>
@@ -114,6 +115,17 @@
             </div>
         </div>
     </div>
+
+    <script type="text/javascript">
+        // In your Javascript (external .js resource or <script>
+        $(document).ready(function() {
+            $('.select2-modal').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                dropdownParent: $('#encaisse .modal-content'),//$("#encaisse")
+            });
+        });
+    </script>
 
     <script type="text/javascript">
         function encaisser(select) {
@@ -231,4 +243,5 @@
             </div>
         </div>
     </div>
+
 </div>

@@ -21,12 +21,12 @@
                         @foreach($houses as $house)
                         <tr class="align-items-center">
                             <td class="text-center">{{$loop->index + 1}}</td>
-                            <td class="text-center text-red"> <span class=" bg-light text-dark">{{$house["name"]}} </span> </td>
+                            <td class="text-center text-red"> <span class=" bg-light text-dark">{{$house->name}} </span> </td>
                             <td class="text-center"> <span class=" bg-light text-dark">@if($house["latitude"]) {{$house["latitude"]}} @else --- @endif </span> </td>
                             <td class="text-center">@if($house["longitude"]) {{$house["longitude"]}} @else --- @endif</td>
-                            <td class="text-center">{{$house["Type"]["name"]}}</td>
-                            <td class="text-center text-red"> <span class=" bg-light text-dark"> {{$house["Supervisor"]["name"]}}</span> </td>
-                            <td class="text-center"> <span class=" bg-light text-dark"> {{$house["Proprietor"]["lastname"]}} {{$house["Proprietor"]["firstname"]}}</span> </td>
+                            <td class="text-center">{{$house->Type?->name}}</td>
+                            <td class="text-center text-red"> <span class=" bg-light text-dark"> {{$house->Supervisor?->name}}</span> </td>
+                            <td class="text-center"> <span class=" bg-light text-dark"> {{$house->Proprietor?->lastname}} {{$house->Proprietor?->firstname}}</span> </td>
 
                             <td class="text-center">
                                 <a  href="{{route('location.FiltreBeforeStateDateStoped', crypId($house['id']))}}" class="btn btn-sm btn-dark" title="Avant arrêt des états"><i class="bi bi-arrow-left-circle-fill"></i></a> &nbsp;

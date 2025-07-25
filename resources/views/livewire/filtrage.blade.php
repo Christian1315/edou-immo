@@ -85,7 +85,7 @@
 
     <!-- MODAL DES LOCATAIRES DEMENAGES -->
     <div class="modal fade" id="ShowMovedLocators" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
                     <table class="table table-striped table-sm">

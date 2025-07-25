@@ -39,9 +39,9 @@ class ProprietorController extends Controller
     static function proprietor_rules(): array
     {
         return [
-            'firstname' => "required|unique:proprietors",
-            'lastname' => "required|unique:proprietors",
-            'phone' => "required|unique:proprietors|numeric",
+            'firstname' => "required",
+            'lastname' => "required",
+            'phone' => "required",
 
             'sexe' => ['required'],
             // 'piece_number' => ['required'],
@@ -85,7 +85,7 @@ class ProprietorController extends Controller
             'agency.integer' => "L'agence doit être de type entier!",
 
             'phone.numeric' => 'Ce champ doit être de type numeric!',
-            'phone.unique' => "Ce numéro de tephone existe déjà",
+            // 'phone.unique' => "Ce numéro de tephone existe déjà",
         ];
     }
 

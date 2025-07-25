@@ -94,7 +94,7 @@
                                         <ul class="list-group">
                                             @foreach ($locator->Locations as $location)
                                                 <li class="list-group-item">
-                                                    <span class=" bg-dark text-white">{{ $location->House->Supervisor->name }}</span>
+                                                    <span class=" bg-dark text-white">{{ $location->House?->Supervisor?->name }}</span>
                                                 </li>
                                             @endforeach
                                         </ul>

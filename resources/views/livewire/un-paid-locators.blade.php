@@ -90,10 +90,10 @@
                         @foreach(session('filteredLocators')?session('filteredLocators'):$locators as $location)
                         <tr class="align-items-center">
                             <td class="text-center">{{$loop->index+1}}</td>
-                            <td class="text-center"> <span class=" bg-dark text-white">{{$location["House"]["name"]}}</span> </td>
-                            <td class="text-center"><span class=" bg-light text-dark"> {{ $location->House->Supervisor->name }} </span> </td>
+                            <td class="text-center"> <span class=" bg-dark text-white">{{$location->House?->name}}</span> </td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{ $location->House?->Supervisor?->name }} </span> </td>
                             <td class="text-center">{{ $location->Room?$location->Room->number:"deménagé" }}</td>
-                            <td class="text-center"> <span class=" bg-light text-dark"> {{$location["Locataire"]["name"]}} {{$location["Locataire"]["prenom"]}} ({{$location["Locataire"]['phone']}}) </span> </td>
+                            <td class="text-center"> <span class=" bg-light text-dark"> {{$location->Locataire?->name}} {{$location->Locataire?->prenom}} ({{$location->Locataire?->phone}}) </span> </td>
                             <td class="text-center text-red"><small> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($location["latest_loyer_date"])->locale('fr')->isoFormat('MMMM YYYY') }}</small> </td>
                             <td class="text-center"> <span class=" bg-dark text-white"> {{number_format($location->loyer,0," "," ")}}</span> </td>
                             <td class="text-center text-red"><small> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($location["echeance_date"])->locale('fr')->isoFormat('D MMMM YYYY') }}</small> <small class="text-dark">({{ $location->pre_paid?"PRE_PAYE":"" }} {{ $location->post_paid ? "POST_PAYE":'' }})</small>  </td>

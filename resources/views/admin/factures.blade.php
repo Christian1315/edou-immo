@@ -92,7 +92,7 @@
         <div class="row">
             <div class="col-12">
                 <h4 class="">Total: <strong class="text-red"> {{count($factures)}} </strong> | Légende: <span class="border btn btn-sm btn-light text-success" data-bs-toggle="modal" data-bs-target="#filtreByFactureStatus"><i class="bi bi-check-circle"></i> Facture validées ({{$factures->where("status",2)->count()}}) </span> <span class="border btn btn-sm btn-light text-warning" data-bs-toggle="modal" data-bs-target="#filtreByFactureStatus"><i class="bi bi-check-circle"></i> Factures en attente ({{$factures->where("status",1)->count()}}) </span> <span class="border btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#filtreByFactureStatus"><i class="bi bi-x-circle"></i> Facture rejetées ({{$factures->where("status",3)->count()}}) </span></h4>
-                <h5 class="">Totale encaissé :  <b id='montantTotal' class="badge bg-red">{{ number_format($montantTotal ?? 0,0,","," ")  }} FCFA</b> </h5>
+                <h5 class="">Totale encaissé : <b id='montantTotal' class="badge bg-red">{{ number_format($montantTotal ?? 0,0,","," ")  }} FCFA</b> </h5>
                 <div class="table-responsive table-responsive-list shadow-lg">
                     <table id="myTable" class="table table-striped table-sm">
                         <thead class="bg_dark">
@@ -115,12 +115,12 @@
                             @if($factures->count()>0)
                             @foreach($factures as $facture)
                             <tr class="align-items-center @if($facture->status==3) bg-secondary @elseif($facture->status==1) bg-warning @endif">
-                                <td class="text-center "><span class="badge text-red bg-light"> {{$facture["facture_code"]?$facture["facture_code"]:"---"}}</span></td>
-                                <td class="text-center text-red"><span class="badge bg-light text-dark"> {{$facture["Location"]["House"]["Supervisor"]["name"]}}</span></td>
-                                <td class="text-center"> <span class="badge bg-dark">{{$facture["Owner"]["name"]}} </span> </td>
-                                <td class="text-center"> <span class="badge bg-light text-dark">{{$facture["Location"]["House"]["name"]}} </span> </td>
+                                <td class="text-center "><span class="badge text-red bg-light"> {{$facture->facture_code?$facture->facture_code:"---"}}</span></td>
+                                <td class="text-center text-red"><span class="badge bg-light text-dark"> {{$facture->Location?->House?->Supervisor?->name}}</span></td>
+                                <td class="text-center"> <span class="badge bg-dark">{{$facture->Owner?->name}} </span> </td>
+                                <td class="text-center"> <span class="badge bg-light text-dark">{{$facture->Location?->House?->name}} </span> </td>
                                 <td class="text-center"> <span class="badge bg-light text-dark">{{$facture->Location->Room?$facture->Location->Room->number:"deménagé"}} </span> </td>
-                                <td class="text-center"><button class="btn btn-sm btn-light">{{$facture["Location"]["Locataire"]["name"]}} {{$facture["Location"]["Locataire"]["prenom"]}} </button> </td>
+                                <td class="text-center"><button class="btn btn-sm btn-light">{{$facture->Location->Locataire?->name}} {{$facture->Location?->Locataire?->prenom}} </button> </td>
                                 <td class="text-center"> <a href="{{$facture['facture']}}" class="btn btn-sm btn-light shadow-sm"><i class="bi bi-eye"></i></a></td>
                                 <td class="text-center">{{number_format($facture['amount'],0,","," ")}}</td>
                                 <td class="text-center text-red"><span class="badge bg-light text-red"> <b>{{ \Carbon\Carbon::parse($facture['echeance_date'])->locale('fr')->isoFormat('D MMMM YYYY') }} </b></span> </td>

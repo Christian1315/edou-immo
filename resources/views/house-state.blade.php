@@ -203,8 +203,8 @@
                     <!-- locations -->
                     @foreach($locations as $location)
                     <tr class="align-items-center">
-                        <td class="text-center"> <small class="btn-light"> <strong> {{$location["Locataire"]["name"]}} {{$location["Locataire"]["prenom"]}}</strong> </small> </td>
-                        <td class="text-center">{{$location->Locataire->phone}}</td>
+                        <td class="text-center"> <small class="btn-light"> <strong> {{$location->Locataire->name}} {{$location->Locataire?->prenom}}</strong> </small> </td>
+                        <td class="text-center">{{$location->Locataire?->phone}}</td>
                         <td class="text-center">{{$location->Room?$location->Room->number:'---'}}</td>
                         <td class="text-center"><span class="badge bg-light "> {{number_format($location->Room?$location->Room->total_amount:0,0,","," ")}} </span></td>
                         <td class="text-center"><span class="badge bg-light ">{{$location->prorata_amount>0?number_format($location->prorata_amount,0,","," "):'--'}} </span></td>

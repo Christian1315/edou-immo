@@ -91,15 +91,15 @@
                         @foreach(session("filteredLocators")?session("filteredLocators"):$locators as $location)
                         <tr class="align-items-center">
                             <td class="text-center">{{$loop->index + 1}} </td>
-                            <td class="text-center text-red"> <strong class=" bg-light text-dark p-2 btn btn-sm"> {{$location["House"]["name"]}}</strong></td>
-                            <td class="text-center"><span class=" bg-light text-dark"> {{ $location->House->Supervisor->name }} </span></td>
+                            <td class="text-center text-red"> <strong class=" bg-light text-dark p-2 btn btn-sm"> {{$location->House?->name}}</strong></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{ $location->House?->Supervisor?->name }} </span></td>
                             <td class="text-center"> <strong class=" bg-light text-dark p-2"> {{ $location->Room?$location->Room->number:"deménagé" }}</strong></td>
-                            <td class="text-center"><span class=" bg-light text-dark"> {{$location["Locataire"]["name"]}}</span></td>
-                            <td class="text-center"><span class=" bg-light text-dark"> {{$location["Locataire"]["prenom"]}}</span></td>
-                            <td class="text-center"><span class=" bg-light text-dark"> {{$location["Locataire"]["email"]}}</span></td>
-                            <td class="text-center"><span class=" bg-light text-dark"> {{$location["Locataire"]["card_id"]}}</span></td>
-                            <td class="text-center"><span class=" bg-light text-dark"> {{$location["Locataire"]["phone"]}}</span></td>
-                            <td class="text-center"><span class=" bg-light text-dark"> {{$location["Locataire"]["adresse"]}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$location->Locataire?->name}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$location->Locataire?->prenom}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$location->Locataire?->email}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$location->Locataire?->card_id}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$location->Locataire?->phone}}</span></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$location->Locataire?->adresse}}</span></td>
                             <td class="text-center"> <button class=" btn bg-light text-red"> {{$location["latest_loyer_date"]}} </button> </td>
                         </tr>
                         @endforeach

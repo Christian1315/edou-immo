@@ -115,9 +115,13 @@ class Location extends Component
             $this->locations = $this->current_agency
                 ->_Locations
                 ->where("status", "!=", 3)
-                ->where(function ($query) use ($supervisorsIds) {
-                    $query->House->whereIn("supervisor", $supervisorsIds);
+                // ->where(function ($query) use ($supervisorsIds) {
+                //     $query->House->whereIn("supervisor", $supervisorsIds);
+                // })
+                ->filter(function ($location) use ($supervisorsIds) {
+                    return in_array($location->House->supervisor, $supervisorsIds);
                 });
+
         } else {
             $this->locations = $user->hasRole("Superviseur") ?
                 $this->current_agency->_Locations

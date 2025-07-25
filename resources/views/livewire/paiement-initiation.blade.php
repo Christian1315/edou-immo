@@ -23,12 +23,12 @@
                         <tr class="align-items-center">
                             <td class="text-center">{{$loop->index + 1}} @if($initiation->Status->id==1) <i class="text-warning bi bi-geo-alt"></i> @else <i class="text-success bi bi-geo-alt"></i>@endif </td>
                             <td class="text-center"> <strong class="text-dark  bg-light text-dark">
-                                    {{$initiation->House->States->last()?
-                                    \Carbon\Carbon::parse($initiation->House->States->last()->stats_stoped_day)->locale('fr')->isoFormat('D MMMM YYYY'):
+                                    {{$initiation->House?->States->last()?
+                                    \Carbon\Carbon::parse($initiation->House?->States->last()->stats_stoped_day)->locale('fr')->isoFormat('D MMMM YYYY'):
                                     $initiation->stats_stoped_day
                                 }} </strong></td>
-                            <td class="text-center"> <strong class="text-dark  bg-light text-red">{{$initiation->House->name}} </strong></td>
-                            <td class="text-center"><span class=" bg-light text-dark"> {{$initiation->House->Proprietor->lastname}} {{$initiation->House->Proprietor->firstname}}</span> </td>
+                            <td class="text-center"> <strong class="text-dark  bg-light text-red">{{$initiation->House?->name}} </strong></td>
+                            <td class="text-center"><span class=" bg-light text-dark"> {{$initiation->House?->Proprietor?->lastname}} {{$initiation->House?->Proprietor?->firstname}}</span> </td>
                             <td class="text-center">
                                 <span class=" bg-light text-red"><i class="bi bi-currency-exchange"></i> {{number_format($initiation['amount'],0,","," ") }}</span>
                             </td>
@@ -57,7 +57,6 @@
                                 @endif
                             </td>
                         </tr>
-
                         @endforeach
                     </tbody>
                 </table>

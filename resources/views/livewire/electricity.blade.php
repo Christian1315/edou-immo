@@ -106,7 +106,7 @@
     <!-- GENERATE ELECTRICITY FACTURE  -->
     @can("electicity.invoices.generate")
     <div class="modal fade" id="generate_electricity_facture" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <p class="">Génerer une facture d'électricité</p>
@@ -221,12 +221,12 @@
                             <td class="text-center"> <span class=" bg-warning text-white"> {{$location->Room?$location->Room->electricity_counter_start_index:'--'}}</span> </td>
                             <td class="text-center"> <strong class=" bg-dark text-white"> {{$location["end_index"]?$location["end_index"]:0}}</strong> </td>
                             <td class="text-center"> <strong class=""> <span class=" bg-light text-dark">{{number_format($location->Room->electricity_unit_price,0,',',' ')}}</span> </strong> </td>
-                            <td class="text-center"> <strong class=" bg-light text-red "> <i class="bi bi-currency-exchange"></i> {{$location["total_un_paid_facture_amount"]? number_format($location["total_un_paid_facture_amount"],0,","," ") :0}} </strong> </td>
-                            <td class="text-center"> <strong class=" text-success bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["current_amount"]? number_format($location["current_amount"],0,","," ") :0}} </strong> </td>
-                            <td class="text-center"> <strong class=" text-success bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["paid_facture_amount"]? number_format($location["paid_facture_amount"],0,","," ") :0}} </strong> </td>
+                            <td class="text-center"> <strong class=" bg-light text-red ">  {{$location["total_un_paid_facture_amount"]? number_format($location["total_un_paid_facture_amount"],0,","," ") :0}} </strong> </td>
+                            <td class="text-center"> <strong class=" text-success bg-light">  {{$location["current_amount"]? number_format($location["current_amount"],0,","," ") :0}} </strong> </td>
+                            <td class="text-center"> <strong class=" text-success bg-light">  {{$location["paid_facture_amount"]? number_format($location["paid_facture_amount"],0,","," ") :0}} </strong> </td>
                             <td class="text-center text-red"> <span class=" bg-light text-dark"> {{$location["nbr_un_paid_facture_amount"]? number_format($location["nbr_un_paid_facture_amount"],0,","," ") :0}}</span></td>
-                            <td class="text-center"> <strong class=" text-red bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["un_paid_facture_amount"]? number_format($location["un_paid_facture_amount"],0,","," ") :0}} </strong> </td>
-                            <td class="text-center"> <strong class=" text-success bg-light"> <i class="bi bi-currency-exchange"></i> {{$location["rest_facture_amount"]? number_format($location["rest_facture_amount"],0,","," ") :0}} </strong> </td>
+                            <td class="text-center"> <strong class=" text-red bg-light">  {{$location["un_paid_facture_amount"]? number_format($location["un_paid_facture_amount"],0,","," ") :0}} </strong> </td>
+                            <td class="text-center"> <strong class=" text-success bg-light">  {{$location["rest_facture_amount"]? number_format($location["rest_facture_amount"],0,","," ") :0}} </strong> </td>
 
                             <td class="text-center">
                                 <div class="dropdown">
@@ -237,7 +237,7 @@
                                     <ul class="dropdown-menu">
                                         @can("electicity.invoices.payement")
                                         <a href="#" class="dropdown-item btn btn-sm bg-red" data-bs-toggle="modal" data-bs-target="#factures" onclick="showFactures({{$location}})">
-                                            <i class="bi bi-currency-exchange"></i>&nbsp; Payer
+                                            &nbsp; Payer
                                         </a>
                                         @endcan
 
@@ -409,12 +409,12 @@
                             <strong>Index début: </strong> <span class="text-red"> ${facture.start_index}</span> ;
                             <strong>Index fin: </strong> <span class="text-red"> ${facture.end_index}</span>;
                             <strong>Consommation :</strong> <span class="text-red">${facture.consomation}</span> ;
-                            <strong>Montant: </strong> <span class="text-red"><i class="bi bi-currency-exchange"></i> ${facture.amount} </span>;
+                            <strong>Montant: </strong> <span class="text-red"> ${facture.amount} </span>;
                             <strong>Description: </strong> <textarea class="form-control" name="" rows="1" placeholder="${facture.comments}" id=""></textarea> ;
                             <strong>Statut :</strong>
                             ${facture.paid?
                                 '<span class=" bg-success">Payé </span>':
-                                `<span class=" bg-red">Impayé </span> <br> <a href="/electricity_facture/${facture.id}/payement" class="btn btn-sm bg-red"> <i class="bi bi-currency-exchange"></i> Payer maintenant</a>`
+                                `<span class=" bg-red">Impayé </span> <br> <a href="/electricity_facture/${facture.id}/payement" class="btn btn-sm bg-red">  Payer maintenant</a>`
                             }
                         </li>
                     `

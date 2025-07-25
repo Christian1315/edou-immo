@@ -61,7 +61,8 @@ class AgencyDashbord extends Component
             $this->locators_count = $this->agency->_Locataires->count();
 
             // Locations
-            $this->locations = $this->agency->_Locations;
+            $this->locations = $this->agency->_Locations
+                ->where("status", "!=", 3);
 
             //types
             $this->types = LocationType::get();
@@ -85,7 +86,6 @@ class AgencyDashbord extends Component
                 ->flatMap->houses
                 ->where("supervisor", $user->id)
                 ->flatMap->rooms->count();
-
         } else {
             // Propriétaires
             $this->proprietors_count = $this->agency->_Proprietors->count();
