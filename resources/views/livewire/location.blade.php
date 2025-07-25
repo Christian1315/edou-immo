@@ -395,7 +395,7 @@
                     <thead class="bg_dark">
                         <tr>
                             <!-- <th class="text-center">N°</th> -->
-                            <th class="text-center">Maison <span class="d-block d-sm-none"> | Locataire | Loyer</span></th>
+                            <th class="text-center">Maison <span class="d-block d-sm-none"> | Locataire | Loyer | Dernier mois Payé</span></th>
                             <th class="text-center">Propriétaire</th>
                             <th class="text-center">Superviseur</th>
                             <th class="text-center">Chambre</th>
@@ -419,7 +419,7 @@
                             <td class="text-left">
                                 <span class=" bg-light text-dark">{{$location->House?->name}}</span>
                                 <span class="bg-light text-dark d-block d-sm-none">
-                                    | {{$location->Locataire?->name}} {{$location->Locataire?->prenom}} ({{$location->Locataire?->phone}}) | {{number_format($location["loyer"],0,","," ") }}
+                                    | {{$location->Locataire?->name}} {{$location->Locataire?->prenom}} ({{$location->Locataire?->phone}}) | {{number_format($location["loyer"],0,","," ") }} | <small class="@if($location->status==3) text-white @endif"> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($location["latest_loyer_date"])->locale('fr')->isoFormat('MMMM YYYY') }}</small>
                                 </span>
                             </td>
                             <td class="text-left"><span class=" bg-light text-dark">{{$location->House?->Proprietor?->firstname}} {{$location->House?->Proprietor?->lastname}} </span></td>

@@ -95,7 +95,7 @@
                                         @foreach($agencyAccounts as $agency_account)
                                         @if($agency_account["_Account"]['id']!=4 && $agency_account["_Account"]['id']!=9 && $agency_account["_Account"]['id']!=5)
                                         <!-- seul un admin ou un master peut crediter la caisse CDR -->
-                                        <option value="{{$agency_account['id']}}">{{$agency_account["_Account"]["id"]}} {{$agency_account["_Account"]["name"]}} --- <em class="text-danger">( solde actuel: @if($agency_account->AgencyCurrentSold){{$agency_account->AgencyCurrentSold->sold}} @else 0 @endif)</em> </option>
+                                        <option value="{{$agency_account['id']}}">{{$agency_account["_Account"]["name"]}} --- <em class="text-danger">( solde actuel: @if($agency_account->AgencyCurrentSold){{$agency_account->AgencyCurrentSold->sold}} @else 0 @endif)</em> </option>
                                         @endif
                                         @endforeach
                                     </select>
@@ -173,8 +173,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             const caisses = document.getElementById("caisses")
             caisses.addEventListener("change", function(e) {
-                alert("gogo")
-
                 if (e.target.value == 3) {
                     $(".cdr_caisse").removeClass("d-none")
                 } else {
