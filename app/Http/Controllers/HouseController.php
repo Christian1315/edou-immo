@@ -599,7 +599,7 @@ class HouseController extends Controller
 
             /**locataires non payer mais à jour */
             $getNonPayerEtAJour = collect($data["getNonPayerEtAJour"]);
-            // dd($getNonPayerEtAJour);
+
             /**locataires ayant payés à dans l'état et locataires ajour */
             // $paidLocatairesPlusLocataireAjour = $paid_locataires->concat($paidLocators)
             //     ->unique();

@@ -26,10 +26,18 @@
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label>Location </label>
-                                    <select name="location" class="form-select form-control select2" onchange="encaisser(this)" id="select-search">
+                                    <div class="input-group">
+                                        <span class="input-group-text border-end-0 bg-light">
+                                            <i class="fas fa-search" style="color: #FFB800;"></i>
+                                        </span>
+                                        <input type="text" id="search-input" class="form-control border-start-0 ps-0"
+                                            placeholder="Rechercher des locations...">
+                                    </div>
+                                    <br>
+                                    <select name="location" class="form-select form-control" onchange="encaisser(this)" id="select-search">
                                         @foreach($locations as $location)
                                         <option
-                                            class="item"
+                                            class="item-search"
                                             @if($location->status==3) disabled class='bg-secondary text-white' @endif
                                             value="{{$location->id}}"
                                             data-house-name="{{$location->House?->name}}"
@@ -117,12 +125,31 @@
     </div>
 
     <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // Recherche instantanée
+            const searchLocation = document.getElementById('search-input');
+            searchLocation.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                // alert(searchTerm)
+                document.querySelectorAll('.item-search').forEach(row => {
+                    const permissionText = row.textContent.toLowerCase();
+                    if (permissionText.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
         // In your Javascript (external .js resource or <script>
         $(document).ready(function() {
-            $('.select2-modal').select2({
+            $('._select2-modal').select2({
                 theme: 'bootstrap-5',
                 width: '100%',
-                dropdownParent: $('#encaisse .modal-content'),//$("#encaisse")
+                dropdownParent: $('#encaisse .modal-content'), //$("#encaisse")
             });
         });
     </script>

@@ -122,9 +122,19 @@
                                 @csrf
                                 <div class="mb-3">
                                     <span class="text-red">Choisir la location concernée</span>
-                                    <select required name="location" class="form-control">
+                                    <span class="text-red">Choisir la location concernée</span>
+
+                                    <div class="input-group">
+                                        <span class="input-group-text border-end-0 bg-light">
+                                            <i class="fas fa-search" style="color: #FFB800;"></i>
+                                        </span>
+                                        <input type="text" id="search-input" class="form-control border-start-0 ps-0"
+                                            placeholder="Rechercher des locations...">
+                                    </div>
+                                    <br>
+                                    <select required name="location" class="form-control" id="select-search">
                                         @foreach($locations as $location)
-                                        <option value="{{$location['id']}}"> <strong>Maison: </strong> {{$location->House->name}} ; <strong>Index début: </strong> {{count($location->WaterFactures)!=0?$location->WaterFactures->first()->end_index: ($location->Room?$location->Room->water_counter_start_index:null)}} ; <strong>Locataire: </strong>{{$location->Locataire->name}} {{$location->Locataire->prenom}}</option>
+                                        <option value="{{$location['id']}}" class="item-search"> <strong>Maison: </strong> {{$location->House->name}} ; <strong>Index début: </strong> {{count($location->WaterFactures)!=0?$location->WaterFactures->first()->end_index: ($location->Room?$location->Room->water_counter_start_index:null)}} ; <strong>Locataire: </strong>{{$location->Locataire->name}} {{$location->Locataire->prenom}}</option>
                                         @endforeach
                                     </select>
 
@@ -227,12 +237,12 @@
                             <td class="text-center"> <span class=" bg-warning text-white"> {{$location->Room?$location->Room->water_counter_start_index:null}}</span> </td>
                             <td class="text-center"> <strong class=" bg-dark text-zhite"> {{$location->end_index??0}}</strong> </td>
                             <td class="text-center"> <strong class=""> <span class=" bg-light text-dark">{{number_format($location->Room?->unit_price,0,',',' ')}}</span> </strong> </td>
-                            <td class="text-center"> <strong class=" text-red bg-light">  {{$location["total_un_paid_facture_amount"]? number_format($location["total_un_paid_facture_amount"],0,","," ") :0}} fcfa </strong> </td>
-                            <td class="text-center"> <strong class=" text-success bg-light">  {{$location["current_amount"]? number_format($location["current_amount"],0,","," ") :0}} fcfa </strong> </td>
-                            <td class="text-center"> <strong class=" text-success bg-light">  {{$location["paid_facture_amount"]? number_format($location["paid_facture_amount"],0,","," ") :0}} fcfa </strong> </td>
+                            <td class="text-center"> <strong class=" text-red bg-light"> {{$location["total_un_paid_facture_amount"]? number_format($location["total_un_paid_facture_amount"],0,","," ") :0}} fcfa </strong> </td>
+                            <td class="text-center"> <strong class=" text-success bg-light"> {{$location["current_amount"]? number_format($location["current_amount"],0,","," ") :0}} fcfa </strong> </td>
+                            <td class="text-center"> <strong class=" text-success bg-light"> {{$location["paid_facture_amount"]? number_format($location["paid_facture_amount"],0,","," ") :0}} fcfa </strong> </td>
                             <td class="text-center text-red"> <span class=" bg-light text-dark">{{$location["nbr_un_paid_facture_amount"]? number_format($location["nbr_un_paid_facture_amount"],0,","," ") :0}}</span> </td>
-                            <td class="text-center"> <strong class=" bg-light text-red">  {{$location["un_paid_facture_amount"]? number_format($location["un_paid_facture_amount"],0,","," ") :0}} fcfa </strong> </td>
-                            <td class="text-center"> <strong class=" bg-light text-success">  {{$location["rest_facture_amount"]? number_format($location["rest_facture_amount"],0,","," ") :0}} fcfa </strong> </td>
+                            <td class="text-center"> <strong class=" bg-light text-red"> {{$location["un_paid_facture_amount"]? number_format($location["un_paid_facture_amount"],0,","," ") :0}} fcfa </strong> </td>
+                            <td class="text-center"> <strong class=" bg-light text-success"> {{$location["rest_facture_amount"]? number_format($location["rest_facture_amount"],0,","," ") :0}} fcfa </strong> </td>
 
                             <td class="text-center">
                                 <div class="dropdown">
@@ -323,6 +333,25 @@
             </div>
         </div>
     </div>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // Recherche instantanée
+            const searchLocation = document.getElementById('search-input');
+            searchLocation.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                // alert(searchTerm)
+                document.querySelectorAll('.item-search').forEach(row => {
+                    const permissionText = row.textContent.toLowerCase();
+                    if (permissionText.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 
     <!-- SCRIPT -->
     <script type="text/javascript">

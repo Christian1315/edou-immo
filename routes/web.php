@@ -33,7 +33,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
 Route::prefix("debug")->group(function () {
     Route::get("/{id}/supervisor-data", function ($id) {
         $suservisor = User::findOrFail($id);
@@ -44,10 +43,10 @@ Route::prefix("debug")->group(function () {
             })->pluck("id")->toArray();
 
         // suppression des locations
-        Location::whereIn("id", $_locationsIds)->delete();
+        // Location::whereIn("id", $_locationsIds)->delete();
 
         // suppression des maisons
-        House::where("supervisor", $suservisor->id)->delete();
+        // House::where("supervisor", $suservisor->id)->delete();
         return "Opération de supression des datas du superviseur effectué avec succès!";
     });
     // Superviseur William's

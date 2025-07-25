@@ -224,6 +224,25 @@
     <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
 
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // Recherche instantanée
+            const searchLocation = document.getElementById('select-search');
+            searchLocation.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                // alert(searchTerm)
+                document.querySelectorAll('.item-search').forEach(row => {
+                    const permissionText = row.textContent.toLowerCase();
+                    if (permissionText.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+
     <!-- #### DATA TABLES -->
     <script>
         // In your Javascript (external .js resource or <script> tag)
