@@ -416,11 +416,11 @@
                         @endphp
                         <tr class="align-items-center @if($location->status==3) bg-secondary text-white @elseif($location_echeance_date < $now) bg-warning @endif ">
                             <!-- <td class="text-center">{{$loop->index+1}} </td> -->
-                            <td class="text-left"><span class=" bg-light text-dark">{{$location["House"]["name"]}} </span></td>
-                            <td class="text-left"><span class=" bg-light text-dark">{{$location->House->Proprietor->firstname}} {{$location->House->Proprietor->lastname}} </span></td>
-                            <td class="text-center"> <span class="text-uppercase ">{{ $location->House->Supervisor->name }} </span> </td>
+                            <td class="text-left"><span class=" bg-light text-dark">{{$location->House?->name}} </span></td>
+                            <td class="text-left"><span class=" bg-light text-dark">{{$location->House?->Proprietor?->firstname}} {{$location->House?->Proprietor?->lastname}} </span></td>
+                            <td class="text-center"> <span class="text-uppercase ">{{ $location->House?->Supervisor?->name }} </span> </td>
                             <td class="text-center">{{$location->Room?$location->Room->number:"---"}}</td>
-                            <td class="text-center"><span class="text-uppercase   bg-light text-dark">{{$location["Locataire"]["name"]}} {{$location["Locataire"]["prenom"]}} ({{$location["Locataire"]['phone']}})</span></td>
+                            <td class="text-center"><span class="text-uppercase   bg-light text-dark">{{$location->Locataire?->name}} {{$location->Locataire?->prenom}} ({{$location->ocataire?->phone}})</span></td>
 
                             <td class="text-center text-red"><small class="@if($location->status==3) text-white @endif"> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($location["latest_loyer_date"])->locale('fr')->isoFormat('MMMM YYYY') }}</small> </td>
                             <td class="text-center"><span class=" bg-light text-dark"> {{number_format($location["loyer"],0,","," ") }}</span></td>
