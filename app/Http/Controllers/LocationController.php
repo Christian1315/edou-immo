@@ -801,7 +801,10 @@ class LocationController extends Controller
             }
 
             // Mise à jour du status de la facture
-            $facture->update(["status" => $request->status]);
+            $facture->update([
+                "status" => $request->status,
+                "facture_code" => $facture->facture_code . ' ' . 'updated'
+            ]);
 
             DB::commit();
 

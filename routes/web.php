@@ -34,6 +34,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix("debug")->group(function () {
+    Route::get("/factures", function () {
+        Facture::query()->where("status", 3)->update(["facture_code" => null]);
+        return "code des factures rejeté rendu null désormais";
+    });
+
+
     Route::get("/{id}/supervisor-data", function ($id) {
         $suservisor = User::findOrFail($id);
 

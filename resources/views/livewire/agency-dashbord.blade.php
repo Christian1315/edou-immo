@@ -250,7 +250,7 @@
             </div>
         </div>
 
-        <div class="col-sm-3">
+        <!-- <div class="col-sm-3">
             <div class="card shadow-lg">
                 <div class="card-body">
                     <h5 class="card-title text-red"><i class="bi bi-cash-coin"></i> Paiements</h5>
@@ -258,7 +258,7 @@
                     <a href="/{{crypId($current_agency['id'])}}/paiement" class="btn bg-dark">Voir détail &nbsp; <i class="bi bi-arrow-right-circle"></i></a>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <div class="col-sm-3">
             <div class="card shadow-lg">

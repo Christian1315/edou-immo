@@ -146,7 +146,7 @@ class Location extends Model
     {
         return $this->belongsTo(Locataire::class, "locataire")
             ->with(["Owner", "CardType", "Departement", "Country"])
-            ->where(["visible" => 1]);
+            ;
     }
 
     /**
@@ -172,7 +172,7 @@ class Location extends Model
     {
         return $this->belongsTo(Room::class, "room")
             ->with(["Owner", "House", "Nature", "Type"])
-            ->where(["visible" => 1]);
+            ;
     }
 
     /**

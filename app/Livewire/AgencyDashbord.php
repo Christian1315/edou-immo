@@ -44,7 +44,6 @@ class AgencyDashbord extends Component
         $user = auth()->user();
 
         if ($user->hasRole("Superviseur")) {
-
             // Propriétaires
             $this->proprietors_count = $this->agency->_Proprietors()
                 ->whereHas("houses", function ($house) use ($user) {
@@ -57,26 +56,29 @@ class AgencyDashbord extends Component
                 ->where("supervisor", $user->id)
                 ->count();
 
-            // Locataires 
-            $this->locators_count = $this->agency->_Locataires->count();
-
             // Locations
-            $this->locations = $this->agency->_Locations
-                ->where("status", "!=", 3);
+            $this->locations = $this->current_agency
+                ->_Locations
+                ->where("status", "!=", 3)
+                ->filter(function ($location) use ($user) {
+                    return $location->House->supervisor == $user->id;
+                });
+
+            $this->locations_count = $this->locations
+                ->count();
+
+            // Locataires 
+            $this->locators_count = $this->locations
+                ->pluck("Locataire")
+                ->count();
 
             //types
             $this->types = LocationType::get();
 
-            // $this->locations = $this->current_agency->_Locations
-            //     ->filter(fn($location) => $location->House->supervisor == $user->id);
-
-            // $this->locations_count = $this->locations
-            //     ->filter(fn($location) => $location->House->supervisor == $user->id)
-            //     ->count();
-
             // Factures et Paiements
             $this->factures_count = $this->locations->flatMap
                 ->Factures
+                ->where("state_facture", false) //on tient pas comptes des factures generée pour clotuer un état
                 ->count();
 
             $this->paiement_count = 0;
@@ -85,6 +87,56 @@ class AgencyDashbord extends Component
             $this->rooms_count = $this->agency->_Proprietors
                 ->flatMap->houses
                 ->where("supervisor", $user->id)
+                ->flatMap->rooms->count();
+        } elseif ($user->hasRole("Gestionnaire de compte")) {
+            /**Ses superviseurs */
+            $supervisorsIds = $user->supervisors->pluck("id")
+                ->toArray();
+
+            // Propriétaires
+            $proprietors = $this->agency->_Proprietors()
+                ->whereHas("houses", function ($house) use ($supervisorsIds) {
+                    $house->whereIn("supervisor", $supervisorsIds);
+                });
+            $this->proprietors_count = $proprietors->count();
+
+            // Maisons
+            $this->houses_count = $this->agency->_Proprietors
+                ->flatMap->houses
+                ->whereIn("supervisor", $supervisorsIds)
+                ->count();
+
+            // Locations
+            $this->locations = $this->current_agency
+                ->_Locations
+                ->where("status", "!=", 3)
+                ->filter(function ($location) use ($supervisorsIds) {
+                    return in_array($location->House->supervisor, $supervisorsIds);
+                });
+
+            $this->locations_count = $this->locations->count();
+
+            // Locataires 
+            $this->locators_count = $this->locations
+                ->pluck("Locataire")
+                ->count();
+
+            //types
+            $this->types = LocationType::get();
+
+            // Factures et Paiements
+            $this->factures_count = $this->locations
+                ->flatMap
+                ->Factures
+                ->where("state_facture", false) //on tient pas comptes des factures generée pour clotuer un état
+                ->count();
+
+            $this->paiement_count = 0;
+
+            // Chambres
+            $this->rooms_count = $this->agency->_Proprietors
+                ->flatMap->houses
+                ->whereIn("supervisor", $supervisorsIds)
                 ->flatMap->rooms->count();
         } else {
             // Propriétaires
@@ -101,7 +153,11 @@ class AgencyDashbord extends Component
             $this->locations_count = $this->locations->count();
 
             // Factures et Paiements
-            $this->factures_count = $this->agency->_Locations->flatMap->Factures->count();
+            $this->factures_count = $this->agency->_Locations
+                ->flatMap
+                ->Factures
+                ->where("state_facture", false) //on tient pas comptes des factures generée pour clotuer un état
+                ->count();
             $this->paiement_count = $this->houses_count;
 
             // Chambres

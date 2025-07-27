@@ -81,9 +81,41 @@ class Locator extends Component
     {
         confirmDelete('Suppression de locataire', "Voulez-vous vraiment supprimer ce locataire");
 
-        $agency_locators = $this->current_agency->_Locataires
-        ->load("Locations");
-        
+        $user = Auth::user();
+
+        if ($user->hasRole("Gestionnaire de compte")) {
+            /**Ses superviseurs */
+            $supervisorsIds = $user->supervisors->pluck("id")
+                ->toArray();
+
+            // Locations
+            $locations = $this->current_agency
+                ->_Locations
+                ->where("status", "!=", 3)
+                ->filter(function ($location) use ($supervisorsIds) {
+                    return in_array($location->House->supervisor, $supervisorsIds);
+                });
+
+            // Locataires 
+            $agency_locators = $locations
+                ->pluck("Locataire");
+        } elseif ($user->hasRole("Superviseur")) {
+            // Locations
+            $locations = $this->current_agency
+                ->_Locations
+                ->where("status", "!=", 3)
+                ->whereHas("House", function ($query) use ($user) {
+                    $query->where("supervisor", $user->id);
+                });
+
+            // Locataires 
+            $agency_locators = $locations
+                ->pluck("Locataire");
+        }else {
+            // Locataires 
+            $agency_locators = $this->current_agency->_Locataires;
+        }
+
         $this->locators_count = $agency_locators->count();
         $this->locators = $agency_locators;
         $this->old_locators = $agency_locators;

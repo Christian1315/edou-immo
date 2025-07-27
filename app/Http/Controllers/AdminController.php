@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
@@ -440,11 +441,34 @@ class AdminController extends Controller
             $agency = Agency::where("visible", 1)
                 ->findOrFail(deCrypId($agencyId));
 
-            $query = Facture::with(["Location"])
-                ->whereIn("location", $agency->_Locations
-                    ->where("status", "!=", 3) //on tient pas compte des locations demenagées
-                    ->pluck("id"))
-                ->where("state_facture", false); //on tient pas comptes des factures generée pour clotuer un étt
+            $user = auth()->user();
+            if ($user->hasRole("Gestionnaire de compte")) {
+                /**Ses superviseurs */
+                $supervisorsIds = $user->supervisors->pluck("id")
+                    ->toArray();
+
+                // Locations
+                $locations = $agency
+                    ->_Locations()
+                    ->where("status", "!=", 3)
+                    ->whereHas("House", function ($house) use ($supervisorsIds) {
+                        $house->whereIn("supervisor", $supervisorsIds);
+                    });
+
+                $query = $locations
+                    ->get()
+                    ->flatMap
+                    ->Factures
+                    ->where("state_facture", false); //on tient pas comptes des factures generée pour clotuer un état
+                // dd($query);
+            } else {
+                $query = Facture::with(["Location"])
+                    ->whereIn("location", $agency->_Locations
+                        ->where("status", "!=", 3) //on tient pas compte des locations demenagées
+                        ->pluck("id"))
+                    ->get()
+                    ->where("state_facture", false); //on tient pas comptes des factures generée pour clotuer un étt
+            }
 
 
             if ($request->isMethod('POST')) {
@@ -479,7 +503,8 @@ class AdminController extends Controller
                     // dd($request->status);
                     switch ($request->status) {
                         case "valide":
-                            $query->where("status", 2);
+                            $query
+                                ->where("status", 2);
                             // dd($query->where("status", 2)->get());
                             break;
                         case "en_attente":
@@ -492,7 +517,7 @@ class AdminController extends Controller
                             $query;
                     }
                 }
-                $factures = $query->get();
+                $factures = $query;
             }
 
             $montantTotal = $factures->sum("amount");
@@ -509,6 +534,7 @@ class AdminController extends Controller
                 ->withInput()
                 ->withErrors($e->errors());
         } catch (\Exception $e) {
+            Log::info("Error" . $e->getMessage());
             alert()->error("Echec", "Une erreur est survenue lors du traitement de votre demande");
             return back()->withInput();
         }
