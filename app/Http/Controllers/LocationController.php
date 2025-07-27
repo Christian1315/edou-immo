@@ -707,7 +707,6 @@ class LocationController extends Controller
             ]);
 
             DB::commit();
-
             alert()->success("Succès", "Locataire déménagé avec succès");
             return back()
                 ->withInput();
@@ -744,19 +743,17 @@ class LocationController extends Controller
                 throw new \Exception("Ce type de paiement n'existe pas!");
             }
 
-            
             // Préparation des données de paiement
             $paymentData = $this->preparePaymentData($formData, $location, $user);
-            // dd($paymentData);
 
             // Création de la facture
             $facture = $this->createFacture($paymentData);
 
             ### désormais le solde ne sera touché qu'après validation de la facture
-            // // Mise à jour du compte de l'agence
+            // Mise à jour du compte de l'agence
             // $this->updateAgencyAccount($paymentData, $location);
 
-            // // Mise à jour de la location après le paiement
+            // Mise à jour de la location après le paiement
             // $this->updateLocationAfterPayment($location, $formData);
 
             DB::commit();

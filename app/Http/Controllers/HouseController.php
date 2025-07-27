@@ -418,13 +418,13 @@ class HouseController extends Controller
             ]);
         }
 
-        $precedent_arret_date = strtotime($this_house_state->stats_stoped_day);
-        $now = strtotime(now());
-        $twenty_days = self::STATE_STOP_DAYS * 24 * 3600;
+        // $precedent_arret_date = strtotime($this_house_state->stats_stoped_day);
+        // $now = strtotime(now());
+        // $twenty_days = self::STATE_STOP_DAYS * 24 * 3600;
 
-        if ($now < ($precedent_arret_date + $twenty_days)) {
-            throw new \Exception("La précedente date d'arrêt des états de cette maison ne depasse pas encore " . self::STATE_STOP_DAYS . " jours!");
-        }
+        // if ($now < ($precedent_arret_date + $twenty_days)) {
+        //     throw new \Exception("La précedente date d'arrêt des états de cette maison ne depasse pas encore " . self::STATE_STOP_DAYS . " jours!");
+        // }
 
         return HomeStopState::create([
             "owner" => $formData["owner"],

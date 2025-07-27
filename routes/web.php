@@ -127,7 +127,6 @@ Route::controller(UserController::class)->group(function () {
     Route::any('{id}/password/update', 'UpdatePassword')->name("user.updatePassword");
 
     Route::any('attach-user', 'AttachRightToUser'); #Attacher un droit au user 
-
 });
 
 ###========== PROPRIETAIRE ========###
@@ -142,7 +141,6 @@ Route::prefix("proprietor")->group(function () {
 ###========== HOUSE ========###
 Route::prefix("house")->group(function () {
     Route::controller(HouseController::class)->group(function () {
-
         Route::post('add-type', 'AddHouseType')->name("house.AddHouseType"); #AJOUT D'UN TYPE DE MAISON
 
         Route::post('add', '_AddHouse')->name("house._AddHouse"); #AJOUT D'UNE MAISON
@@ -159,10 +157,8 @@ Route::prefix("house")->group(function () {
         // FILTRAGE
         Route::post('filtrebysupervisor/{houseId}', 'FiltreHouseBySupervisor')->name("house.FiltreHouseBySupervisor"); ####___FILTRE DES MAISONS PAR SUPERVISEUR;
         Route::post('filtrebyperiode/{houseId}', 'FiltreHouseByPeriod')->name("house.FiltreHouseByPeriode"); ####___FILTRE DES MAISONS PAR PERIODE;
-
     });
 });
-
 
 // CAUTION HTML
 Route::controller(LocationController::class)->group(function () {
