@@ -35,6 +35,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix("debug")->group(function () {
     Route::get("/factures", function () {
+        dd(Facture::where("status", 3)->pluck("facture_code"));
         Facture::query()->where("status", 3)->update(["facture_code" => null]);
         return "code des factures rejeté rendu null désormais";
     });
