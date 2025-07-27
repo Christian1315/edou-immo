@@ -13,12 +13,12 @@ use Carbon\Carbon;
 
 trait LocationPaymentTrait
 {
-    
+
     public function validatePaymentData(array $formData)
     {
         $rules = [
-            'location' => ['required', "integer","exists:locationsnew,id"],
-            'type' => ['required', "integer","exists:paiement_types,id"],
+            'location' => ['required', "integer", "exists:locationsnew,id"],
+            'type' => ['required', "integer", "exists:paiement_types,id"],
             'facture_code' => ['required', "unique:factures,facture_code"],
         ];
 
@@ -37,7 +37,7 @@ trait LocationPaymentTrait
     public function getLocationWithRelations($locationId)
     {
         $location = Location::with(["House", "Locataire", "Room"])->find($locationId);
-        
+
         if (!$location) {
             throw new \Exception("Cette location n'existe pas!");
         }
@@ -60,7 +60,10 @@ trait LocationPaymentTrait
             "begin_date" => null,
             "end_date" => null,
             "facture_code" => $formData["facture_code"],
-            "is_penality" => $formData["is_penality"] ?? false
+            "is_penality" => $formData["is_penality"] ?? false,
+
+            "prorata_days" => $formData["prorata_days"] ?? 0,
+            "prorata_amount" => $formData["prorata_amount"] ?? 0,
         ];
 
         if ($location->Locataire->prorata) {
@@ -98,7 +101,7 @@ trait LocationPaymentTrait
             $formData["facture"]->move("factures", $fileName);
             return asset("factures/" . $fileName);
         }
-        
+
         return $location->facture;
     }
 
@@ -214,4 +217,4 @@ trait LocationPaymentTrait
             $locataire->update(['prorata' => false]);
         }
     }
-} 
+}

@@ -417,7 +417,7 @@
                         <tr class="align-items-center @if($location->status==3) bg-secondary text-white @elseif($location_echeance_date < $now) bg-warning @endif ">
                             <!-- <td class="text-center">{{$loop->index+1}} </td> -->
                             <td class="text-left">
-                                <span class=" bg-light text-dark">{{$location->House?->name}}</span>
+                                <span class=" bg-light text-dark">{{$location->House?->name}} -- [{{$location->Locataire?->id}}]</span>
                                 <span class="bg-light text-dark d-block d-sm-none">
                                     | {{$location->Locataire?->name}} {{$location->Locataire?->prenom}} ({{$location->Locataire?->phone}}) | {{number_format($location["loyer"],0,","," ") }} | <small class="@if($location->status==3) text-white @endif"> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($location["latest_loyer_date"])->locale('fr')->isoFormat('MMMM YYYY') }}</small>
                                 </span>
@@ -438,7 +438,6 @@
                                 <textarea name="" rows="1" class="form-control" placeholder="Démenagé le {{ \Carbon\Carbon::parse($location['move_date'])->locale('fr')->isoFormat('D MMMM YYYY') }} par {{$location->MovedBy?->name}} ; Commentaire: ({{$location->move_comments}})"></textarea>
                                 @endif
                             </td>
-
                             <td class="text-center">
                                 <div class="btn-group dropstart">
                                     <button class="btn bg-red btn-sm dropdown-toggle" style="z-index: 0;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -602,7 +601,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="" class="d-block">Code de facture</label>
-                                    <input value="{{old('facture_code')}}" name="facture_code" placeholder="Code facture ...." class="form-control facture_code">
+                                    <input value="{{old('facture_code')}}" name="facture_code" required placeholder="Code facture ...." class="form-control facture_code">
                                     @error('facture_code')
                                     <span class="text-red">{{$message}}</span>
                                     @enderror
@@ -808,10 +807,10 @@
             const formattedDate = date.toLocaleDateString("fr", options);
 
             $(".next_loyer_date").val(formattedDate)
-
+            // alert(location.locataire.prorata)
             if (location.locataire.prorata) {
                 $(".prorata").removeClass("d-none")
-                $(".prorata_days").val(location.prorata_days)
+                $(".prorata_days").val(location.prorata_days??0)
                 $(".prorata_amount").val(location.prorata_amount)
                 $(".prorata_date").val(location.locataire.prorata_date)
             }

@@ -459,6 +459,7 @@ class AdminController extends Controller
                     ->get()
                     ->flatMap
                     ->Factures
+                    ->latest()
                     ->where("state_facture", false); //on tient pas comptes des factures generée pour clotuer un état
                 // dd($query);
             } else {
@@ -466,6 +467,7 @@ class AdminController extends Controller
                     ->whereIn("location", $agency->_Locations
                         ->where("status", "!=", 3) //on tient pas compte des locations demenagées
                         ->pluck("id"))
+                    ->latest()
                     ->get()
                     ->where("state_facture", false); //on tient pas comptes des factures generée pour clotuer un étt
             }
@@ -517,8 +519,9 @@ class AdminController extends Controller
                         default:
                             $factures = $query;
                     }
+                } else {
+                    $factures = $query;
                 }
-                // $factures = $query;
             }
 
             $montantTotal = $factures->sum("amount");

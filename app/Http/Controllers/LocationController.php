@@ -744,8 +744,10 @@ class LocationController extends Controller
                 throw new \Exception("Ce type de paiement n'existe pas!");
             }
 
+            
             // Préparation des données de paiement
             $paymentData = $this->preparePaymentData($formData, $location, $user);
+            // dd($paymentData);
 
             // Création de la facture
             $facture = $this->createFacture($paymentData);

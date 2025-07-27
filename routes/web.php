@@ -17,6 +17,7 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\RoleController;
 use App\Models\Facture;
 use App\Models\House;
+use App\Models\Locataire;
 use App\Models\Location;
 use App\Models\Room;
 use App\Models\User;
@@ -35,11 +36,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix("debug")->group(function () {
     Route::get("/factures", function () {
-        // dd(Facture::where("status", 3)->pluck("facture_code"));
+        return Locataire::firstWhere(["prorata" => true]);
         Facture::query()->where("status", 3)->update(["facture_code" => null]);
         return "code des factures rejeté rendu null désormais";
     });
-
 
     Route::get("/{id}/supervisor-data", function ($id) {
         $suservisor = User::findOrFail($id);
