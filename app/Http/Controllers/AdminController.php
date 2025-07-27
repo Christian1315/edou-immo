@@ -503,21 +503,22 @@ class AdminController extends Controller
                     // dd($request->status);
                     switch ($request->status) {
                         case "valide":
-                            $query
+                            $factures = $query
                                 ->where("status", 2);
                             // dd($query->where("status", 2)->get());
                             break;
                         case "en_attente":
-                            $query->where("status", 1);
+                            $factures = $query->where("status", 1);
                             break;
                         case "rejetee":
-                            $query->where("status", 3);
+                            $factures = $query->where("status", 3);
+
                             break;
                         default:
-                            $query;
+                            $factures = $query;
                     }
                 }
-                $factures = $query;
+                // $factures = $query;
             }
 
             $montantTotal = $factures->sum("amount");
