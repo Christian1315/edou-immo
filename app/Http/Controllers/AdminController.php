@@ -227,13 +227,37 @@ class AdminController extends Controller
 
     function AgencyStatistique(Request $request, $agencyId)
     {
-        $agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
-        if (!$agency) {
-            alert()->error("Echec", "Cette agence n'existe pas!");
-        };
-        ####____
+        try {
+            $agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
+            if (!$agency) {
+                throw new \Exception("Cette agence n'existe pas!");
+            };
+            ####____
 
-        return view("admin.agency-statistique", compact("agency"));
+            $query = House::whereIn("agency", $agency->_Houses->pluck("id")->toArray());
+            if ($request->supervisor) {
+                $houses = $query->where("supervisor", $request->supervisor)->get();
+                alert()->info("Filtrage éffectué", "Filtre de statistiques effectuée par superviseur");
+
+                return back()->withInput()->with(["houses_filtered" => $houses]);
+            } elseif ($request->gestionnaire) {
+                $gestionnaire = User::findOrFail($request->gestionnaire);
+                $houses = $query->whereIn("supervisor", $gestionnaire->supervisors
+                    ->pluck("id")
+                    ->toArray())
+                    ->get();
+
+                alert()->info("Filtrage éffectué", "Filtre de statistiques effectuée par gestionnaire");
+
+                return back()->withInput()->with(["houses_filtered" => $houses]);
+            } else {
+                $houses = $query->get();
+            }
+
+            return view("admin.agency-statistique", ["agency" => $agency, "houses" => $houses]);
+        } catch (\Exception $e) {
+            alert()->error("Opération échouée", $e->getMessage());
+        }
     }
 
 

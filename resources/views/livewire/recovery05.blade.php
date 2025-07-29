@@ -37,7 +37,6 @@
                         <li class="list-group-item" style="justify-content: space-between!important">{{$house->name}} &nbsp; <a href="{{route('taux._ShowAgencyTaux05_By_House',['agencyId'=>crypId($agency->id),'house'=>crypId($house->id)])}}" class="btn btn-sm btn-light text-red"><i class="bi bi-eye"></i></a> </li>
                         @endforeach
                     </ul>
-
                 </div>
             </div>
         </div>
@@ -45,7 +44,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <p class="text">Locataires <strong class="text-red"> ayant payé</strong> après l’arrêt des différents états jusqu’à leur date d’échéance du 05 à 00h au plus tard</p>
+            <p class="text">Locataires <strong class="text-red"> ayant payé</strong> après l’arrêt des derniers états jusqu’à leur date d’échéance du 05 à 00h au plus tard</p>
             <h4 class="">Total: <strong class="text-red"> {{count($locators)}} </strong> </h4>
             <div class="table-responsive table-responsive-list shadow-lg">
                 <table id="myTable" class="table table-striped table-sm">

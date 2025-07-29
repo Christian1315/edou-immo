@@ -130,7 +130,6 @@
             const searchLocation = document.getElementById('search-input');
             searchLocation.addEventListener('input', function(e) {
                 const searchTerm = e.target.value.toLowerCase();
-                // alert(searchTerm)
                 document.querySelectorAll('.item-search').forEach(row => {
                     const permissionText = row.textContent.toLowerCase();
                     if (permissionText.includes(searchTerm)) {

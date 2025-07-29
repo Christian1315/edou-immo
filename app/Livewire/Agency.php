@@ -31,7 +31,6 @@ class Agency extends Component
     function mount()
     {
         set_time_limit(0);
-
         $this->agencies = ModelsAgency::all();
         $this->countries = Country::all();
         $this->cities = City::all();

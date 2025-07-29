@@ -2,7 +2,7 @@
     <div>
         <div class="d-flex header-bar">
             <h2 class="accordion-header">
-                <button type="button" class="btn btn-sm bg-dark" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <button type="button" class="btn btn-sm bg-dark" data-bs-toggle="modal" data-bs-target="#add_agency">
                     <i class="bi bi-cloud-plus-fill"></i> Ajouter
                 </button>
             </h2>
@@ -35,7 +35,7 @@
     </div>
     @endif
 
-    <div class="modal fade" id="staticBackdrop" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade" id="add_agency" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -108,12 +108,10 @@
                                     @enderror
                                 </div><br>
                                 <div class="mb-3">
-                                    <select value="{{old('city')}}" class="form-select form-control" name="city" aria-label="Default select example">
+                                    <select value="{{old('city')}}" class="form-control select-ville" name="city" aria-label="Default select example">
                                         <option>Ville</option>
                                         @foreach($cities as $citie)
-                                        <!-- if($citie->id == 4) -->
                                         <option value="{{$citie->name}}">{{$citie->name}}</option>
-                                        <!-- endif -->
                                         @endforeach
                                     </select>
                                     @error("city")
@@ -127,12 +125,17 @@
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer">
-                </div>
             </div>
         </div>
     </div>
     <br>
+
+    <select value="{{old('city')}}" class="form-control select-ville" name="city">
+        <option>Ville</option>
+        @foreach($cities as $citie)
+        <option value="{{$citie->name}}">{{$citie->name}}</option>
+        @endforeach
+    </select>
 
     <!-- TABLEAU DE LISTE -->
     <h4 class="my-2">Total: <strong class="text-red"> {{$agencies->count()}} </strong> </h4>
@@ -198,4 +201,11 @@
             </div>
         </div>
     </div>
+
+    @push("scripts")
+    <script>
+        // In your Javascript (external .js resource or <script> tag)
+        alert("agency")
+    </script>
+    @endpush
 </div>

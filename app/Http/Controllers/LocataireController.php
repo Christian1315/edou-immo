@@ -8,7 +8,9 @@ use App\Models\Country;
 use App\Models\Departement;
 use App\Models\House;
 use App\Models\Locataire;
+use App\Models\Location;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -117,7 +119,7 @@ class LocataireController extends Controller
                         if ($dayOfEcheance === 5) {
                             if ($inner_call) {
                                 $result['paid'][] = $location;
-                            }else {
+                            } else {
                                 $result['paid'][] = $location->Locataire;
                             }
                         } else if ($inner_call) {
@@ -128,7 +130,6 @@ class LocataireController extends Controller
             }
 
             if ($inner_call) {
-                // dd($result['paid']);
                 return [
                     'locations_that_paid' => $result['paid'],
                     'locations_that_do_not_paid' => $result['unpaid']
@@ -177,7 +178,7 @@ class LocataireController extends Controller
                         if ($dayOfEcheance === 10) {
                             if ($inner_call) {
                                 $result['paid'][] = $location;
-                            }else {
+                            } else {
                                 $result['paid'][] = $location->Locataire;
                             }
                         } else if ($inner_call) {
@@ -233,7 +234,7 @@ class LocataireController extends Controller
                         if ($dayOfEcheance === 5 || $dayOfEcheance === 10) {
                             if ($inner_call) {
                                 $result['paid'][] = $location;
-                            }else {
+                            } else {
                                 $result['paid'][] = $location->Locataire;
                             }
                         } else if ($inner_call) {
@@ -779,15 +780,16 @@ class LocataireController extends Controller
                 'agency' => $agency,
                 'locations_that_paid' => $recovery_locations["locations_that_paid"],
                 'locations_that_do_not_paid' => $recovery_locations["locations_that_do_not_paid"],
-                'total_of_both_of_them' => count($recovery_locations["locations_that_paid"]) + count($recovery_locations["locations_that_do_not_paid"])
+                // 'total_of_both_of_them' => count($recovery_locations["locations_that_paid"]) + count($recovery_locations["locations_that_do_not_paid"])
             ];
         } catch (\Exception $e) {
             throw new \Exception("Erreur lors de la récupération des locations: " . $e->getMessage());
         }
     }
 
-    private function renderRecoveryView($locations, $action, $agency, $supervisor, $house, $locations_that_do_not_paid, $total_of_both_of_them, $viewType)
+    private function renderRecoveryView($locations, $action, $agency, $supervisor, $house, $locations_that_do_not_paid, $viewType)
     {
+        set_time_limit(0);
         try {
             $view = match ($viewType) {
                 '05' => 'recovery05_locators',
@@ -796,15 +798,40 @@ class LocataireController extends Controller
                 default => throw new \Exception("Type de vue invalide")
             };
 
-            return view($view, compact([
-                "locations",
-                "action",
-                "agency",
-                "supervisor",
-                "house",
-                "locations_that_do_not_paid",
-                "total_of_both_of_them"
-            ]));
+            if ($supervisor) {
+                $locationsThatDoNotPaid = collect($locations_that_do_not_paid)
+                    ->filter(fn($location) => $location->House->supervisor == $supervisor->id);
+            } elseif ($house) {
+                $locationsThatDoNotPaid = collect($locations_that_do_not_paid)
+                    ->filter(fn($location) => $location->house == $house->id);
+            } else {
+                $locationsThatDoNotPaid = $locations_that_do_not_paid;
+            }
+
+            $pdf = Pdf::loadView($view, [
+                "locations" => $locations,
+                "action" => $action,
+                "agency" => $agency,
+                "supervisor" => $supervisor,
+                "house" => $house,
+                "locations_that_do_not_paid" => $locationsThatDoNotPaid,
+                "total_of_both_of_them" => collect($locations)->count() + collect($locationsThatDoNotPaid)->count()
+            ]);
+
+            /** Set PDF orientation to landscape*/
+            $pdf->setPaper('a4', 'landscape');
+
+            return $pdf->stream();
+
+            // return view($view, compact([
+            //     "locations",
+            //     "action",
+            //     "agency",
+            //     "supervisor",
+            //     "house",
+            //     "locations_that_do_not_paid",
+            //     "total_of_both_of_them"
+            // ]));
         } catch (\Exception $e) {
             throw new \Exception("Erreur lors du rendu de la vue: " . $e->getMessage());
         }
@@ -823,6 +850,7 @@ class LocataireController extends Controller
             $locations = $recoveryData['locations_that_paid'];
 
             DB::commit();
+
             return $this->renderRecoveryView(
                 $locations,
                 $action,
@@ -830,7 +858,6 @@ class LocataireController extends Controller
                 $supervisor,
                 $house,
                 $recoveryData['locations_that_do_not_paid'],
-                $recoveryData['total_of_both_of_them'],
                 '05'
             );
         } catch (\Exception $e) {
@@ -863,7 +890,6 @@ class LocataireController extends Controller
                 $supervisor,
                 $house,
                 $recoveryData['locations_that_do_not_paid'],
-                $recoveryData['total_of_both_of_them'],
                 '05'
             );
         } catch (\Exception $e) {
@@ -896,7 +922,6 @@ class LocataireController extends Controller
                 $supervisor,
                 $house,
                 $recoveryData['locations_that_do_not_paid'],
-                $recoveryData['total_of_both_of_them'],
                 '05'
             );
         } catch (\Exception $e) {
@@ -925,7 +950,7 @@ class LocataireController extends Controller
                 $supervisor,
                 $house,
                 $recoveryData['locations_that_do_not_paid'],
-                $recoveryData['total_of_both_of_them'],
+                // $recoveryData['total_of_both_of_them'],
                 '10'
             );
         } catch (\Exception $e) {
@@ -958,7 +983,7 @@ class LocataireController extends Controller
                 $supervisor,
                 $house,
                 $recoveryData['locations_that_do_not_paid'],
-                $recoveryData['total_of_both_of_them'],
+                // $recoveryData['total_of_both_of_them'],
                 '10'
             );
         } catch (\Exception $e) {
@@ -991,7 +1016,7 @@ class LocataireController extends Controller
                 $supervisor,
                 $house,
                 $recoveryData['locations_that_do_not_paid'],
-                $recoveryData['total_of_both_of_them'],
+                // $recoveryData['total_of_both_of_them'],
                 '10'
             );
         } catch (\Exception $e) {
@@ -1020,7 +1045,7 @@ class LocataireController extends Controller
                 $supervisor,
                 $house,
                 $recoveryData['locations_that_do_not_paid'],
-                $recoveryData['total_of_both_of_them'],
+                // $recoveryData['total_of_both_of_them'],
                 'qualitatif'
             );
         } catch (\Exception $e) {
@@ -1053,7 +1078,7 @@ class LocataireController extends Controller
                 $supervisor,
                 $house,
                 $recoveryData['locations_that_do_not_paid'],
-                $recoveryData['total_of_both_of_them'],
+                // $recoveryData['total_of_both_of_them'],
                 'qualitatif'
             );
         } catch (\Exception $e) {
@@ -1086,7 +1111,7 @@ class LocataireController extends Controller
                 $supervisor,
                 $house,
                 $recoveryData['locations_that_do_not_paid'],
-                $recoveryData['total_of_both_of_them'],
+                // $recoveryData['total_of_both_of_them'],
                 'qualitatif'
             );
         } catch (\Exception $e) {

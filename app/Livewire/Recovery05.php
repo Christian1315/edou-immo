@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Locataire;
 use Livewire\Component;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -38,31 +39,60 @@ class Recovery05 extends Component
         Log::info("Debut du chargement de getLocatorsThatPaidAfterStateStopped()");
 
         try {
-            return collect($this->houses)
-                ->filter(fn($house) => $house->States->isNotEmpty())
-                ->flatMap(function ($house) {
-                    $lastState = $house->States->last();
-                    $lastStateDate = Carbon::parse($lastState->stats_stoped_day)->format(self::DATE_FORMAT);
+            $houses = collect($this->houses)
+                ->filter(fn($house) => $house->States->isNotEmpty());
 
-                    return $lastState->Factures
-                        ->map(function ($facture) use ($lastStateDate) {
-                            $location = $facture->Location;
-                            $echeanceDate = Carbon::parse($facture->echeance_date)->format(self::DATE_FORMAT);
-                            $previousEcheanceDate = Carbon::parse($location->previous_echeance_date)->format(self::DATE_FORMAT);
+            $locators = collect();
 
-                            if ($this->isValidPaymentDate($lastStateDate, $echeanceDate, $previousEcheanceDate)) {
-                                $location->Locataire["locator_location"] = $location;
-                                return $location->Locataire;
-                            }
-                            return null;
-                        })
-                        ->filter()
-                        ->values()
-                        ;
-                })
-                ->unique()
-                ->values()
-                ->toArray();
+            $houses->each(function ($house) use ($locators) {
+                $lastState = $house->States->last();
+                $lastStateDate = Carbon::parse($lastState->stats_stoped_day)->format(self::DATE_FORMAT);
+
+                $filterredFactures = $lastState->Factures
+                    ->filter(function ($facture) use ($lastStateDate) {
+                        $location = $facture->Location;
+                        $echeanceDate = Carbon::parse($facture->echeance_date)->format(self::DATE_FORMAT);
+                        $previousEcheanceDate = Carbon::parse($location->previous_echeance_date)->format(self::DATE_FORMAT);
+
+                        return $this->isValidPaymentDate($lastStateDate, $echeanceDate, $previousEcheanceDate);
+                    });
+
+                /** */
+                $filterredFactures
+                    ->pluck("Location")
+                    ->each(function ($location) use ($locators) {
+                        $location->Locataire["locator_location"] = $location;
+                        $locators[] = $location->Locataire;
+                    });
+            });
+
+            return $locators;
+
+            // return collect($this->houses)
+            //     ->filter(fn($house) => $house->States->isNotEmpty())
+            //     ->flatMap(function ($house) {
+            //         $lastState = $house->States->last();
+            //         $lastStateDate = Carbon::parse($lastState->stats_stoped_day)->format(self::DATE_FORMAT);
+
+            //         return $lastState->Factures
+            //             ->map(function ($facture) use ($lastStateDate) {
+            //                 $location = $facture->Location;
+            //                 $echeanceDate = Carbon::parse($facture->echeance_date)->format(self::DATE_FORMAT);
+            //                 $previousEcheanceDate = Carbon::parse($location->previous_echeance_date)->format(self::DATE_FORMAT);
+
+            //                 if ($this->isValidPaymentDate($lastStateDate, $echeanceDate, $previousEcheanceDate)) {
+            //                     $location->Locataire["locator_location"] = $location;
+            //                     return $location->Locataire;
+            //                 }
+            //                 return null;
+            //             })
+            //             ->filter()
+            //             ->values();
+            //     })
+            //     ->unique()
+            //     ->values()
+            //     ->toArray();
+
         } catch (\Exception $e) {
             Log::error("Erreure lors du chargement de getLocatorsThatPaidAfterStateStopped() " . $e->getMessage());
         }

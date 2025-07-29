@@ -298,7 +298,7 @@
                                                     qualitatif</a></li>
                                             <li><a class="dropdown-item"
                                                     href="/{{ crypId($agency['id']) }}/performance">Taux
-                                                    de performance</a></li>
+                                                    d'occupation des maisons</a></li>
                                             <li><a class="dropdown-item"
                                                     href="/{{ crypId($agency['id']) }}/recovery_quelconque_date">Quelconque
                                                     date</a></li>
@@ -318,6 +318,13 @@
 
                     <!-- ALERT -->
                     {{ $slot }}
+
+                    <select class="js-example-basic-single form-control" name="state">
+                        <option value="AL">Alabama</option>
+                        <option value="WY">Wyoming</option>
+                        <option value="WY">Wyoming</option>
+                        <option value="WY">Wyoming</option>
+                    </select>
 
                     {{-- MODAL DE CHANGEMENT DE MOT DE PASE --}}
                     <!-- Modal -->
@@ -384,24 +391,11 @@
     <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
     <!-- <script src="{{asset('plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script> -->
 
-    <!-- <script type="text/javascript">
-        // In your Javascript (external .js resource or <script> tag)
-        $(document).ready(function() {
-            $('.select2-modal').select2({
-                theme: 'bootstrap-5',
-                width: '100%',
-                dropdownParent: $("#encaisse")
-            });
-        });
-    </script> -->
-
     <!-- #### DATA TABLES -->
-    <script>
+    <script type="text/javascript">
         // In your Javascript (external .js resource or <script> tag)
         $(document).ready(function() {
-            $('.select2').select2({
-                placeholder: 'Select an option'
-            });
+            $('.js-example-basic-single').select2();
         });
 
         $(function() {
@@ -621,6 +615,5 @@
                 .buttons().container().appendTo('#myTable_wrapper .col-md-6:eq(0)');
         });
     </script>
-
     </html>
 </div>

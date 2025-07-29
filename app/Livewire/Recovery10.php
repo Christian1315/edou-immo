@@ -42,7 +42,6 @@ class Recovery10 extends Component
                 }
             }
         }
-
         $this->locators = $locators;
     }
 

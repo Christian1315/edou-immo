@@ -6,11 +6,8 @@ use Livewire\Component;
 
 class RecoveryQualitatif extends Component
 {
-
     public $agency;
-
     public $locators = [];
-
     public $houses = [];
 
     ###___HOUSES
@@ -19,7 +16,6 @@ class RecoveryQualitatif extends Component
         $this->houses = $this->agency->_Houses;
     }
 
-
     function refreshLocators()
     {
         #####____locataires ayant payés après l'arrêt d'etat du dernier state dans toutes les maisons
@@ -27,7 +23,6 @@ class RecoveryQualitatif extends Component
 
         ###____PARCOURONS TOUTES LES MAISONS DE CETTE AGENCE, PUIS FILTRONS LES ETATS
         foreach ($this->agency->_Houses as $house) {
-
             ###___DERNIER ETAT D'ARRET DE CETTE MAISON
             $house_last_state = $house->States->last();
             if ($house_last_state) {
@@ -65,7 +60,6 @@ class RecoveryQualitatif extends Component
     function mount($agency)
     {
         set_time_limit(0);
-
         $this->agency = $agency;
 
         $this->refreshLocators();

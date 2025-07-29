@@ -29,6 +29,11 @@ function supervisors()
     return $users;
 }
 
+function gestionnaires()
+{
+    return User::with(["account_agents"])->get()->filter(fn($user) => $user->hasRole('Gestionnaire de compte'));
+}
+
 function IS_USER_HAS_ACCOUNT_CHIEF_ROLE($user)
 {
     if (in_array(env("ACCOUNT_CHIEF_ROLE_ID"), $user->_roles->pluck("id")->toArray())) {

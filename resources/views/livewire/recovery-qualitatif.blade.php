@@ -9,8 +9,8 @@
         <button class="btn btn-sm bg-light d-block" data-bs-toggle="modal" data-bs-target="#showTauxBySupervisor"><i class="bi bi-people"></i> Par Sperviseur </button>
         <button class="btn btn-sm bg-light d-block" data-bs-toggle="modal" data-bs-target="#showTauxByHouse"><i class="bi bi-house-check-fill"></i>Par maison </button>
     </div>
-
     <br><br>
+
     <!-- SHOW TAUX BY HOUSE -->
     <div class="modal fade" id="showTauxBySupervisor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">

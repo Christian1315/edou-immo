@@ -34,6 +34,9 @@
 
         <!-- <script src="https://cdn.datatables.net/1.13.10/css/jquery.dataTables.css"></script> -->
 
+        <!-- select2 -->
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
         @livewireStyles
     </head>
 
@@ -160,12 +163,20 @@
                 </div>
 
                 <!-- =============== LE BODY DU DASHBORD ========= -->
-
                 <main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-4">
                     <!-- MESSAGE FLASH -->
                     <x-alert />
 
                     {{$slot}}
+
+                    <br><br><br>
+                    <select class="select-ville form-control">
+                        <option value="AL">Alabama</option>
+                        <option value="WY">Wyoming</option>
+                        <option value="WY">Wyoming</option>
+                        <option value="WY">Wyoming</option>
+                    </select>
+
                 </main>
             </div>
 
@@ -204,21 +215,21 @@
 
         @livewireScripts
 
-        @stack('scripts')
+        @stack("scripts")
     </body>
+
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="{{asset('fichiers/jquery.min.js')}}"></script>
     <script src="{{asset('fichiers/popper.min.js')}}"></script>
     <script src="{{asset('fichiers/bootstrap.min.js')}}"></script>
 
-    <!-- <script src="https://cdn.datatables.net/1.13.10/js/jquery.dataTables.js"></script> -->
-
     <!-- API DE GESTION DES SUM DES COLUMS DES DATATABLES -->
     <script src="https://cdn.datatables.net/plug-ins/2.1.8/api/sum().js"></script>
 
-    <!-- BOOTSTRAP SELECT -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js" integrity="sha512-yDlE7vpGDP7o2eftkCiPZ+yuUyEcaBwoJoIhdXv71KZWugFqEphIS3PU60lEkFaz8RxaVsMpSvQxMBaKVwA5xg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
     <script src="{{ asset('fichiers/axios.min.js') }}"></script>
+
+    <!-- Select 2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <!-- DataTables  & Plugins -->
     <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
@@ -230,7 +241,7 @@
             const searchLocation = document.getElementById('select-search');
             searchLocation.addEventListener('input', function(e) {
                 const searchTerm = e.target.value.toLowerCase();
-                // alert(searchTerm)
+
                 document.querySelectorAll('.item-search').forEach(row => {
                     const permissionText = row.textContent.toLowerCase();
                     if (permissionText.includes(searchTerm)) {
@@ -247,7 +258,9 @@
     <script>
         // In your Javascript (external .js resource or <script> tag)
         $(document).ready(function() {
-            $('.select2').select2();
+            $('.select-ville').select2({
+                dropdownParent: $("#add_agency")
+            });
         });
 
         $(function() {
@@ -466,5 +479,6 @@
             });
         });
     </script>
+
     </html>
 </div>
