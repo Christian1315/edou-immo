@@ -11,6 +11,8 @@ use App\Models\FactureStatus;
 use App\Models\House;
 use App\Models\Location;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +22,9 @@ use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
 {
+    private const TARGET_DAY = '05';
+    private const DATE_FORMAT = 'Y/m/d';
+
     function __construct()
     {
         $this->middleware(['auth']);
@@ -260,30 +265,152 @@ class AdminController extends Controller
         }
     }
 
-
     #####____BILAN
     function Filtrage(Request $request, $agencyId)
     {
-        $agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
-        if (!$agency) {
-            alert()->error("Echec", "Cette agence n'existe pas!");
-        };
-        ####____
+        try {
 
-        return view("admin.filtrage", compact("agency"));
+            $agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
+            if (!$agency) {
+                alert()->error("Echec", "Cette agence n'existe pas!");
+            };
+            ####____
+
+            $locations = collect();
+            $moved_locators = collect();
+            $factures = collect();
+            $rooms = collect();
+            $factures_total_amount = 0.0;
+
+            $debut = $request->debut;
+            $fin = $request->fin;
+
+            $now = strtotime(date("Y/m/d", strtotime(now())));
+
+            /**Rooms */
+            $rooms = ($debut || $fin) ? $agency->_Houses
+                ->flatMap
+                ->Rooms->whereBetween("created_at", [$debut, $fin]) : $agency->_Houses
+                ->flatMap
+                ->Rooms;
+
+            /**Chambres libres */
+            $frees_rooms = $rooms->filter(fn($room) => !$room->buzzy());
+
+            /**Proprietaires & Maisons */
+            $proprietors = ($debut || $fin) ? $agency->_Proprietors
+                ->whereBetween("created_at", [$debut, $fin]) : $agency->_Proprietors;
+
+            $houses = ($debut || $fin) ? $agency->_Houses
+                ->whereBetween("created_at", [$debut, $fin]) : $agency->_Houses;
+
+            /**Locataires */
+            $locators = ($debut || $fin) ? $agency->_Locataires
+                ->whereBetween("created_at", [$debut, $fin]) : $agency->_Locataires;
+
+            $locationQuery = ($debut || $fin) ? $agency->_Houses
+                ->flatMap
+                ->Locations
+                ->whereBetween("created_at", [$debut, $fin]) : $agency->_Houses
+                ->flatMap
+                ->Locations;
+
+
+            /**Locations */
+            $locations = $locationQuery
+                ->where("status", "!=", 3);
+
+            /**Chambres impayées */
+            $unpaid_locators = $locations->filter(function ($location) use ($now, $debut, $fin) {
+                $location_echeance_date = strtotime(date("Y/m/d", strtotime($location->echeance_date)));
+                if ($location_echeance_date < $now) {
+                    return ($debut || $fin) ? $location->Locataire
+                        ->whereBetween("created_at", [$debut, $fin]) : $location->Locataire;
+                }
+            });
+
+            /**Locataires démenagés */
+            $moved_locators = ($debut || $fin) ? $locationQuery
+                ->where("status", 3)
+                ->pluck("Locataire")
+                ->whereBetween("created_at", [$debut, $fin]) :
+                $locationQuery
+                ->where("status", 3)
+                ->pluck("Locataire");
+
+            /**Factures */
+            $factures = ($debut || $fin) ? Facture::whereIn("location", $locations->pluck("id"))
+                ->latest()
+                ->where("state_facture", false)
+                ->whereBetween("created_at", [$debut, $fin])
+                ->get() : Facture::whereIn("location", $locations->pluck("id"))
+                ->latest()
+                ->where("state_facture", false)
+                ->get();
+
+            /**Total des factures */
+            $factures_total_amount += $factures->sum('amount');
+
+            if ($debut || $fin) {
+                alert()->success("Opération réussie", "Filtre de bilan éffectué avec succès!");
+            }
+
+            return view("admin.filtrage", compact([
+                "agency",
+                "locations",
+                "locators",
+                "moved_locators",
+                "factures",
+                "rooms",
+                "factures_total_amount",
+
+                "proprietors",
+                "houses",
+                "locators",
+
+                "frees_rooms",
+                "unpaid_locators"
+            ]));
+        } catch (\Exception $e) {
+            alert()->error("Erreure", $e->getMessage());
+            return back();
+        }
     }
 
     #####____RECOUVREMENT A LA DATE 05
     function AgencyRecovery05(Request $request, $agencyId)
     {
-        $agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
-        if (!$agency) {
-            alert()->error("Echec", "Cette agence n'existe pas!");
-        };
-        ####____
+        try {
+            Log::info("Debut du chargement des locators du 05");
 
-        return view("admin.recovery05", compact("agency"));
+            $agency = Agency::where("visible", 1)
+                ->find(deCrypId($agencyId));
+
+            if (!$agency) {
+                throw new \Exception("Cette agence n'existe pas!", 1);
+            };
+            ####____
+
+            $houses = $agency->_Houses;
+            $houses = collect($houses)
+                ->filter(fn($house) => $house->States->isNotEmpty());
+
+            $locators = recovery05Locators($houses);
+
+            /**Stockage des locators en session pour réutiliser
+             * ua cours du filtre
+             */
+            session()->put("recovery05Locators", $locators);
+
+            return view("admin.recovery05", compact("agency", "houses", "locators"));
+        } catch (\Exception $e) {
+            Log::error("Erreure lors du chargement des locataires " . $e->getMessage());
+
+            alert()->error("Erreure lors du chargement des locataires " . $e->getMessage());
+            return back();
+        }
     }
+
 
     #####____RECOUVREMENT A LA DATE 10
     function AgencyRecovery10(Request $request, $agencyId)
@@ -485,7 +612,6 @@ class AdminController extends Controller
                     ->Factures
                     ->latest()
                     ->where("state_facture", false); //on tient pas comptes des factures generée pour clotuer un état
-                // dd($query);
             } else {
                 $query = Facture::with(["Location"])
                     ->whereIn("location", $agency->_Locations

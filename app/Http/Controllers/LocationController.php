@@ -1238,6 +1238,20 @@ class LocationController extends Controller
                 "total_locators" => $locators_that_paid_after_state_stoped_day->count()
             ];
 
+            // Pour imprimer
+            if ($request->imprimer) {
+                set_time_limit(0);
+                $pdf = Pdf::loadView("imprimer-locators-after-stop-state", [
+                    "locationsFiltered" => $locationsFiltered,
+                    "house" => $house
+                ]);
+
+                // Set PDF orientation to landscape
+                $pdf->setPaper('a4', 'landscape');
+
+                return $pdf->stream();
+            }
+
             return view("locators.locator-after-stop-date", compact("locationsFiltered", "house"));
         } catch (\Exception $e) {
             alert()->error("Echec", $e->getMessage());
@@ -1299,6 +1313,21 @@ class LocationController extends Controller
                 "beforeStopDateTotal_to_paid" => $amount_total_to_paid_before,
                 "total_locators" => $locators_that_paid_before_state_stoped_day->count()
             ];
+
+            // Pour imprimer
+            if ($request->imprimer) {
+                set_time_limit(0);
+                // dd($request->imprimer);
+                $pdf = Pdf::loadView("imprimer-locators-before-stop-state", [
+                    "locationsFiltered" => $locationsFiltered,
+                    "house" => $house
+                ]);
+
+                // Set PDF orientation to landscape
+                $pdf->setPaper('a4', 'landscape');
+
+                return $pdf->stream();
+            }
 
             return view("locators.locator-before-stop-date", compact("locationsFiltered", "house"));
         } catch (\Exception $e) {

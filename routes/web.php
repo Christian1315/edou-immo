@@ -207,8 +207,6 @@ Route::controller(AdminController::class)->group(function () {
 
     /** AGENCY STATISTIQUES */
     Route::any('/{agency}/statistique', "AgencyStatistique")->name("agencyStatistique");
-    // Route::get('/{agency}/superviseur-statistique', "AgencyStatistique")->name("agencyStatistique");
-    // Route::get('/{agency}/statistique', "AgencyStatistique")->name("agencyStatistique");
 
     Route::get('/{agency}/recovery_05_to_echeance_date', "AgencyRecovery05")->name("recovery_05_to_echeance_date");
     Route::get('/{agency}/recovery_10_to_echeance_date', "AgencyRecovery10")->name("recovery_10_to_echeance_date");
@@ -219,7 +217,6 @@ Route::controller(AdminController::class)->group(function () {
     Route::post('/{agency}/recovery_quelconque_date_filtrage', "FiltreByDateInAgency")->name("recovery_quelconque_date.FiltreByDateInAgency");
 
     Route::get('/{agency}/filtrage', "Filtrage")->name("filtrage");
-
 
     ###___GENERALES ROUTES
     Route::get('dashbord', "Admin")->name("dashbord");
@@ -280,7 +277,6 @@ Route::prefix("locataire")->group(function () {
 });
 ##___
 
-
 ###========== LOCATION ========###
 Route::prefix("location")->group(function () {
     Route::controller(LocationController::class)->group(function () {
@@ -319,7 +315,6 @@ Route::prefix("location")->group(function () {
         Route::any('stop', '_StopStatsOfHouse')->name("location._StopStatsOfHouse");
 
         ####__STATISTIQUE DES AGENCES (payement avant & apres arret des etats)
-        ###___FILTRE
         Route::any('{houseId}/filtre_before_stateDate_stoped', 'FiltreBeforeStateDateStoped')->name("location.FiltreBeforeStateDateStoped"); #FILTRER LES PAIEMENTS AVANT ARRET DES ETATS
         Route::any('{houseId}/filtre_after_stateDate_stoped', 'FiltreAfterStateDateStoped')->name("location.FiltreAfterStateDateStoped"); #FILTRER LES PAIEMENTS APRES ARRET DES ETATS
 
@@ -401,8 +396,8 @@ Route::prefix("water_facture")->group(function () {
 ####____impression des taux  locataires
 ##__05
 Route::get("{agencyId}/show_taux_05_agency_simple", [LocataireController::class, "_ShowAgencyTaux05_Simple"])->name("taux._ShowAgencyTaux05_Simple");
-Route::get("{agencyId}/{supervisor}/show_taux_05_agency_by_supervisor", [LocataireController::class, "_ShowAgencyTaux05_By_Supervisor"])->name("taux._ShowAgencyTaux05_By_Supervisor");
-Route::get("{agencyId}/{house}/show_taux_05_agency_by_house", [LocataireController::class, "_ShowAgencyTaux05_By_House"])->name("taux._ShowAgencyTaux05_By_House");
+Route::get("{agencyId}/show_taux_05_agency_by_supervisor", [LocataireController::class, "_ShowAgencyTaux05_By_Supervisor"])->name("taux._ShowAgencyTaux05_By_Supervisor");
+Route::get("{agencyId}/show_taux_05_agency_by_house", [LocataireController::class, "_ShowAgencyTaux05_By_House"])->name("taux._ShowAgencyTaux05_By_House");
 
 ##__10
 Route::get("{agencyId}/show_taux_10_agency_simple", [LocataireController::class, "_ShowAgencyTaux10_Simple"])->name("taux._ShowAgencyTaux10_Simple");

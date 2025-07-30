@@ -147,14 +147,12 @@ class House extends Model
     public function Rooms(): HasMany
     {
         return $this->hasMany(Room::class, "house")
-            ->where(["visible" => 1])
             ->with(["Owner", "Nature", "Type", "House"]);
     }
 
     public function Locations(): HasMany
     {
         return $this->hasMany(Location::class, "house")
-            ->where(["visible" => 1])
             ->with([
                 "Locataire",
                 "Type",

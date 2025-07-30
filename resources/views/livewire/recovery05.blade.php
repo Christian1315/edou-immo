@@ -17,11 +17,22 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <p class="">Taux par superviseur:</p>
-                    <ul class="list-group">
-                        @foreach(supervisors() as $supervisor)
-                        <li class="list-group-item" style="justify-content: space-between!important">{{$supervisor->name}} &nbsp; <a href="{{route('taux._ShowAgencyTaux05_By_Supervisor',['agencyId'=>crypId($agency->id),'supervisor'=>crypId($supervisor->id)])}}" class="btn btn-sm btn-light text-red"><i class="bi bi-eye"></i></a> </li>
-                        @endforeach
-                    </ul>
+                    <form action="{{route('taux._ShowAgencyTaux05_By_Supervisor',crypId($agency->id))}}" method="get">
+                        <select name="supervisor" class="form-control" required>
+                            @foreach(supervisors() as $supervisor)
+                            <option value="{{$supervisor->id}}">{{$supervisor->name}}</option>
+                            @endforeach
+                        </select>
+                        <br>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="imprimer" name="imprimer" checked>
+                            <label class="form-check-label" for="imprimer">
+                                Je veux imprimer aussi!
+                            </label>
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-sm w-100 bg-red text-white"><i class="bi bi-funnel"></i> Filtrer</button>
+                    </form>
                 </div>
             </div>
         </div>

@@ -12,6 +12,13 @@
             <br>
             <h6 class=""> Montant total: <b class="text-red"> {{number_format($locationsFiltered["beforeStopDateTotal_to_paid"],0,","," ")}} fcfa</b> </h6>
 
+            <!-- Imprimer -->
+            <form action="{{route('location.FiltreBeforeStateDateStoped',crypId($house->id))}}" method="get">
+                @csrf
+                <input type="hidden" name="imprimer" value="imprimer">
+                <button class="btn bg-light border text-dark my-5"><i class="bi bi-filetype-pdf"></i> Imprimer</button>
+            </form>
+
             <div class="table-responsive shadow-lg p-3">
                 <table id="myTable" class="table table-striped table-sm p-3">
                     <thead class="bg_dark">
@@ -26,6 +33,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @if(isset($locationsFiltered['beforeStopDate']))
                         @foreach($locationsFiltered['beforeStopDate'] as $locator)
                         <tr class="align-items-center">
                             <td class="text-center">{{$loop->index + 1}}</td>
@@ -37,6 +45,10 @@
                             <td class="text-center"> <span class="badge bg-light text-red">{{number_format($locator["amount_paid"],0,","," ")}}</span> </td>
                         </tr>
                         @endforeach
+
+                        @else
+                        <p class="text-center text-red">Aucun locataire!</p>
+                        @endif
                     </tbody>
                 </table>
             </div>

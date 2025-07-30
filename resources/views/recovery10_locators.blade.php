@@ -101,9 +101,11 @@
 
                 <div class="d-flex" style="justify-content: space-between!important; align-items: center; ">
                     <div class="">
+                        @if($agency)
                         <div class="">
-                            <h6 class="">Agence: <em class="text-red"> {{$agency["name"]}} </em> </h6>
+                            <h6 class="">Agence: <em class="text-red"> {{$agency->name}} </em> </h6>
                         </div>
+                        @endif
                         <div class="">
                             @if($action=="supervisor")
                             <h6>Superviseur: <em class="text-red"> {{$supervisor?$supervisor["name"]:""}} </em></h6>
@@ -126,7 +128,9 @@
                 </div>
                 <br>
 
-                @if(count($locations))
+                @if($locations->count()>0)
+                <h6 class="text">Total:  <strong class="text-red">{{$locations->count()}}</strong> </h6>
+
                 <table class="table">
                     <thead class="table-dark">
                         <tr>
