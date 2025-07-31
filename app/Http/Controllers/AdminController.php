@@ -468,7 +468,7 @@ class AdminController extends Controller
             Log::info("Fin du chargement des locators qualitatif");
 
             if ($request->debut || $request->fin) {
-                alert()->info("Opération réussie","Filtrage effectué pour la période du $request->debut au $request->fin");
+                alert()->info("Opération réussie", "Filtrage effectué pour la période du $request->debut au $request->fin");
             }
 
             return view("admin.recovery_qualitatif", compact("agency", "houses", "locators"));
@@ -718,6 +718,7 @@ class AdminController extends Controller
                 ->findOrFail(deCrypId($agencyId));
 
             $user = auth()->user();
+
             if ($user->hasRole("Gestionnaire de compte")) {
                 /**Ses superviseurs */
                 $supervisorsIds = $user->supervisors->pluck("id")
@@ -731,22 +732,27 @@ class AdminController extends Controller
                         $house->whereIn("supervisor", $supervisorsIds);
                     });
 
-                $query = $locations
-                    ->get()
-                    ->flatMap
-                    ->Factures
+                // $query = $locations
+                //     ->get()
+                //     ->flatMap
+                //     ->Factures
+                //     ->latest()
+                //     ->where("state_facture", false); //on tient pas comptes des factures generée pour clotuer un état
+
+                $query = Facture::with(["Location"])
+                    ->whereIn("location", $locations
+                        ->where("status", "!=", 3) //on tient pas compte des locations demenagées
+                        ->pluck("id"))
                     ->latest()
-                    ->where("state_facture", false); //on tient pas comptes des factures generée pour clotuer un état
+                    ->where("state_facture", false); //on tient pas comptes des factures generée pour clotuer un étt
             } else {
                 $query = Facture::with(["Location"])
                     ->whereIn("location", $agency->_Locations
                         ->where("status", "!=", 3) //on tient pas compte des locations demenagées
                         ->pluck("id"))
                     ->latest()
-                    ->get()
                     ->where("state_facture", false); //on tient pas comptes des factures generée pour clotuer un étt
             }
-
 
             if ($request->isMethod('POST')) {
                 $validated = $request->validate([
@@ -761,28 +767,24 @@ class AdminController extends Controller
                     'fin.after_or_equal' => 'La date de fin doit être postérieure ou égale à la date de début'
                 ]);
 
+                $debut = $validated['debut'];
+                $fin = $validated['fin'];
+
                 $factures = $query
                     ->where("owner", $validated['user'])
                     ->whereDate("created_at", ">=", $validated['debut'])
-                    ->whereDate("created_at", "<=", $validated['fin'])
-                    ->get();
+                    ->whereDate("created_at", "<=", $validated['fin']);
 
-                if ($factures->isEmpty()) {
-                    alert()->error("Echec", "Aucun résultat trouvé pour les critères sélectionnés!");
-                    return back()
-                        ->withInput();
-                }
+                // return response()->json($factures->pluck("Owner"));
 
                 alert()->success("Succès", "Filtre effectué avec succès");
             } else {
 
                 if ($request->status) {
-                    // dd($request->status);
                     switch ($request->status) {
                         case "valide":
                             $factures = $query
                                 ->where("status", 2);
-                            // dd($query->where("status", 2)->get());
                             break;
                         case "en_attente":
                             $factures = $query->where("status", 1);
@@ -799,8 +801,17 @@ class AdminController extends Controller
                 }
             }
 
+            $factures = $factures->get();
+
+            if ($factures->isEmpty()) {
+                alert()->info("Echec", "Aucun résultat trouvé pour les critères sélectionnés!");
+                return back()
+                    ->withInput();
+            }
+
             $montantTotal = $factures->sum("amount");
             $users = User::select('id', 'name')->get();
+
             // Factures status
             $factureStatus = FactureStatus::get();
 
@@ -813,7 +824,7 @@ class AdminController extends Controller
                 ->withInput()
                 ->withErrors($e->errors());
         } catch (\Exception $e) {
-            Log::info("Error" . $e->getMessage());
+            Log::info("Error" . $e->getMessage(), ["ligne" => $e->getLine()]);
             alert()->error("Echec", "Une erreur est survenue lors du traitement de votre demande");
             return back()->withInput();
         }

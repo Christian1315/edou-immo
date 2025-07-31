@@ -115,7 +115,7 @@
                             @if($factures->count()>0)
                             @foreach($factures as $facture)
                             <tr class="align-items-center @if($facture->status==3) bg-secondary @elseif($facture->status==1) bg-warning @endif">
-                                <td class="text-center "><span class="badge text-red bg-light"> {{$facture->facture_code?$facture->facture_code:"---"}} </span></td>
+                                <td class="text-center"><span class="badge text-red bg-light"> {{$facture->facture_code?$facture->facture_code:"---"}} </span></td>
                                 <td class="text-center text-red"><span class="badge bg-light text-dark"> {{$facture->Location?->House?->Supervisor?->name}}</span></td>
                                 <td class="text-center"> <span class="badge bg-dark">{{$facture->Owner?->name}} </span> </td>
                                 <td class="text-center"> <span class="badge bg-light text-dark">{{$facture->Location?->House?->name}} </span> </td>
@@ -201,7 +201,7 @@
 
         // TRAITEMENT DE FACTURE
         async function manageFacture(facture) {
-            console.log(facture)
+            // console.log(facture)
             $("#facture_code").html(facture.location.facture_code)
             $("#facture_house").html(facture.location.house.name)
             $("#facture_room").html(facture.location.room.number)
