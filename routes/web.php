@@ -210,7 +210,7 @@ Route::controller(AdminController::class)->group(function () {
 
     Route::get('/{agency}/recovery_05_to_echeance_date', "AgencyRecovery05")->name("recovery_05_to_echeance_date");
     Route::get('/{agency}/recovery_10_to_echeance_date', "AgencyRecovery10")->name("recovery_10_to_echeance_date");
-    Route::get('/{agency}/recovery_qualitatif', "AgencyRecoveryQualitatif")->name("recovery_10_to_echeance_date");
+    Route::get('/{agency}/recovery_qualitatif', "AgencyRecoveryQualitatif")->name("recovery_qualitatif");
     Route::get('/{agency}/performance', "AgencyPerformance")->name("performance");
 
     Route::get('/{agency}/recovery_quelconque_date', "RecoveryAtAnyDate")->name("recovery_quelconque_date");
@@ -401,13 +401,13 @@ Route::get("{agencyId}/show_taux_05_agency_by_house", [LocataireController::clas
 
 ##__10
 Route::get("{agencyId}/show_taux_10_agency_simple", [LocataireController::class, "_ShowAgencyTaux10_Simple"])->name("taux._ShowAgencyTaux10_Simple");
-Route::get("{agencyId}/{supervisor}/show_taux_10_agency_by_supervisor", [LocataireController::class, "_ShowAgencyTaux10_By_Supervisor"])->name("taux._ShowAgencyTaux10_By_Supervisor");
-Route::get("{agencyId}/{house}/show_taux_10_agency_by_house", [LocataireController::class, "_ShowAgencyTaux10_By_House"])->name("taux._ShowAgencyTaux10_By_House");
+Route::get("{agencyId}/show_taux_10_agency_by_supervisor", [LocataireController::class, "_ShowAgencyTaux10_By_Supervisor"])->name("taux._ShowAgencyTaux10_By_Supervisor");
+Route::get("{agencyId}/show_taux_10_agency_by_house", [LocataireController::class, "_ShowAgencyTaux10_By_House"])->name("taux._ShowAgencyTaux10_By_House");
 
 ##__qualitatif
 Route::get("{agencyId}/show_taux_qualitatif_simple", [LocataireController::class, "_ShowAgencyTauxQualitatif_Simple"])->name("taux._ShowAgencyTauxQualitatif_Simple");
-Route::get("{agencyId}/{supervisor}/show_taux_qualitatif_by_supervisor", [LocataireController::class, "_ShowAgencyTauxQualitatif_By_Supervisor"])->name("taux._ShowAgencyTauxQualitatif_By_Supervisor");
-Route::get("{agencyId}/{house}/show_taux_qualitatif_by_house", [LocataireController::class, "_ShowAgencyTauxQualitatif_By_House"])->name("taux._ShowAgencyTauxQualitatif_By_House");
+Route::get("{agencyId}/show_taux_qualitatif_by_supervisor", [LocataireController::class, "_ShowAgencyTauxQualitatif_By_Supervisor"])->name("taux._ShowAgencyTauxQualitatif_By_Supervisor");
+Route::get("{agencyId}/show_taux_qualitatif_by_house", [LocataireController::class, "_ShowAgencyTauxQualitatif_By_House"])->name("taux._ShowAgencyTauxQualitatif_By_House");
 
 
 Route::get("{agencyId}/{houseId}/{action}/locators_state_stoped", [LocationController::class, "_ShowLocatorStateStoped"]);

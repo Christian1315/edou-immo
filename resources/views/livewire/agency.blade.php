@@ -73,7 +73,7 @@
                                     @enderror
                                 </div><br>
                                 <div class="mb-3">
-                                    <select value="{{old('country')}}" class="form-select form-control" name="country" aria-label="Default select example">
+                                    <select value="{{old('country')}}" class="form-select form-control agency-modal-select2" name="country" aria-label="Default select example">
                                         <option>Pays</option>
                                         @foreach($countries as $countrie)
                                         @if($countrie->id==4)
@@ -108,7 +108,7 @@
                                     @enderror
                                 </div><br>
                                 <div class="mb-3">
-                                    <select value="{{old('city')}}" class="form-control select-ville" name="city" aria-label="Default select example">
+                                    <select value="{{old('city')}}" class="form-control agency-modal-select2" name="city" aria-label="Default select example">
                                         <option>Ville</option>
                                         @foreach($cities as $citie)
                                         <option value="{{$citie->name}}">{{$citie->name}}</option>
@@ -130,7 +130,7 @@
     </div>
     <br>
 
-    <select value="{{old('city')}}" class="form-control select-ville" name="city">
+    <select value="{{old('city')}}" class="form-control agency-modal-select2" name="city">
         <option>Ville</option>
         @foreach($cities as $citie)
         <option value="{{$citie->name}}">{{$citie->name}}</option>

@@ -128,8 +128,8 @@
                 </div>
                 <br>
 
-                @if($locations->count()>0)
-                <h6 class="text">Total:  <strong class="text-red">{{$locations->count()}}</strong> </h6>
+                @if(count($locations)>0)
+                <h6 class="text">Total:  <strong class="text-red">{{count($locations)}}</strong> </h6>
                 <table class="table">
                     <thead class="table-dark">
                         <tr>

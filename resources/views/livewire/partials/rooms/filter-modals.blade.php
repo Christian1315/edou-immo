@@ -15,7 +15,7 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label>Choisissez un superviseur</label>
-                                <select required name="supervisor" class="form-control">
+                                <select required name="supervisor" class="form-control agency-modal-select2">
                                     @foreach(supervisors() as $supervisor)
                                     <option value="{{$supervisor['id']}}">{{$supervisor["name"]}}</option>
                                     @endforeach
@@ -49,7 +49,7 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label>Choisissez une maison</label>
-                                <select required name="house" class="form-control">
+                                <select required name="house" class="form-control agency-modal-select2">
                                     @foreach($houses as $house)
                                     <option value="{{$house['id']}}">{{$house["name"]}}</option>
                                     @endforeach

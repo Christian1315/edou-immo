@@ -10,7 +10,7 @@
 
     <!-- Add Proprietor Modal -->
     <div class="modal fade" id="addProprietorModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addProprietorModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Ajout d'un propriétaire</h5>
@@ -22,7 +22,7 @@
                     <form action="{{ route('proprietor._AddProprietor') }}" method="POST" class="shadow-lg p-3 animate__animated animate__bounce" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="agency" value="{{ $current_agency['id'] }}">
-                        
+
                         <div class="row">
                             <!-- Left Column -->
                             <div class="col-md-6">
@@ -87,19 +87,19 @@
                                 </a>
                             </td>
                             <td class="text-center">
-                                <button type="button" class="btn btn-sm bg-warning" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#showHousesModal"
-                                        onclick="showHouses({{ $proprietor['id'] }})">
+                                <button type="button" class="btn btn-sm bg-warning"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#showHousesModal"
+                                    onclick="showHouses({{ $proprietor['id'] }})">
                                     <i class="bi bi-eye-fill"></i> Voir
                                 </button>
                             </td>
                             @can("proprio.edit")
                             <td class="text-center">
-                                <button class="btn btn-sm bg-warning" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#updateProprietorModal"
-                                        onclick="loadProprietorData({{ $proprietor['id'] }})">
+                                <button class="btn btn-sm bg-warning"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#updateProprietorModal"
+                                    onclick="loadProprietorData({{ $proprietor['id'] }})">
                                     <i class="bi bi-person-lines-fill"></i> Modifier
                                 </button>
                             </td>
@@ -198,7 +198,8 @@
     @endcan
 
     @push('scripts')
-    <script>
+    <script type="text/javascript">
+       
         const API_BASE_URL = "{{ env('API_BASE_URL') }}";
 
         async function showHouses(id) {
@@ -210,9 +211,9 @@
 
                 document.getElementById('proprietorFullName').textContent = fullName;
                 document.getElementById('proprietorHousesCount').textContent = houses.length;
-                
+
                 const housesList = document.getElementById('housesList');
-                housesList.innerHTML = houses.map(house => 
+                housesList.innerHTML = houses.map(house =>
                     `<li class='list-group-item'><strong>Nom: </strong>${house.name}</li>`
                 ).join('');
             } catch (error) {

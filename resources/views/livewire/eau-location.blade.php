@@ -35,7 +35,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label>Choisissez un superviseur</label>
-                                <select required name="supervisor" class="form-control">
+                                <select required name="supervisor" class="form-control agency-modal-select2">
                                     @foreach(supervisors() as $supervisor)
                                     <option value="{{$supervisor['id']}}"> {{$supervisor["name"]}} </option>
                                     @endforeach
@@ -62,7 +62,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label>Choisissez une maison</label>
-                                <select required name="house" class="form-control">
+                                <select required name="house" class="form-control agency-modal-select2">
                                     @foreach($houses as $house)
                                     @if($house)
                                     <option value="{{$house['id']}}"> {{$house["name"]}} </option>
@@ -91,7 +91,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label>Choisissez un propriétaire</label>
-                                <select required name="proprio" class="form-control">
+                                <select required name="proprio" class="form-control agency-modal-select2">
                                     @foreach($houses as $house)
                                     @if($house)
                                     <option value="{{$house->Proprietor->id}}"> {{$house->Proprietor->firstname}} {{$house->Proprietor->lastname}} </option>
@@ -132,7 +132,7 @@
                                             placeholder="Rechercher des locations...">
                                     </div>
                                     <br>
-                                    <select required name="location" class="form-control" id="select-search">
+                                    <select required name="location" class="form-control agency-modal-select2" id="select-search">
                                         @foreach($locations as $location)
                                         <option value="{{$location['id']}}" class="item-search"> <strong>Maison: </strong> {{$location->House->name}} ; <strong>Index début: </strong> {{count($location->WaterFactures)!=0?$location->WaterFactures->first()->end_index: ($location->Room?$location->Room->water_counter_start_index:null)}} ; <strong>Locataire: </strong>{{$location->Locataire->name}} {{$location->Locataire->prenom}}</option>
                                         @endforeach
@@ -175,7 +175,7 @@
                                 @csrf
                                 <div class="mb-3">
                                     <span class="text-red">Choisir la maison concernée</span>
-                                    <select required name="house" class="form-control">
+                                    <select required name="house" class="form-control agency-modal-select2">
                                         @foreach($houses as $house)
                                         @if($house)
                                         <option value="{{$house->id}}"> {{$house->name}} </option>

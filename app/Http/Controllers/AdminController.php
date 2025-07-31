@@ -3,15 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agency;
-use App\Models\CardType;
-use App\Models\City;
-use App\Models\Country;
 use App\Models\Facture;
 use App\Models\FactureStatus;
 use App\Models\House;
 use App\Models\Location;
+use App\Models\Room;
 use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -211,7 +208,6 @@ class AdminController extends Controller
         }
 
         $houses = House::get();
-
         ####____
         return view("admin.paiements", compact([
             'agency',
@@ -391,16 +387,17 @@ class AdminController extends Controller
             };
             ####____
 
-            $houses = $agency->_Houses;
-            $houses = collect($houses)
+            $houses = collect($agency->_Houses)
                 ->filter(fn($house) => $house->States->isNotEmpty());
 
             $locators = recovery05Locators($houses);
 
             /**Stockage des locators en session pour réutiliser
-             * ua cours du filtre
+             * au cours du filtre
              */
             session()->put("recovery05Locators", $locators);
+
+            Log::info("Fin du chargement des locators du 05");
 
             return view("admin.recovery05", compact("agency", "houses", "locators"));
         } catch (\Exception $e) {
@@ -411,39 +408,167 @@ class AdminController extends Controller
         }
     }
 
-
     #####____RECOUVREMENT A LA DATE 10
     function AgencyRecovery10(Request $request, $agencyId)
     {
-        $agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
-        if (!$agency) {
-            alert()->error("Echec", "Cette agence n'existe pas!");
-        };
-        ####____
+        try {
+            Log::info("Debut du chargement des locators du 10");
 
-        return view("admin.recovery10", compact("agency"));
+            $agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
+            if (!$agency) {
+                throw new \Exception("Cette agence n'existe pas!", 1);
+            };
+            ####____
+
+            $houses = collect($agency->_Houses)
+                ->filter(fn($house) => $house->States->isNotEmpty());
+            $locators = recovery10Locators($houses);
+
+            /**Stockage des locators en session pour réutiliser
+             * au cours du filtre
+             */
+            session()->put("recovery10Locators", $locators);
+
+            Log::info("Fin du chargement des locators du 10");
+
+            return view("admin.recovery10", compact("agency", "houses", "locators"));
+        } catch (\Exception $e) {
+            Log::error("Erreure lors du chargement des locataires 10" . $e->getMessage());
+
+            alert()->error("Erreure lors du chargement des locataires 10" . $e->getMessage());
+            return back();
+        }
     }
 
     function AgencyRecoveryQualitatif(Request $request, $agencyId)
     {
-        $agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
-        if (!$agency) {
-            alert()->error("Echec", "Cette agence n'existe pas!");
-        };
-        ####____
+        try {
+            Log::info("Debut du chargement des locators qualitatif");
 
-        return view("admin.recovery_qualitatif", compact("agency"));
+            $agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
+            if (!$agency) {
+                throw new \Exception("Cette agence n'existe pas!", 1);
+            };
+            ####____
+
+            $houses = collect($agency->_Houses)
+                ->filter(fn($house) => $house->States->isNotEmpty());
+
+            if ($request->debut || $request->fin) {
+                $locators = recoveryQualitatifLocators($houses)->whereBetween("payment_date", [$request->debut || $request->fin]);
+            } else {
+                $locators = recoveryQualitatifLocators($houses);
+            }
+
+            /**Stockage des locators en session pour réutiliser
+             * au cours du filtre
+             */
+
+            session()->put("recoveryQualitatifLocators", $locators);
+            Log::info("Fin du chargement des locators qualitatif");
+
+            if ($request->debut || $request->fin) {
+                alert()->info("Opération réussie","Filtrage effectué pour la période du $request->debut au $request->fin");
+            }
+
+            return view("admin.recovery_qualitatif", compact("agency", "houses", "locators"));
+        } catch (\Exception $e) {
+            Log::error("Erreure lors du chargement des locataires qualitatif" . $e->getMessage());
+
+            alert()->error("Erreure lors du chargement des locataires qualitatif" . $e->getMessage());
+            return back();
+        }
     }
 
     function AgencyPerformance(Request $request, $agencyId)
     {
-        $agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
-        if (!$agency) {
-            alert()->error("Echec", "Cette agence n'existe pas!");
-        };
-        ####____
+        $FIRST_MONTH_PERIOD = '+1 month';
+        try {
+            Log::info("Debut du chargement des locators qualitatif");
 
-        return view("admin.performance", compact("agency"));
+            $agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
+            if (!$agency) {
+                throw new \Exception("Cette agence n'existe pas!", 1);
+            };
+            ####____
+
+            $houses = $agency->_Houses;
+
+            $debut = $request->debut;
+            $fin = $request->fin;
+
+            $processedHouses = $houses->map(function (House $house) use ($FIRST_MONTH_PERIOD, $debut, $fin): House {
+                $creationDate = Carbon::parse($house->created_at);
+                $firstMonthPeriod = $creationDate->copy()->add($FIRST_MONTH_PERIOD);
+
+                $rooms = $house->Rooms;
+                $locations = $house->Locations;
+
+                $roomStatus = $rooms->map(function (Room $room) use ($locations, $firstMonthPeriod) {
+                    $location = $locations->firstWhere('Room.id', $room->id);
+
+                    if ($location) {
+                        $locationCreateDate = Carbon::parse($location->created_at);
+                        $isFirstMonth = $locationCreateDate->lt($firstMonthPeriod);
+
+                        $room->is_busy = true;
+                        $room->is_first_month = $isFirstMonth;
+                        return $room;
+                    }
+
+                    $room->is_busy = false;
+                    $room->is_first_month = false;
+                    return $room;
+                });
+
+                if ($debut || $fin) {
+                    $busy_rooms = $roomStatus->where('is_busy', true)
+                        ->whereBetween("created_at", [$debut, $fin]);
+                    $frees_rooms = $roomStatus->where('is_busy', false)
+                        ->whereBetween("created_at", [$debut, $fin]);
+                    $busy_rooms_at_first_month = $roomStatus->where('is_busy', true)
+                        ->where('is_first_month', true)
+                        ->whereBetween("created_at", [$debut, $fin]);
+                    $frees_rooms_at_first_month = $roomStatus->where('is_busy', true)
+                        ->where('is_first_month', false)
+                        ->whereBetween("created_at", [$debut, $fin]);
+                } else {
+                    $busy_rooms = $roomStatus->where('is_busy', true);
+                    $frees_rooms = $roomStatus->where('is_busy', false);
+                    $busy_rooms_at_first_month = $roomStatus->where('is_busy', true)
+                        ->where('is_first_month', true);
+                    $frees_rooms_at_first_month = $roomStatus->where('is_busy', true)
+                        ->where('is_first_month', false);
+                }
+
+                $house->busy_rooms = $busy_rooms;
+                $house->frees_rooms = $frees_rooms;
+                $house->busy_rooms_at_first_month = $busy_rooms_at_first_month;
+                $house->frees_rooms_at_first_month = $frees_rooms_at_first_month;
+
+                return $house;
+            });
+
+            $all_busy_rooms = $processedHouses->pluck('busy_rooms')->toArray();
+            $all_frees_rooms = $processedHouses->pluck('frees_rooms')->toArray();
+            $all_frees_rooms_at_first_month = $processedHouses->pluck('busy_rooms_at_first_month')->toArray();
+
+            if ($debut || $fin) {
+                alert()->info("Opération éffectué", "Filtre de performance éffectué de la période du $debut au $fin");
+            }
+            return view("admin.performance", compact(
+                "agency",
+                "houses",
+                "all_frees_rooms",
+                "all_busy_rooms",
+                "all_frees_rooms_at_first_month"
+            ));
+        } catch (\Exception $e) {
+            Log::error("Erreure lors du chargement des performances" . $e->getMessage());
+
+            alert()->error("Erreure lors du chargement des performances" . $e->getMessage());
+            return back();
+        }
     }
 
     function RecoveryAtAnyDate(Request $request, $agencyId)

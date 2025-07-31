@@ -90,8 +90,8 @@ class Recovery05 extends Component
             //             ->values();
             //     })
             //     ->unique()
-            //     ->values()
-            //     ->toArray();
+                // ->values()
+                // ->toArray();
 
         } catch (\Exception $e) {
             Log::error("Erreure lors du chargement de getLocatorsThatPaidAfterStateStopped() " . $e->getMessage());

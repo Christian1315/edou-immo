@@ -34,7 +34,7 @@
                                             placeholder="Rechercher des locations...">
                                     </div>
                                     <br>
-                                    <select name="location" class="form-select form-control" onchange="encaisser(this)" id="select-search">
+                                    <select name="location" class="form-select form-control agency-modal-select2" onchange="encaisser(this)" id="select-search">
                                         @foreach($locations as $location)
                                         <option
                                             class="item-search"
@@ -61,7 +61,7 @@
 
                                 <div class="mb-3">
                                     <label>Type </label>
-                                    <select name="type" class="form-select form-control">
+                                    <select name="type" class="form-select form-control agency-modal-select2">
                                         @foreach($types as $type)
                                         <option value="{{$type->id}}">
                                             {{$type->name}}

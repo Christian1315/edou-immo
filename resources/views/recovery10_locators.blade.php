@@ -103,7 +103,7 @@
                     <div class="">
                         @if($agency)
                         <div class="">
-                            <h6 class="">Agence: <em class="text-red"> {{$agency->name}} </em> </h6>
+                            <h6 class="">Agence: <em class="text-red"> {{$agency?->name}} </em> </h6>
                         </div>
                         @endif
                         <div class="">
@@ -128,8 +128,8 @@
                 </div>
                 <br>
 
-                @if($locations->count()>0)
-                <h6 class="text">Total:  <strong class="text-red">{{$locations->count()}}</strong> </h6>
+                @if(count($locations)>0)
+                <h6 class="text">Total:  <strong class="text-red">{{count($locations)}}</strong> </h6>
 
                 <table class="table">
                     <thead class="table-dark">

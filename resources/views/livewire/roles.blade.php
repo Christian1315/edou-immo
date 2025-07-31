@@ -755,7 +755,7 @@
                                 <br>
                                 <!-- utlisateurs -->
                                 <p class="text-red">Les utilisateurs ayant déjà un rôle, sont désactivés</p>
-                                <select id="userResult" name="user" class="form-select form-select-sm form-control" aria-label="Small select example">
+                                <select id="userResult" name="user" class="form-select form-select-sm form-control agency-modal-select2" aria-label="Small select example">
                                     <option selected>Selectionnez un utilisateur</option>
                                     @foreach($users as $user)
                                     <option @disabled($user->roles->count()>0) class="user-row" value="{{$user->id}}">{{$user->name}}</option>
@@ -857,7 +857,7 @@
                                 </div>
                                 <br>
                                 <!-- utlisateurs -->
-                                <select name="user" class="form-select form-select-sm form-control" aria-label="Small select example">
+                                <select name="user" class="form-select form-select-sm form-control agency-modal-select2" aria-label="Small select example">
                                     <option selected>Selectionnez un utilisateur</option>
                                     @foreach($users as $user)
                                     <!-- on affiche pas le compte damin -->

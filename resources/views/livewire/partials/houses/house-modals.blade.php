@@ -82,7 +82,7 @@
                         <div class="col-12">
                             <div class="mb-3">
                                 <label for="" class="d-block">Superviseur</label>
-                                <select class="form-select form-control" value="{{ old('supervisor') }}"
+                                <select class="form-select form-control agency-modal-select2" value="{{ old('supervisor') }}"
                                     name="supervisor" aria-label="Default select example">
                                     @foreach (supervisors() as $supervisor)
                                     <option value="{{ $supervisor['id'] }}">{{ $supervisor['name'] }}
@@ -95,7 +95,7 @@
                             </div><br>
                             <div class="mb-3">
                                 <label for="" class="d-block">Propriétaire</label>
-                                <select class="form-select form-control"
+                                <select class="form-select form-control agency-modal-select2"
                                     name="proprietor" aria-label="Default select example">
                                     @foreach ($proprietors as $proprietor)
                                     <option value="{{ $proprietor['id'] }}">{{ $proprietor['lastname'] }}

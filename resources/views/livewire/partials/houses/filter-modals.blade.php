@@ -13,7 +13,7 @@
                     @csrf
                     <div class="mb-3">
                         <label for="supervisor" class="form-label">Choisissez un superviseur</label>
-                        <select class="form-select form-control" id="supervisor" name="supervisor" required>
+                        <select class="form-select form-control agency-modal-select2" id="supervisor" name="supervisor" required>
                             @foreach(supervisors() as $supervisor)
                             <option value="{{ $supervisor['id'] }}">{{ $supervisor["name"] }}</option>
                             @endforeach

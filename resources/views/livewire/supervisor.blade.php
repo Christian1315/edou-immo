@@ -65,7 +65,7 @@
                         @csrf
                         <input type="hidden" name="user_id" id="user_id">
                         <label for="">Choisissez un agent</label>
-                        <select id="agent-select" required name="agent" class="form-select mb-3 form-control">
+                        <select id="agent-select" required name="agent" class="form-select mb-3 form-control agency-modal-select2">
                             @foreach($compteAgents as $agent)
                             <option value="{{$agent->id}}">{{$agent->name}}</option>
                             @endforeach

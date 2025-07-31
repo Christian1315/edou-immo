@@ -101,9 +101,11 @@
 
                 <div class="d-flex" style="justify-content: space-between!important; align-items: center; ">
                     <div class="">
+                        @if($agency)
                         <div class="">
-                            <h6 class="">Agence: <em class="text-red"> {{$agency["name"]}} </em> </h6>
+                            <h6 class="">Agence: <em class="text-red"> {{$agency?->name}} </em> </h6>
                         </div>
+                        @endif
                         <div class="">
                             @if($action=="supervisor")
                             <h6>Superviseur: <em class="text-red"> {{$supervisor?$supervisor["name"]:""}} </em></h6>
@@ -114,6 +116,7 @@
                     </div>
                 </div>
                 <br>
+
                 <div class="row">
                     <div class="col-md-1"></div>
                     <div class="col-md-10">
@@ -139,7 +142,7 @@
                     <tbody>
                         @foreach($locations as $location)
                         <tr>
-                            <td class="text-center bg-light"> <strong>{{$location->House->name}}</strong></td>
+                            <td class="text-center bg-light"> <strong>{{$location->House?->name}}</strong></td>
                             <td class="text-center">{{$location->Locataire->name}}</td>
                             <td class="text-center">{{$location->Locataire->prenom}}</td>
                             <td class="text-center">{{$location->Locataire->email}}</td>

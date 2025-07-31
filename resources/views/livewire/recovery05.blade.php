@@ -18,7 +18,7 @@
                 <div class="modal-body">
                     <p class="">Taux par superviseur:</p>
                     <form action="{{route('taux._ShowAgencyTaux05_By_Supervisor',crypId($agency->id))}}" method="get">
-                        <select name="supervisor" class="form-control" required>
+                        <select name="supervisor" class="form-control agency-modal-select2" required>
                             @foreach(supervisors() as $supervisor)
                             <option value="{{$supervisor->id}}">{{$supervisor->name}}</option>
                             @endforeach

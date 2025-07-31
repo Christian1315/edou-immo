@@ -10,7 +10,7 @@
         <div class="col-6">
             <form action="{{route('paiement',['agency'=>crypId($agency->id)])}}" method="POST" class="border shadow shadow-sm p-3">
                 @csrf
-                <select name="house" id="" class="form-control">
+                <select name="house" class="form-control agency-select2">
                     @foreach($houses as $h)
                     <option value="{{$h->id}}" class="">{{$h->name}}</option>
                     @endforeach

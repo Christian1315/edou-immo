@@ -30,7 +30,7 @@
                                     <div class="row">
                                         <div class="col-12 mb-3">
                                             <label for="">Selectionnez un utilisateur</label>
-                                            <select name="user" class="form-select form-control" required aria-label="Default select example">
+                                            <select name="user" class="form-select form-control agency-modal-select2" required aria-label="Default select example">
                                                 @foreach($users as $user)
                                                 <option value="{{$user->id}}">{{$user->name}}</option>
                                                 @endforeach
@@ -70,7 +70,7 @@
                                     @csrf
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <select name="status" required class="form-control">
+                                            <select name="status" required class="form-control agency-modal-select2">
                                                 <option value="valide">Validée</option>
                                                 <option value="en_attente">En attente</option>
                                                 <option value="rejetee">Rejetée</option>
@@ -172,7 +172,7 @@
                         <button type="button" class="btn btn-sm bg-light text-red" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-circle"></i></button>
                     </div>
                     <div class="modal-body">
-                        <select class="form-control" name="status" id="" required>
+                        <select class="form-control agency-modal-select2" name="status" id="" required>
                             @foreach($factureStatus as $statut)
                             @continue($statut->id==1 || $statut->id==4)
                             <option value="{{$statut->id}}">{{$statut->description}} </option>

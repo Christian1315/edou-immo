@@ -824,7 +824,6 @@ class LocataireController extends Controller
 
                 /** Set PDF orientation to landscape*/
                 $pdf->setPaper('a4', 'landscape');
-
                 return $pdf->stream();
             }
 
@@ -844,8 +843,8 @@ class LocataireController extends Controller
                         return $locator->locator_location->house == $house->id;
                     }
                 });
-            }else {
-                $locators_filtered = session("recovery05Locators")->filter(function ($locator) use ($supervisor, $house) {
+            } elseif ($viewType == "qualitatif") {
+                $locators_filtered = session("recoveryQualitatifLocators")->filter(function ($locator) use ($supervisor, $house) {
                     if ($supervisor) {
                         return $locator->locator_location->House->supervisor == $supervisor->id;
                     } elseif ($house) {
@@ -854,22 +853,21 @@ class LocataireController extends Controller
                 });
             }
 
-            // dd($locators_filtered);
             Session::flash("locators_filtered", $locators_filtered);
 
-            alert()->info("Opération éffectué!", "Filtrage éffectué pour le superviseur ($supervisor->name) avec succès");
+            if ($supervisor) {
+                alert()->info("Opération éffectué!", "Filtrage éffectué pour le superviseur ($supervisor->name) avec succès");
+            } elseif ($house) {
+                alert()->info("Opération éffectué!", "Filtrage éffectué pour la maison ($house->name) avec succès");
+            } elseif ($viewType == "qualitatif") {
+                alert()->info("Opération éffectué!", "Filtrage qualitatif éffectué avec succès");
+            }
             return back();
-
-            // return view($view, [
-            //     "locations" => $locations,
-            //     "action" => $action,
-            //     "agency" => $agency,
-            //     "supervisor" => $supervisor,
-            //     "house" => $house,
-            //     "locations_that_do_not_paid" => $locationsThatDoNotPaid,
-            //     "total_of_both_of_them" => collect($locations)->count() + collect($locationsThatDoNotPaid)->count()
-            // ]);
         } catch (\Exception $e) {
+            Log::info("Ligne de l'Erreure du renderRecoveryView", [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
             throw new \Exception("Erreur lors du rendu de la vue: " . $e->getMessage());
         }
     }
@@ -953,7 +951,6 @@ class LocataireController extends Controller
             $supervisor = null;
             $agency = null;
 
-
             DB::commit();
             return $this->renderRecoveryView(
                 $locations,
@@ -966,6 +963,8 @@ class LocataireController extends Controller
             );
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::info("Erreure venant de la _ShowAgencyTaux05_By_House() du LocataireController", ["error" => $e->getMessage()]);
+            // return back();
             return $this->handleException($e, "Erreur lors de l'affichage des taux 05 par maison");
         }
     }
@@ -999,13 +998,13 @@ class LocataireController extends Controller
         }
     }
 
-    function _ShowAgencyTaux10_By_Supervisor(Request $request, $agencyId, $supervisorId)
+    function _ShowAgencyTaux10_By_Supervisor(Request $request, $agencyId)
     {
         try {
             DB::beginTransaction();
 
             $recoveryData = $this->getRecoveryLocations($request, $agencyId, '10');
-            $supervisor = $this->validateSupervisor($supervisorId);
+            $supervisor = $this->validateSupervisor($request->supervisor);
 
             $locations = $this->filterLocationsBySupervisor(
                 collect($recoveryData['locations_that_paid']),
@@ -1014,12 +1013,13 @@ class LocataireController extends Controller
 
             $action = "supervisor";
             $house = null;
+            $agency = null;
 
             DB::commit();
             return $this->renderRecoveryView(
                 $locations,
                 $action,
-                $recoveryData['agency'],
+                $agency,
                 $supervisor,
                 $house,
                 $recoveryData['locations_that_do_not_paid'],
@@ -1032,13 +1032,13 @@ class LocataireController extends Controller
         }
     }
 
-    function _ShowAgencyTaux10_By_House(Request $request, $agencyId, $houseId)
+    function _ShowAgencyTaux10_By_House(Request $request, $agencyId)
     {
         try {
             DB::beginTransaction();
 
             $recoveryData = $this->getRecoveryLocations($request, $agencyId, '10');
-            $house = $this->validateHouse($houseId);
+            $house = $this->validateHouse($request->house);
 
             $locations = $this->filterLocationsByHouse(
                 collect($recoveryData['locations_that_paid']),
@@ -1047,12 +1047,13 @@ class LocataireController extends Controller
 
             $action = "house";
             $supervisor = null;
+            $agency = null;
 
             DB::commit();
             return $this->renderRecoveryView(
                 $locations,
                 $action,
-                $recoveryData['agency'],
+                $agency,
                 $supervisor,
                 $house,
                 $recoveryData['locations_that_do_not_paid'],
@@ -1094,13 +1095,13 @@ class LocataireController extends Controller
         }
     }
 
-    function _ShowAgencyTauxQualitatif_By_Supervisor(Request $request, $agencyId, $supervisorId)
+    function _ShowAgencyTauxQualitatif_By_Supervisor(Request $request, $agencyId)
     {
         try {
             DB::beginTransaction();
 
             $recoveryData = $this->getRecoveryLocations($request, $agencyId, 'qualitatif');
-            $supervisor = $this->validateSupervisor($supervisorId);
+            $supervisor = $this->validateSupervisor($request->supervisor);
 
             $locations = $this->filterLocationsBySupervisor(
                 collect($recoveryData['locations_that_paid']),
@@ -1109,12 +1110,13 @@ class LocataireController extends Controller
 
             $action = "supervisor";
             $house = null;
+            $agency = null;
 
             DB::commit();
             return $this->renderRecoveryView(
                 $locations,
                 $action,
-                $recoveryData['agency'],
+                $agency,
                 $supervisor,
                 $house,
                 $recoveryData['locations_that_do_not_paid'],
@@ -1127,13 +1129,13 @@ class LocataireController extends Controller
         }
     }
 
-    function _ShowAgencyTauxQualitatif_By_House(Request $request, $agencyId, $houseId)
+    function _ShowAgencyTauxQualitatif_By_House(Request $request, $agencyId)
     {
         try {
             DB::beginTransaction();
 
             $recoveryData = $this->getRecoveryLocations($request, $agencyId, 'qualitatif');
-            $house = $this->validateHouse($houseId);
+            $house = $this->validateHouse($request->house);
 
             $locations = $this->filterLocationsByHouse(
                 collect($recoveryData['locations_that_paid']),
@@ -1142,12 +1144,13 @@ class LocataireController extends Controller
 
             $action = "house";
             $supervisor = null;
+            $agency = null;
 
             DB::commit();
             return $this->renderRecoveryView(
                 $locations,
                 $action,
-                $recoveryData['agency'],
+                $agency,
                 $supervisor,
                 $house,
                 $recoveryData['locations_that_do_not_paid'],

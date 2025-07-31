@@ -21,7 +21,7 @@
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label>Choisissez la caisse en occurrence</label>
-                                    <select name="agency_account" required class="form-select form-control" aria-label="Default select example">
+                                    <select name="agency_account" required class="form-select form-control agency-modal-select2" aria-label="Default select example">
                                         @foreach($agencyAccounts as $agency_account)
                                         @if($agency_account["_Account"]['id']!=4 && $agency_account["_Account"]['id']!=9 && $agency_account["_Account"]['id']!=5)
 
@@ -91,7 +91,7 @@
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label>Choisissez la caisse en occurrence</label>
-                                    <select id="caisses" name="agency_account" class="form-select form-control" aria-label="Default select example">
+                                    <select id="caisses" name="agency_account" class="form-select form-control agency-modal-select2" aria-label="Default select example">
                                         @foreach($agencyAccounts as $agency_account)
                                         @if($agency_account["_Account"]['id']!=4 && $agency_account["_Account"]['id']!=9 && $agency_account["_Account"]['id']!=5)
                                         <!-- seul un admin ou un master peut crediter la caisse CDR -->
@@ -106,7 +106,7 @@
 
                                 <div class="mb-3 cdr_caisse d-none">
                                     <span class="text-red"> Ce champ est réquis seulement pour la caisse <em class="text-red"> CDR </em> </span>
-                                    <select name="house" class="form-select form-control" aria-label="Default select example">
+                                    <select name="house" class="form-select form-control agency-modal-select2" aria-label="Default select example">
                                         <option>**Choisir une maison</option>
                                         @foreach($houses as $house)
                                         <option value="{{$house['id']}}">{{$house["name"]}}</option>

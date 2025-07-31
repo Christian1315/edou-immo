@@ -32,7 +32,7 @@
 
 <div class="mb-3">
     <label class="form-label">Sexe</label>
-    <select class="form-select form-control" name="sexe" required>
+    <select class="form-select form-control agency-modal-select2" name="sexe" required>
         <option value="">Sélectionnez le sexe</option>
         <option value="Masculin" {{ old('sexe') == 'Masculin' ? 'selected' : '' }}>Masculin</option>
         <option value="Feminin" {{ old('sexe') == 'Feminin' ? 'selected' : '' }}>Feminin</option>

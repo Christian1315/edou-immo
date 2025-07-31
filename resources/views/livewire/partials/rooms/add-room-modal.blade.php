@@ -143,7 +143,7 @@
                             </div><br>
                             <div class="mb-3">
                                 <label for="" class="d-block">Maison</label>
-                                <select value="{{old('house')}}" class="form-select form-control" name="house" aria-label="Default select example">
+                                <select value="{{old('house')}}" class="form-select form-control agency-modal-select2" name="house" aria-label="Default select example">
                                     @foreach($houses as $house)
                                     <option value="{{$house['id']}}">{{$house['name']}}</option>
                                     @endforeach
@@ -154,7 +154,7 @@
                             </div><br>
                             <div class="mb-3">
                                 <label for="" class="d-block">Nature</label>
-                                <select value="{{old('nature')}}" class="form-select form-control" name="nature" aria-label="Default select example">
+                                <select value="{{old('nature')}}" class="form-select form-control agency-modal-select2" name="nature" aria-label="Default select example">
                                     @foreach($room_natures as $nature)
                                     <option value="{{$nature['id']}}">{{$nature['name']}}</option>
                                     @endforeach
@@ -165,7 +165,7 @@
                             </div><br>
                             <div class="mb-3">
                                 <label for="" class="d-block">Type</label>
-                                <select value="{{old('type')}}" class="form-select form-control" name="type" aria-label="Default select example">
+                                <select value="{{old('type')}}" class="form-select form-control agency-modal-select2" name="type" aria-label="Default select example">
                                     @foreach($room_types as $type)
                                     <option value="{{$type['id']}}">{{$type['name']}}</option>
                                     @endforeach

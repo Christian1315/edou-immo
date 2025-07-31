@@ -168,15 +168,6 @@
                     <x-alert />
 
                     {{$slot}}
-
-                    <br><br><br>
-                    <select class="select-ville form-control">
-                        <option value="AL">Alabama</option>
-                        <option value="WY">Wyoming</option>
-                        <option value="WY">Wyoming</option>
-                        <option value="WY">Wyoming</option>
-                    </select>
-
                 </main>
             </div>
 

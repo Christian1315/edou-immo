@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Log;
 /**Loactaires du 05 */
 function recovery05Locators($houses)
 {
-    $TARGET_DAY = '05';
     $DATE_FORMAT = 'Y/m/d';
 
     $locators = collect();
@@ -49,31 +48,14 @@ function recovery05Locators($houses)
     return $locators;
 }
 
-function isValidPaymentDate05Locators(string $stateDate, string $echeanceDate, string $previousEcheanceDate): bool
-{
-    $TARGET_DAY = '05';
-    $DATE_FORMAT = 'Y/m/d';
-
-    try {
-        $dueDay = Carbon::parse($previousEcheanceDate)->format('d');
-        return $stateDate > $echeanceDate
-            && $echeanceDate <= $previousEcheanceDate
-            && $dueDay === $TARGET_DAY;
-    } catch (\Exception $e) {
-        Log::error("Erreure lors du chargement de isValidPaymentDate() " . $e->getMessage());
-    }
-}
-
-
 /**Loactaires du 10 */
-
-function recovery10Locators($agency)
+function recovery10Locators($houses)
 {
     $DATE_FORMAT = 'Y/m/d';
 
     $locators = collect();
 
-    foreach ($agency->_Houses as $house) {
+    foreach ($houses as $house) {
         $lastState = $house->States->last();
 
         if (!$lastState) {
@@ -89,6 +71,37 @@ function recovery10Locators($agency)
 
             if (isValidPayment10Locators($stateStopDate, $paymentDate, $echeanceDate)) {
                 $location->Locataire["locator_location"] = $location;
+                $location->Locataire["payment_date"] = $paymentDate;
+                $locators[] = $location->Locataire;
+            }
+        }
+    }
+    return $locators;
+}
+
+/**Locataires Qualitatifs(reovery 05 ou 10) */
+function recoveryQualitatifLocators($houses)
+{
+    $DATE_FORMAT = 'Y/m/d';
+    $locators = collect();
+
+    foreach ($houses as $house) {
+        $lastState = $house->States->last();
+
+        if (!$lastState) {
+            continue;
+        }
+
+        $stateStopDate = Carbon::parse($lastState->stats_stoped_day)->format($DATE_FORMAT);
+
+        foreach ($lastState->Factures as $facture) {
+            $location = $facture->Location;
+            $paymentDate = Carbon::parse($facture->echeance_date)->format($DATE_FORMAT);
+            $echeanceDate = Carbon::parse($location->previous_echeance_date)->format($DATE_FORMAT);
+
+            if (isValidPayment10Locators($stateStopDate, $paymentDate, $echeanceDate) || isValidPaymentDate05Locators($stateStopDate, $paymentDate, $echeanceDate)) {
+                $location->Locataire["locator_location"] = $location;
+                $location->Locataire["payment_date"] = $paymentDate;
                 $locators[] = $location->Locataire;
             }
         }
@@ -109,6 +122,26 @@ function isValidPayment10Locators(string $stateStopDate, string $paymentDate, st
         && $paymentDate <= $echeanceDate
         && $dueDay === $TARGET_DAY;
 }
+
+/**
+ * Vérifie si le paiement est valide selon les critères métier
+ */
+function isValidPaymentDate05Locators(string $stateDate, string $echeanceDate, string $previousEcheanceDate): bool
+{
+    $TARGET_DAY = '05';
+
+    try {
+        $dueDay = Carbon::parse($previousEcheanceDate)->format('d');
+        return $stateDate > $echeanceDate
+            && $echeanceDate <= $previousEcheanceDate
+            && $dueDay === $TARGET_DAY;
+    } catch (\Exception $e) {
+        Log::error("Erreure lors du chargement de isValidPaymentDate() " . $e->getMessage());
+    }
+}
+
+
+
 
 function supervisors()
 {

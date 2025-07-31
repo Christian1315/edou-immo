@@ -27,7 +27,7 @@
 
                             <div class="mb-3">
                                 <label for="sexe" class="d-block">Sexe</label>
-                                <select id="update-sexe" class="form-select form-control" name="sexe">
+                                <select id="update-sexe" class="form-select form-control agency-modal-select2" name="sexe">
                                     <option value="Maxculin">Maxculin</option>
                                     <option value="Feminin">Feminin</option>
                                 </select>
@@ -52,7 +52,7 @@
 
                             <div class="mb-3">
                                 <label for="card_type" class="d-block">Type</label>
-                                <select id="update-card_type" class="form-select form-control" name="card_type">
+                                <select id="update-card_type" class="form-select form-control agency-modal-select2" name="card_type">
                                     @foreach($card_types as $type)
                                         <option value="{{ $type['id'] }}">{{ $type['name'] }}</option>
                                     @endforeach
@@ -61,7 +61,7 @@
 
                             <div class="mb-3">
                                 <label for="country" class="d-block">Pays</label>
-                                <select id="update-country" class="form-select form-control" name="country">
+                                <select id="update-country" class="form-select form-control agency-modal-select2" name="country">
                                     @foreach($countries as $countrie)
                                         @if($countrie['id']==4)
                                             <option value="{{ $countrie['id'] }}">{{ $countrie['name'] }}</option>
@@ -72,7 +72,7 @@
 
                             <div class="mb-3">
                                 <label for="departement" class="d-block">Département</label>
-                                <select id="update-departement" class="form-select form-control" name="departement">
+                                <select id="update-departement" class="form-select form-control agency-modal-select2" name="departement">
                                     @foreach($departements as $departement)
                                         <option value="{{ $departement['id'] }}">{{ $departement['name'] }}</option>
                                     @endforeach

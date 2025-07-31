@@ -21,7 +21,7 @@
                         @csrf
                         <div class="row">
                             <div class="col-md-12 mb-2">
-                                <select required value="{{old('agency')}}" name="agency" class="select2 form-control mb-1">
+                                <select required value="{{old('agency')}}" name="agency" class="select2 form-control mb-1 agency-modal-select2">
                                     <option>Choisir une agence</option>
                                     @foreach($agencies as $agency)
                                     <option value="{{$agency['id']}}">{{$agency['name']}} </option>
@@ -66,7 +66,7 @@
                         <div class="row">
                             <div class="col">
                                 <label for="role">Choisissez un rôle</label>
-                                <select name="role" id="role" class="select2 form-control mb-1">
+                                <select name="role" id="role" class="select2 form-control mb-1 agency-modal-select2">
                                     @foreach($allRoles as $role)
                                     @continue($role->id==1)
                                     <option value="{{ $role->name }}">{{$role->name}} </option>
@@ -196,7 +196,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <span class="">Choisir une agence </span>
-                                <select required name="agency" class="form-select mb-3 form-control">
+                                <select required name="agency" class="form-select mb-3 form-control agency-modal-select2">
                                     @foreach($agencies as $agency)
                                     <option value="{{$agency['id']}}">{{$agency['name']}} </option>
                                     @endforeach

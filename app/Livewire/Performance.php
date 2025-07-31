@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Models\Agency;
-use App\Models\User;
 use App\Models\House;
 use App\Models\Room;
 use Carbon\Carbon;

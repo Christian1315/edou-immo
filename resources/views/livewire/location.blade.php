@@ -96,7 +96,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label>Choisissez un superviseur</label>
-                                <select required name="supervisor" class="form-control">
+                                <select required name="supervisor" class="form-control agency-modal-select2">
                                     @foreach(supervisors() as $supervisor)
                                     <option value="{{$supervisor['id']}}"> {{$supervisor["name"]}} </option>
                                     @endforeach
@@ -124,7 +124,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label>Choisissez une maison</label>
-                                <select required name="house" class="form-control">
+                                <select required name="house" class="form-control agency-modal-select2">
                                     @foreach($current_agency->_Houses as $house)
                                     <option value="{{$house['id']}}"> {{$house["name"]}} </option>
                                     @endforeach
@@ -152,7 +152,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <label>Choisissez un propriétaire</label>
-                                <select required name="proprio" class="form-control">
+                                <select required name="proprio" class="form-control agency-modal-select2">
                                     @foreach($current_agency->_Houses as $house)
                                     <option value="{{$house->Proprietor->id}}"> {{$house->Proprietor->firstname}} {{$house->Proprietor->lastname}} </option>
                                     @endforeach
@@ -197,7 +197,7 @@
                                 </div><br>
                                 <div class="mb-3">
                                     <label for="" class="d-block">Maison</label>
-                                    <select class="form-select form-control" onchange="houseSelect()" id="houseSelection" name="house" aria-label="Default select example">
+                                    <select class="form-select form-control agency-modal-select2" onchange="houseSelect()" id="houseSelection" name="house" aria-label="Default select example">
                                         @foreach($houses as $house)
                                         <option value="{{$house['id']}}" @if(old('house')==$house['id']) selected @endif>{{$house['name']}}</option>
                                         @endforeach
@@ -210,7 +210,7 @@
 
                                 <div class="mb-3" id="roomsShow" hidden>
                                     <label class="d-block" for="">Chambre</label>
-                                    <select class="form-select form-control" name="room" id="rooms" aria-label="Default select example">
+                                    <select class="form-select form-control agency-modal-select2" name="room" id="rooms" aria-label="Default select example">
 
                                     </select>
                                     @error("room")
@@ -221,7 +221,7 @@
 
                                 <div class="mb-3">
                                     <label class="d-block" for="">Locataire</label>
-                                    <select class="form-select form-control" name="locataire" aria-label="Default select example">
+                                    <select class="form-select form-control agency-modal-select2" name="locataire" aria-label="Default select example">
                                         @foreach($locators as $locator)
                                         <option value="{{$locator['id']}}" @if(old('locator')==$locator['id']) selected @endif>{{$locator['name']}} {{$locator['prenom']}}</option>
                                         @endforeach
@@ -233,7 +233,7 @@
                                 <br>
                                 <div class="mb-3">
                                     <label class="d-block" for="">Type</label>
-                                    <select class="form-select form-control" name="type">
+                                    <select class="form-select form-control agency-modal-select2" name="type">
                                         @foreach($location_types as $type)
                                         <option value="{{$type['id']}}" @if(old('type')==$type['id']) selected @endif>{{$type['name']}}</option>
                                         @endforeach
@@ -557,7 +557,7 @@
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label>Type de paiement </label>
-                                    <select name="type" class="form-select form-control" aria-label="Default select example">
+                                    <select name="type" class="form-select form-control agency-modal-select2" aria-label="Default select example">
                                         @foreach($paiements_types as $type)
                                         <option value="{{$type['id']}}" name="type">{{$type["name"]}}</option>
                                         @endforeach
@@ -666,7 +666,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="" class="d-block">Maison</label>
-                                    <select class="form-select form-control house" name="house" aria-label="Default select example">
+                                    <select class="form-select form-control house agency-modal-select2" name="house" aria-label="Default select example">
                                         @foreach($houses as $house)
                                         <option value="{{$house['id']}}">{{$house['name']}}</option>
                                         @endforeach
@@ -676,7 +676,7 @@
 
                                 <div class="mb-3">
                                     <label class="d-block" for="">Chambre</label>
-                                    <select class="form-select form-control room" name="room" aria-label="Default select example">
+                                    <select class="form-select form-control room agency-modal-select2" name="room" aria-label="Default select example">
                                         @foreach($rooms as $room)
                                         <option value="{{$room['id']}}">{{$room['number']}}</option>
                                         @endforeach
@@ -686,7 +686,7 @@
 
                                 <div class="mb-3">
                                     <label class="d-block" for="">Locataire</label>
-                                    <select class="form-select form-control locataire" name="locataire" aria-label="Default select example">
+                                    <select class="form-select form-control locataire agency-modal-select2" name="locataire" aria-label="Default select example">
                                         @foreach($locators as $locator)
                                         <option value="{{$locator['id']}}">{{$locator->name}} {{$locator->prenom}}</option>
                                         @endforeach
@@ -695,7 +695,7 @@
                                 <br>
                                 <div class="mb-3">
                                     <label class="d-block" for="">Type</label>
-                                    <select class="form-select form-control type" name="type">
+                                    <select class="form-select form-control type agency-modal-select2" name="type">
                                         @foreach($location_types as $type)
                                         <option value="{{$type['id']}}">{{$type['name']}}</option>
                                         @endforeach

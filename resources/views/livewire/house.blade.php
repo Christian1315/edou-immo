@@ -112,8 +112,8 @@
                                 </div><br>
                                 <div class="mb-3">
                                     <label for="" class="d-block">Type</label>
-                                    <select class="form-select form-control" name="type"
-                                        aria-label="Default select example">
+                                    <select class="select2 form-control agency-modal-select2" name="type"
+                                        aria-label="Default select example" style="width: 100% !important">
                                         @foreach ($house_types as $type)
                                         <option value="{{ $type['id'] }}">{{ $type['name'] }}</option>
                                         @endforeach
@@ -124,8 +124,8 @@
                                 </div><br>
                                 <div class="mb-3">
                                     <label for="" class="d-block">Pays</label>
-                                    <select class="form-select form-control" value="{{ old('country') }}"
-                                        name="country" aria-label="Default select example">
+                                    <select class=" form-control agency-modal-select2" value="{{ old('country') }}"
+                                        name="country" aria-label="Default select example" style="width: 100% !important">
                                         @foreach ($countries as $countrie)
                                         @if ($countrie['id'] == 4)
                                         <option value="{{ $countrie['id'] }}">{{ $countrie['name'] }}
@@ -139,8 +139,8 @@
                                 </div><br>
                                 <div class="mb-3">
                                     <label for="" class="d-block">Département</label>
-                                    <select class="form-select form-control" value="{{ old('departement') }}"
-                                        name="departement" aria-label="Default select example">
+                                    <select class=" form-control agency-modal-select2" value="{{ old('departement') }}"
+                                        name="departement" aria-label="Default select example" style="width: 100% !important">
                                         @foreach ($departements as $departement)
                                         <option value="{{ $departement['id'] }}">{{ $departement['name'] }}
                                         </option>
@@ -185,8 +185,8 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="" class="d-block">Ville/Commune</label>
-                                    <select class="form-select form-control" value="{{ old('city') }}"
-                                        name="city" aria-label="Default select example">
+                                    <select class=" form-control agency-modal-select2" value="{{ old('city') }}"
+                                        name="city" aria-label="Default select example" style="width: 100% !important">
                                         @foreach ($cities as $citie)
                                         @if ($citie['_country']['id'] == 4)
                                         <option value="{{ $citie['id'] }}">{{ $citie['name'] }}</option>
@@ -199,8 +199,8 @@
                                 </div><br>
                                 <div class="mb-3">
                                     <label for="" class="d-block">Quartier</label>
-                                    <select class="form-select form-control" value="{{ old('quartier') }}"
-                                        name="quartier" aria-label="Default select example">
+                                    <select class=" form-control agency-modal-select2" value="{{ old('quartier') }}"
+                                        name="quartier" aria-label="Default select example" style="width: 100% !important">
                                         @foreach ($quartiers as $quartier)
                                         <option value="{{ $quartier['id'] }}">{{ $quartier['name'] }}</option>
                                         @endforeach
@@ -211,8 +211,8 @@
                                 </div><br>
                                 <div class="mb-3">
                                     <label for="" class="d-block">Zone</label>
-                                    <select class="form-select form-control" value="{{ old('zone') }}"
-                                        name="zone" aria-label="Default select example">
+                                    <select class=" form-control agency-modal-select2" value="{{ old('zone') }}"
+                                        name="zone" aria-label="Default select example" style="width: 100% !important">
                                         @foreach ($zones as $zone)
                                         <option value="{{ $zone['id'] }}">{{ $zone['name'] }}</option>
                                         @endforeach
@@ -223,8 +223,8 @@
                                 </div><br>
                                 <div class="mb-3">
                                     <label for="" class="d-block">Superviseur</label>
-                                    <select class="form-select form-control" value="{{ old('supervisor') }}"
-                                        name="supervisor" aria-label="Default select example">
+                                    <select class=" form-control agency-modal-select2" value="{{ old('supervisor') }}"
+                                        name="supervisor" aria-label="Default select example" style="width: 100% !important">
                                         @foreach (supervisors() as $supervisor)
                                         <option value="{{ $supervisor['id'] }}">{{ $supervisor['name'] }}
                                         </option>
@@ -236,8 +236,8 @@
                                 </div><br>
                                 <div class="mb-3">
                                     <label for="" class="d-block">Propriétaire</label>
-                                    <select class="form-select form-control" value="{{ old('proprietor') }}"
-                                        name="proprietor" aria-label="Default select example">
+                                    <select class=" form-control agency-modal-select2" value="{{ old('proprietor') }}"
+                                        name="proprietor" aria-label="Default select example" style="width: 100% !important">
                                         @foreach ($proprietors as $proprietor)
                                         <option value="{{ $proprietor['id'] }}">{{ $proprietor['lastname'] }}
                                             {{ $proprietor['firstname'] }}
@@ -310,6 +310,7 @@
     <!-- Modals -->
     @include('livewire.partials.houses.house-modals')
 </div>
+
 
 @push('scripts')
 <script src="{{ asset('js/house.js') }}"></script>

@@ -39,6 +39,7 @@
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
         @livewireStyles
+        @stack("styles")
     </head>
 
     <body>
@@ -53,7 +54,7 @@
             </a>
 
             <marquee class="text-uppercase" behavior="alternate" style="font-size: 15px;font-weight: bold;">
-                {{ $agency['name'] }}
+                {{ $agency?->name }}
             </marquee>
 
             <li style="list-style-type: none;"><a class="btn btn-sm btn-light" onclick="return confirm('Voulez-vous vraiment vous déconnecter!?')" href="{{route('logout')}}"><i class="bi bi-power"></i> Se Déconnecter</a></li>
@@ -77,7 +78,7 @@
                                 style="font-weight: bold;font-style:oblique;font-size:15px"
                                 href="/{{ crypId($agency['id']) }}/manage-agency">
                                 <i class="bi bi-house-add-fill"></i>
-                                {{ $agency['name'] }}
+                                {{ $agency?->name }}
                             </a>
                         </p>
                         <!-- <button type="button" class="btn-close text-red btn btn-sm btn-light" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x"></i></button> -->
@@ -319,12 +320,6 @@
                     <!-- ALERT -->
                     {{ $slot }}
 
-                    <select class="js-example-basic-single form-control" name="state">
-                        <option value="AL">Alabama</option>
-                        <option value="WY">Wyoming</option>
-                        <option value="WY">Wyoming</option>
-                        <option value="WY">Wyoming</option>
-                    </select>
 
                     {{-- MODAL DE CHANGEMENT DE MOT DE PASE --}}
                     <!-- Modal -->
@@ -359,8 +354,8 @@
             </div>
         </div>
         @livewireScripts
-        @stack('scripts')
     </body>
+
     <script src="{{ asset('fichiers/jquery.min.js') }}"></script>
 
     <script src="{{asset('fichiers/popper.min.js')}}"></script>
@@ -393,10 +388,21 @@
 
     <!-- #### DATA TABLES -->
     <script type="text/javascript">
-        // In your Javascript (external .js resource or <script> tag)
+        // Alert2
+        $('.agency-select2').select2();
+
         $(document).ready(function() {
-            $('.js-example-basic-single').select2();
-        });
+            $(document).on('shown.bs.modal', '.modal', function() {
+                $(this).find('.agency-modal-select2').each(function() {
+                    $(this).select2({
+                        width: '100%',
+                        placeholder: $(this).data('placeholder'),
+                        dropdownParent: $(this).closest('.modal'),
+                        allowClear: true
+                    });
+                });
+            });
+        })
 
         $(function() {
             $("#myTable").DataTable({
@@ -615,5 +621,7 @@
                 .buttons().container().appendTo('#myTable_wrapper .col-md-6:eq(0)');
         });
     </script>
+    @stack('scripts')
+
     </html>
 </div>
