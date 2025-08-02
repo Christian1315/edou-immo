@@ -216,15 +216,340 @@ class AdminController extends Controller
         ]));
     }
 
+    /**
+     * Traitement des factures 
+     * d'électricité
+     */
+
     function Electricity(Request $request, $agencyId)
     {
-        $agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
-        if (!$agency) {
-            alert()->error("Echec", "Cette agence n'existe pas!");
-        };
-        ####____
-        return view("admin.electricity", compact("agency"));
+        try {
+            $current_agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
+            if (!$current_agency) {
+                alert()->error("Echec", "Cette agence n'existe pas!");
+            };
+
+            // Chargement des locations
+            $activeLocations = $current_agency
+                ->_Locations
+                ->where("status", "!=", 3)
+                ->filter(fn($location) => $location->Room?->electricity);
+
+            $debut = $request->debut;
+            $fin = $request->fin;
+            $owner = $request->owner;
+
+            $locations = Collection::make(
+                ($debut || $fin || $owner) ?
+                    $activeLocations
+                    ->map(function ($location) use ($debut, $fin,$owner) {
+                        return $this->processLocation($location, $debut, $fin,$owner);
+                    })->all() :
+                    $activeLocations
+                    ->map(function ($location) use ($debut, $fin,$owner) {
+                        return $this->processLocation($location, $debut, $fin,$owner);
+                    })->all()
+            );
+
+            $houses = Collection::make(
+                $activeLocations
+                    ->map(fn($location) => $location->House)
+                    ->unique()
+                    ->values()
+                    ->all()
+            );
+
+            if ($debut || $fin) {
+                $user = User::find($owner);
+                alert()->info("Opération réussie", "Filtrage par période éffectué pour la période du $debut au $fin pour l'utilisateur $user->name");
+            }
+
+            /**Total à payer */
+            $totalAmount = $locations->sum("total_un_paid_facture_amount");
+
+            return view("admin.electricity", compact(
+                "current_agency",
+                "locations",
+                "houses",
+                "totalAmount"
+            ));
+        } catch (\Exception $e) {
+            alert()->error("Erreure lors du chargement des factures d'électricité " . $e->getMessage());
+            return back()->withInput();
+        }
     }
+
+    private function processLocation(Location $location, $debut, $fin, $owner): Location
+    {
+        $location->load([
+            "_Agency",
+            "Owner",
+            "House",
+            "Locataire",
+            "Room",
+            "Factures",
+            "StateFactures",
+            "AllFactures",
+            "Paiements",
+            "ElectricityFactures"
+        ]);
+
+        $location['house_name'] = $location->House->name;
+        $location['locataire'] = $location->Locataire->name . " " . $location->Locataire->prenom;
+
+        $location['electricity_factures'] = ($debut || $fin || $owner) ?
+            $location
+            ->ElectricityFactures
+            ->where("owner", $owner)
+            ->whereBetween("created_at", [$debut, $fin]) :
+            $location->ElectricityFactures;
+
+        $location['electricity_factures_states'] = ($debut || $fin || $owner) ?
+            $location->House
+            ->ElectricityFacturesStates
+            ->where("owner", $owner)
+            ->whereBetween("created_at", [$debut, $fin]) :
+            $location->House->ElectricityFacturesStates;
+
+        $location['lastFacture'] = ($debut || $fin || $owner) ?
+            $location
+            ->ElectricityFactures
+            ->where("owner", $owner)
+            ->whereBetween("created_at", [$debut, $fin])
+            ->first() :
+            $location->ElectricityFactures();
+
+        $location['start_index'] = $this->getStartIndex($location);
+
+        $electricityFactures = ($debut || $fin || $owner) ?
+            $location->ElectricityFactures
+            ->where("owner", $owner)
+            ->whereBetween("created_at", [$debut, $fin]) :
+            $location->ElectricityFactures;
+
+        if ($electricityFactures->isNotEmpty()) {
+            $latestFacture = $electricityFactures->first();
+            $isLatestFactureStateFacture = $latestFacture->state_facture;
+
+            $this->calculateFactureData($location, $latestFacture, $isLatestFactureStateFacture, $electricityFactures);
+        } else {
+            $this->getEmptyFactureData($location);
+        }
+
+        return $location;
+    }
+
+    private function getStartIndex(Location $location): ?int
+    {
+        if ($location->ElectricityFactures->isNotEmpty()) {
+            return $location->ElectricityFactures->first()->end_index;
+        }
+        return $location->Room?->electricity_counter_start_index;
+    }
+
+    private function calculateFactureData(Location $location, $latestFacture, bool $isLatestFactureStateFacture, $electricityFactures): Location
+    {
+
+        $unpaidFactures = $electricityFactures
+            ->where('id', '!=', $latestFacture->id)
+            ->where('paid', false)
+            ->where('state_facture', false);
+
+        $paidFactures = $electricityFactures->where('paid', true);
+        $totalFactures = $electricityFactures;
+
+        $location['end_index'] = $latestFacture->end_index;
+        $location['current_amount'] = $latestFacture->paid ? 0 : $latestFacture->amount;
+        $location['nbr_un_paid_facture_amount'] = $isLatestFactureStateFacture ? 0 : $unpaidFactures->count();
+        $location['un_paid_facture_amount'] = $isLatestFactureStateFacture ? 0 : $unpaidFactures->sum('amount');
+        $location['paid_facture_amount'] = $isLatestFactureStateFacture ? 0 : $paidFactures->sum('amount');
+        $location['total_un_paid_facture_amount'] = $isLatestFactureStateFacture ? 0 : $totalFactures->sum('amount');
+        $location['rest_facture_amount'] = $isLatestFactureStateFacture ? 0 : ($totalFactures->sum('amount') - $paidFactures->sum('amount'));
+
+        return $location;
+    }
+
+    private function getEmptyFactureData($location): Location
+    {
+        $location['end_index'] = 0;
+        $location['current_amount'] = 0;
+        $location['nbr_un_paid_facture_amount'] = 0;
+        $location['un_paid_facture_amount'] = 0;
+        $location['water_factures'] = [];
+        $location['paid_facture_amount'] = 0;
+        $location['total_un_paid_facture_amount'] = 0;
+        $location['rest_facture_amount'] = 0;
+
+        return $location;
+    }
+    /**Fin du traitement des factures d'electricité */
+
+
+    /**
+     * Traitements des factures eau
+     */
+
+    function Eau(Request $request, $agencyId)
+    {
+        try {
+            $current_agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
+            if (!$current_agency) {
+                alert()->error("Echec", "Cette agence n'existe pas!");
+            };
+
+            /** Chargement des locations */
+            $activeLocations = $current_agency
+                ->_Locations
+                ->where("status", "!=", 3)
+                ->filter(fn($location) => $location->Room?->electricity);
+
+            $debut = $request->debut;
+            $fin = $request->fin;
+            $owner = $request->owner;
+
+            $locations = Collection::make(
+                ($debut || $fin || $owner) ?
+                    $activeLocations
+                    ->map(function ($location) use ($debut, $fin, $owner) {
+                        return $this->waterProcessLocation($location, $debut, $fin, $owner);
+                    })->all() :
+                    $activeLocations
+                    ->map(function ($location) use ($debut, $fin, $owner) {
+                        return $this->waterProcessLocation($location, $debut, $fin, $owner);
+                    })->all()
+            );
+
+            $houses = Collection::make(
+                $activeLocations
+                    ->map(fn($location) => $location->House)
+                    ->unique()
+                    ->values()
+                    ->all()
+            );
+
+            if ($debut || $fin || $owner) {
+                $user = User::find($owner);
+                alert()->info("Opération réussie", "Filtrage par période éffectué pour la période du $debut au $fin pour l'utilisateur $user->name ");
+            }
+
+            /**Total à payer */
+            $totalAmount = $locations->sum("total_un_paid_facture_amount");
+
+            return view("admin.eau_locations", compact(
+                "current_agency",
+                "locations",
+                "houses",
+                "totalAmount",
+            ));
+        } catch (\Exception $e) {
+            alert()->error("Echec", "Erreure lors du chargement des factures d'eau " . $e->getMessage());
+            return back();
+        }
+    }
+
+    private function waterProcessLocation(Location $location, $debut, $fin, $owner): Location
+    {
+        $location->load([
+            "_Agency",
+            "Owner",
+            "House",
+            "Locataire",
+            "Room",
+            "Factures",
+            "StateFactures",
+            "AllFactures",
+            "Paiements",
+            "ElectricityFactures"
+        ]);
+
+        $location['house_name'] = $location->House->name;
+        $location['locataire'] = $location->Locataire->name . ' ' . $location->Locataire->prenom;
+
+        $location['water_factures'] = ($debut || $fin || $owner) ? $location
+            ->WaterFactures
+            ->where("owner", $owner)
+            ->whereBetween("created_at", [$debut, $fin]) :
+            $location
+            ->WaterFactures;
+
+        $location['water_factures_states'] = ($debut || $fin || $owner) ? $location->House
+            ->WaterFacturesStates
+            ->where("owner", $owner)
+            ->whereBetween("created_at", [$debut, $fin]) :
+            $location->House
+            ->WaterFacturesStates;
+
+        $location['lastFacture'] = ($debut || $fin || $owner) ? $location
+            ->WaterFactures()
+            ->where("owner", $owner)
+            ->whereBetween("created_at", [$debut, $fin])
+            ->first() :
+            $location->WaterFactures()->first();
+
+        $location['start_index'] = $this->waterGetStartIndex($location);
+
+        /** Water Factures */
+        $waterFactures = ($debut || $fin || $owner) ? $location
+            ->WaterFactures
+            ->where("owner", $owner)
+            ->whereBetween("created_at", [$debut, $fin]) :
+            $location->WaterFactures;
+
+        if ($waterFactures->isNotEmpty()) {
+            $latestFacture = $waterFactures->first();
+            $isLatestFactureStateFacture = $latestFacture->state_facture ?? false;
+            $this->waterCalculateFactureData($location, $latestFacture, $isLatestFactureStateFacture, $waterFactures);
+        } else {
+            $this->waterGetEmptyFactureData($location);
+        }
+
+        return $location;
+    }
+
+    private function waterCalculateFactureData(Location $location, $latestFacture, bool $isLatestFactureStateFacture, $waterFactures): Location
+    {
+        $unpaidFactures = $waterFactures
+            ->where('id', '!=', $latestFacture->id)
+            ->where('paid', false)
+            ->where('state_facture', false);
+
+        $paidFactures = $waterFactures->where('paid', true);
+        $totalFactures = $waterFactures;
+
+        $location['end_index'] = $latestFacture->end_index;
+        $location['current_amount'] = $latestFacture->paid ? 0 : $latestFacture->amount;
+        $location['nbr_un_paid_facture_amount'] = $isLatestFactureStateFacture ? 0 : $unpaidFactures->count();
+        $location['un_paid_facture_amount'] = $isLatestFactureStateFacture ? 0 : $unpaidFactures->sum('amount');
+        $location['paid_facture_amount'] = $isLatestFactureStateFacture ? 0 : $paidFactures->sum('amount');
+        $location['total_un_paid_facture_amount'] = $isLatestFactureStateFacture ? 0 : $totalFactures->sum('amount');
+        $location['rest_facture_amount'] = $isLatestFactureStateFacture ? 0 : ($totalFactures->sum('amount') - $paidFactures->sum('amount'));
+
+        return $location;
+    }
+
+    private function waterGetStartIndex(Location $location): ?int
+    {
+        if ($location->WaterFactures->isNotEmpty()) {
+            return $location->WaterFactures->first()->end_index;
+        }
+        return $location->Room?->water_counter_start_index;
+    }
+
+    private function waterGetEmptyFactureData($location): Location
+    {
+        $location['end_index'] = 0;
+        $location['current_amount'] = 0;
+        $location['nbr_un_paid_facture_amount'] = 0;
+        $location['un_paid_facture_amount'] = 0;
+        $location['water_factures'] = [];
+        $location['paid_facture_amount'] = 0;
+        $location['total_un_paid_facture_amount'] = 0;
+        $location['rest_facture_amount'] = 0;
+
+        return $location;
+    }
+    /**Fin du traitement des factures d'eau */
+
 
     function AgencyStatistique(Request $request, $agencyId)
     {
@@ -655,17 +980,6 @@ class AdminController extends Controller
     function Statistique(Request $request)
     {
         return view("admin.statistiques");
-    }
-
-    function Eau(Request $request, $agencyId)
-    {
-        $agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
-        if (!$agency) {
-            alert()->error("Echec", "Cette agence n'existe pas!");
-        };
-        ##___
-
-        return view("admin.eau_locations", compact("agency"));
     }
 
     function Caisses(Request $request, $agencyId)

@@ -130,13 +130,6 @@
     </div>
     <br>
 
-    <select value="{{old('city')}}" class="form-control agency-modal-select2" name="city">
-        <option>Ville</option>
-        @foreach($cities as $citie)
-        <option value="{{$citie->name}}">{{$citie->name}}</option>
-        @endforeach
-    </select>
-
     <!-- TABLEAU DE LISTE -->
     <h4 class="my-2">Total: <strong class="text-red"> {{$agencies->count()}} </strong> </h4>
 
@@ -201,11 +194,4 @@
             </div>
         </div>
     </div>
-
-    @push("scripts")
-    <script>
-        // In your Javascript (external .js resource or <script> tag)
-        alert("agency")
-    </script>
-    @endpush
 </div>

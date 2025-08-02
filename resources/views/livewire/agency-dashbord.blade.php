@@ -143,17 +143,6 @@
     </script>
 
     <script type="text/javascript">
-        // In your Javascript (external .js resource or <script>
-        $(document).ready(function() {
-            $('._select2-modal').select2({
-                theme: 'bootstrap-5',
-                width: '100%',
-                dropdownParent: $('#encaisse .modal-content'), //$("#encaisse")
-            });
-        });
-    </script>
-
-    <script type="text/javascript">
         function encaisser(select) {
             var option = select.selectedOptions[0];
 
@@ -269,5 +258,4 @@
             </div>
         </div>
     </div>
-
 </div>

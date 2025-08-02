@@ -1,20 +1,22 @@
 <?php
 
 use App\Models\Facture;
-use App\Models\Product;
 use App\Models\Right;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Notifications\SendNotification;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
+
+function users()
+{
+    return User::all(["id", "name"]);
+}
 
 /**Loactaires du 05 */
 function recovery05Locators($houses)
@@ -139,9 +141,6 @@ function isValidPaymentDate05Locators(string $stateDate, string $echeanceDate, s
         Log::error("Erreure lors du chargement de isValidPaymentDate() " . $e->getMessage());
     }
 }
-
-
-
 
 function supervisors()
 {

@@ -245,14 +245,23 @@
         });
     </script>
 
-    <!-- #### DATA TABLES -->
+    <!--  DATA TABLES -->
     <script>
         // In your Javascript (external .js resource or <script> tag)
+        $('.agency-select2').select2();
+
         $(document).ready(function() {
-            $('.select-ville').select2({
-                dropdownParent: $("#add_agency")
+            $(document).on('shown.bs.modal', '.modal', function() {
+                $(this).find('.agency-modal-select2').each(function() {
+                    $(this).select2({
+                        width: '100%',
+                        placeholder: $(this).data('placeholder'),
+                        dropdownParent: $(this).closest('.modal'),
+                        allowClear: true
+                    });
+                });
             });
-        });
+        })
 
         $(function() {
             $("#myTable").DataTable({

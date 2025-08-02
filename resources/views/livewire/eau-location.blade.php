@@ -13,7 +13,6 @@
     </small>
     <br>
 
-
     <div id="filtre_options" class="d-none">
         <button class="btn btn-sm bg-light d-block" data-bs-toggle="modal" data-bs-target="#serchBySupervisor"><i class="bi bi-people"></i> Par Sperviseur</button>
         <button class="btn btn-sm bg-light d-block" data-bs-toggle="modal" data-bs-target="#searchByHouse"><i class="bi bi-house-check-fill"></i> Par Maison</button>
