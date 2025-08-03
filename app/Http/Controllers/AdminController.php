@@ -242,12 +242,12 @@ class AdminController extends Controller
             $locations = Collection::make(
                 ($debut || $fin || $owner) ?
                     $activeLocations
-                    ->map(function ($location) use ($debut, $fin,$owner) {
-                        return $this->processLocation($location, $debut, $fin,$owner);
+                    ->map(function ($location) use ($debut, $fin, $owner) {
+                        return $this->processLocation($location, $debut, $fin, $owner);
                     })->all() :
                     $activeLocations
-                    ->map(function ($location) use ($debut, $fin,$owner) {
-                        return $this->processLocation($location, $debut, $fin,$owner);
+                    ->map(function ($location) use ($debut, $fin, $owner) {
+                        return $this->processLocation($location, $debut, $fin, $owner);
                     })->all()
             );
 
@@ -847,10 +847,10 @@ class AdminController extends Controller
                 });
 
                 if ($debut || $fin) {
-                    $busy_rooms = $roomStatus->where('is_busy', true)
-                        ->whereBetween("created_at", [$debut, $fin]);
-                    $frees_rooms = $roomStatus->where('is_busy', false)
-                        ->whereBetween("created_at", [$debut, $fin]);
+                    // $busy_rooms = $roomStatus->where('is_busy', true)
+                    //     ->whereBetween("created_at", [$debut, $fin]);
+                    // $frees_rooms = $roomStatus->where('is_busy', false)
+                    //     ->whereBetween("created_at", [$debut, $fin]);
                     $busy_rooms_at_first_month = $roomStatus->where('is_busy', true)
                         ->where('is_first_month', true)
                         ->whereBetween("created_at", [$debut, $fin]);
@@ -874,13 +874,33 @@ class AdminController extends Controller
                 return $house;
             });
 
-            $all_busy_rooms = $processedHouses->pluck('busy_rooms')->toArray();
-            $all_frees_rooms = $processedHouses->pluck('frees_rooms')->toArray();
+            // $all_busy_rooms = $processedHouses->pluck('busy_rooms')->toArray();
+            // $all_frees_rooms = $processedHouses->pluck('frees_rooms')->toArray();
             $all_frees_rooms_at_first_month = $processedHouses->pluck('busy_rooms_at_first_month')->toArray();
+
+            /**Chambres Occupées */
+            $all_busy_rooms = ($debut || $fin) ? $agency->_Locations
+                ->where('status', '!=', 3)
+                ->pluck("Room")
+                ->whereBetween("created_at", [$debut, $fin]) :
+                $agency->_Locations
+                ->where('status', '!=', 3)
+                ->pluck("Room")
+                ->filter(fn($room) => $room && $room->buzzy());
+
+            /**Chambres libres */
+            $all_frees_rooms = ($debut || $fin) ? $houses->flatMap
+                ->Rooms
+                ->whereBetween("created_at", [$debut, $fin])
+                ->filter(fn($room) => !$room->buzzy()) :
+                $houses->flatMap
+                ->Rooms
+                ->filter(fn($room) => !$room->buzzy());
 
             if ($debut || $fin) {
                 alert()->info("Opération éffectué", "Filtre de performance éffectué de la période du $debut au $fin");
             }
+
             return view("admin.performance", compact(
                 "agency",
                 "houses",
@@ -929,10 +949,10 @@ class AdminController extends Controller
             // Filtrage des factures avec une requête plus efficace
             $factures = Facture::whereDate('created_at', $validated['date'])->get();
 
-            if ($factures->isEmpty()) {
-                alert()->info("Information", "Aucune facture trouvée pour cette date");
-                return back()->withInput();
-            }
+            // if ($factures->isEmpty()) {
+            //     alert()->info("Information", "Aucune facture trouvée pour la date du $request->date ");
+            //     return back()->withInput();
+            // }
 
             // Récupération des locations avec eager loading
             $locations = Location::where("agency", deCrypId($agencyId))
@@ -944,7 +964,7 @@ class AdminController extends Controller
             $locators = $locations->pluck('Locataire')->filter()->values();
 
             if ($locators->isEmpty()) {
-                alert()->info("Information", "Aucun locataire trouvé pour cette date");
+                alert()->info("Information", "Aucun locataire trouvé pour la date du $request->date");
                 return back()->withInput();
             }
 

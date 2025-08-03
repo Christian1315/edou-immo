@@ -23,6 +23,7 @@
             <br><br>
         </div>
     </div>
+    
     <div class="row">
         <div class="col-md-12">
             <!-- SHOW TAUX BY SUPERVISOR -->

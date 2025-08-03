@@ -11,7 +11,7 @@ class RecoveryAnyDate extends Component
 {
     public $agency;
 
-    public array $locators;
+    public $locators;
 
     function mount($agency)
     {
@@ -19,11 +19,6 @@ class RecoveryAnyDate extends Component
         $this->agency = $agency;
         // Filtrage des factures avec une requête plus efficace
         $factures = Facture::whereDate('created_at', now())->get();
-
-        if ($factures->isEmpty()) {
-            alert()->info("Information", "Aucune facture trouvée pour cette date");
-            return back()->withInput();
-        }
 
         // Récupération des locations avec eager loading
         $locations = Location::where("agency", $this->agency->id)
@@ -35,7 +30,9 @@ class RecoveryAnyDate extends Component
         $this->locators = $locations->pluck('Locataire')
             ->filter()
             ->values()
-            ->toArray();
+            // ->toArray()
+        ;
+
     }
 
     public function render()
