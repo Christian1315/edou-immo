@@ -154,7 +154,6 @@ class LocationElectrictyFactureController extends Controller
             Log::error('Erreur de base de données lors de l\'arrêt des états: ' . $e->getMessage());
             return $this->handleError("Une erreur est survenue lors de l'arrêt des états. Veuillez réessayer.");
         } catch (Exception $e) {
-            // dd($e);
             DB::rollBack();
             Log::error('Erreur inattendue lors de l\'arrêt des états: ' . $e->getMessage());
             return $this->handleError("Une erreur inattendue est survenue. Veuillez réessayer.");
@@ -307,7 +306,7 @@ class LocationElectrictyFactureController extends Controller
     private function getLocation(int $locationId): ?Location
     {
         try {
-            return Location::where(['visible' => 1])->find($locationId);
+            return Location::find($locationId);
         } catch (QueryException $e) {
             Log::error('Erreur lors de la récupération de la location: ' . $e->getMessage());
             throw $e;
@@ -327,7 +326,7 @@ class LocationElectrictyFactureController extends Controller
     private function getHouse(int $houseId): ?House
     {
         try {
-            return House::where(['visible' => 1])->find($houseId);
+            return House::find($houseId);
         } catch (QueryException $e) {
             Log::error('Erreur lors de la récupération de la maison: ' . $e->getMessage());
             throw $e;
