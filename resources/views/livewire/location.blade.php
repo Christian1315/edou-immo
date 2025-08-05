@@ -7,6 +7,7 @@
         </button>
     </div>
     <br>
+    
     <!-- Modal room type-->
     <div class="modal fade" id="location_type" aria-labelledby="location_type" aria-hidden="true">
         <div class="modal-dialog">

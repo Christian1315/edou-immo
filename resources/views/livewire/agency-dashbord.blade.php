@@ -50,7 +50,7 @@
                                             data-prorata-date="{{$location->Locataire?->prorata_date}}"
                                             data-latest-loyer-date="{{$location->latest_loyer_date}}"
                                             >
-                                            Maison: {{$location->House?->name}} | Chambre : {{$location->Room?->number}} | Locataire: {{$location->Locataire?->prenom}}
+                                            Maison: {{$location->House?->name}} | Chambre : {{$location->Room?->number}} | Locataire: {{$location->Locataire?->name}} {{$location->Locataire?->prenom}}
                                         </option>
                                         @endforeach
                                     </select>

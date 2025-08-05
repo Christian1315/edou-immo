@@ -169,16 +169,18 @@
         @endforeach
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const caisses = document.getElementById("caisses")
-            caisses.addEventListener("change", function(e) {
-                if (e.target.value == 3) {
+    @push("scripts")
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#caisses').on('select2:select', function(e) {
+                // alert(e.params.data.id); // ou e.params.data.text selon ce que tu veux
+                if (e.params.data.id == 3) {
                     $(".cdr_caisse").removeClass("d-none")
                 } else {
                     $(".cdr_caisse").addClass("d-none")
                 }
-            })
-        });
+            });
+        })
     </script>
+    @endpush
 </div>
