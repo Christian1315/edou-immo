@@ -23,18 +23,8 @@
                                     <label>Choisissez la caisse en occurrence</label>
                                     <select name="agency_account" required class="form-select form-control agency-modal-select2" aria-label="Default select example">
                                         @foreach($agencyAccounts as $agency_account)
-                                        @if($agency_account["_Account"]['id']!=4 && $agency_account["_Account"]['id']!=9 && $agency_account["_Account"]['id']!=5)
-
-                                        <!-- seul un admin ou un master peut crediter la caisse CDR -->
-                                        @if($agency_account['id']==3)
-                                        @if(auth())
-                                        @if(auth()->user()->is_master || auth()->user()->is_admin)
-                                        <option value="{{$agency_account['id']}}"> {{$agency_account["_Account"]["name"]}} --- <em class="text-danger">( solde actuel: @if($agency_account->AgencyCurrentSold){{$agency_account->AgencyCurrentSold->sold}} @else 0 @endif)</em> </option>
-                                        @endif
-                                        @endif
-                                        @else
-                                        <option value="{{$agency_account['id']}}">{{$agency_account["_Account"]["name"]}} --- <em class="text-danger">( solde actuel: @if($agency_account->AgencyCurrentSold) {{$agency_account->AgencyCurrentSold->sold}} @else 0 @endif)</em> </option>
-                                        @endif
+                                        @if($agency_account->_Account->id!=4 && $agency_account->_Account->id!=9 && $agency_account->_Account->id!=5)
+                                        <option value="{{$agency_account->id}}" data-account="{{$agency_account->_Account->id}}"> {{$agency_account->_Account->name}} --- <em class="text-danger">( solde actuel: @if($agency_account->AgencyCurrentSold){{$agency_account->AgencyCurrentSold->sold}} @else 0 @endif)</em> </option>
                                         @endif
                                         @endforeach
                                     </select>
@@ -93,9 +83,9 @@
                                     <label>Choisissez la caisse en occurrence</label>
                                     <select id="caisses" name="agency_account" class="form-select form-control agency-modal-select2" aria-label="Default select example">
                                         @foreach($agencyAccounts as $agency_account)
-                                        @if($agency_account["_Account"]['id']!=4 && $agency_account["_Account"]['id']!=9 && $agency_account["_Account"]['id']!=5)
+                                        @if($agency_account->_Account->id!=4 && $agency_account->_Account->id!=9 && $agency_account->_Account->id!=5)
                                         <!-- seul un admin ou un master peut crediter la caisse CDR -->
-                                        <option value="{{$agency_account['id']}}">{{$agency_account["_Account"]["name"]}} --- <em class="text-danger">( solde actuel: @if($agency_account->AgencyCurrentSold){{$agency_account->AgencyCurrentSold->sold}} @else 0 @endif)</em> </option>
+                                        <option value="{{$agency_account->id}}" data-account="{{$agency_account->_Account->id}}">{{$agency_account->_Account->name}} --- <em class="text-danger">( solde actuel: @if($agency_account->AgencyCurrentSold){{$agency_account->AgencyCurrentSold->sold}} @else 0 @endif)</em> </option>
                                         @endif
                                         @endforeach
                                     </select>
@@ -145,6 +135,7 @@
             font-size: 30px;
         }
     </style>
+
     <h4 class="">Total: {{count($agencyAccounts)}} </h4>
     <div class="row">
         @foreach($agencyAccounts as $agency_account)
@@ -174,7 +165,10 @@
         $(document).ready(function() {
             $('#caisses').on('select2:select', function(e) {
                 // alert(e.params.data.id); // ou e.params.data.text selon ce que tu veux
-                if (e.params.data.id == 3) {
+                const selected = $(this).find(':selected');
+                const account = selected.data('account');
+
+                if (account == 3) {
                     $(".cdr_caisse").removeClass("d-none")
                 } else {
                     $(".cdr_caisse").addClass("d-none")

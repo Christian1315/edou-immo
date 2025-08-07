@@ -40,6 +40,7 @@ class Caisses extends Component
         $this->agency = $agency;
         $this->houses = $agency->_Houses;
         $this->agencyAccounts = $agency->_AgencyAccounts;
+        // dd($this->agencyAccounts);
     }
 
     /**

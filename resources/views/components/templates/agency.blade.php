@@ -382,6 +382,7 @@
             $(document).on('shown.bs.modal', '.modal', function() {
                 $(this).find('.agency-modal-select2').each(function() {
                     $(this).select2({
+                        tags: true,
                         width: '100%',
                         placeholder: $(this).data('placeholder'),
                         dropdownParent: $(this).closest('.modal'),
