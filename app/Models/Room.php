@@ -27,6 +27,10 @@ class Room extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        "loyer" => "float",
+    ];
+
     /**
      * Calculate the total locative charges
      */

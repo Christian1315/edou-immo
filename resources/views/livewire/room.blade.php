@@ -88,7 +88,7 @@
                                 <span class=" bg-light text-dark">{{$room["House"]["Supervisor"]["name"]}}</span>
                             </td>
                             <td class="text-center">
-                                <span class=" bg-dark">{{number_format($room["loyer"],0,","," ")}}</span>
+                                <span class=" bg-dark">{{number_format((int) $room["loyer"],0,","," ")}}</span>
                             </td>
                             <td class="text-center">
                                 <span class=" bg-warning">{{number_format($room->LocativeCharge(),0,","," ")}}</span>
