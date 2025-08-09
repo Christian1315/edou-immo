@@ -44,7 +44,7 @@ class UserController extends Controller
             'name' => 'required',
             'username' => 'required',
             'phone' => ['required', 'numeric'],
-            'agency' => ['required', 'integer'],
+            'agency' => ['nullable', 'integer'],
             'email' => ['required', 'email'],
         ];
     }
@@ -117,23 +117,26 @@ class UserController extends Controller
 
             DB::beginTransaction();
 
+            // dd($request->all());
+
             $user = request()->user();
             $formData = $request->all();
             $formData['pass_default'] = Custom_Timestamp();
             $formData['password'] = $formData['username'];
             $formData['owner'] = $user->id;
+            // $formData['agency'] = $request->agency ?? null;
 
             #ENREGISTREMENT
             $create_user = User::create($formData);
 
             if ($request->role) {
-                $role = ModelsRole::firstWhere("name",$request->role);
+                $role = ModelsRole::firstWhere("name", $request->role);
 
                 if (!$role) {
                     throw new Exception("Ce rôle n'existe pas!");
                 }
 
-                DB::table('model_has_roles')->where('model_id', $user->id)->delete();
+                DB::table('model_has_roles')->where('model_id', $create_user->id)->delete();
                 $create_user->assignRole($request->input("role"));
             }
 

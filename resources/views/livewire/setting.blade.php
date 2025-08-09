@@ -21,8 +21,8 @@
                         @csrf
                         <div class="row">
                             <div class="col-md-12 mb-2">
-                                <select required value="{{old('agency')}}" name="agency" class="select2 form-control mb-1 agency-modal-select2">
-                                    <option>Choisir une agence</option>
+                                <select value="{{old('agency')}}" name="agency" class="select2 form-control mb-1 agency-modal-select2">
+                                    <option value="">Choisir une agence</option>
                                     @foreach($agencies as $agency)
                                     <option value="{{$agency['id']}}">{{$agency['name']}} </option>
                                     @endforeach
@@ -105,41 +105,6 @@
                     </thead>
                     <tbody>
                         @foreach($users as $user)
-                        <!-- le compte admin -->
-                        @if(auth()->user()->hasRole('Super Administrateur'))
-                        <tr class="align-items-center my-2 ">
-                            <td class="text-center">{{$loop->index + 1}} </td>
-                            <td class="text-center"><span class=" bg-light text-dark"> {{$user["name"]}} ({{$user?->username}})</span> </td>
-                            <td class="text-center"><span class=" bg-dark text-white">{{$user["email"]}} </span> </td>
-                            <td class="text-center"> <span class=" bg-light text-dark">{{$user["phone"]}} </span> </td>
-                            <td class="text-center">
-                                {{$user->_Agency?$user->_Agency->name:'---'}}
-                            </td>
-                            <td class="text-center text-red"> <span class=" bg-light text-red"> <i class="bi bi-calendar2-check-fill"></i> {{ \Carbon\Carbon::parse($user["created_at"])->locale('fr')->isoFormat('D MMMM YYYY') }}</span></small></th>
-
-                            <td class="text-center">
-                                <div class="btn-group dropstart">
-                                    <button type="button" class="w-100 btn btn-sm bg-dark dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span class="visually-hidden"> <i class="bi bi-kanban"></i> Gérer </span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <!-- if($user->id != 1) -->
-                                        <button type="button"
-                                            class="btn btn-sm btn-warning edit-user"
-                                            data-id="{{ $user->id }}"
-                                            title="Modifier"
-                                            onclick="editUser({{$user->id}})">
-                                            <i class="bi bi-pencil-square"></i> Modifier
-                                        </button>
-                                        <!-- endif -->
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                        @endif
-
-                        <!-- les autres comptes sauf celui de l'admin -->
-                        @if($user->id!=1)
                         <tr @if($user->is_archive) disabled @endif class="align-items-center my-2 @if($user->is_archive) shadow bg-secondary @endif" @if($user->is_archive) style="background-color:#F6F6F6;border: solid 1px #000" @endif>
                             <td class="text-center">{{$loop->index + 1}} </td>
                             <td class="text-center"><span class=" bg-light text-dark"> {{$user["name"]}} ({{$user?->username}})</span> </td>
@@ -169,7 +134,6 @@
                                 </div>
                             </td>
                         </tr>
-                        @endif
                         @endforeach
                     </tbody>
                 </table>
