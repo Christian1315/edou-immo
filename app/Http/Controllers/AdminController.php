@@ -9,6 +9,7 @@ use App\Models\House;
 use App\Models\Location;
 use App\Models\Room;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -568,11 +569,24 @@ class AdminController extends Controller
 
             $query = House::whereIn("id", $houseIds);
 
+            /** */
+            $supervisor = null;
+            $gestionnaire = null;
+
             if ($request->supervisor) {
+                $supervisor = User::find($request->supervisor);
+                if (!$supervisor) {
+                    throw new \Exception("Le superviseur n'existe pas");
+                }
+
                 $query->where("supervisor", $request->supervisor);
                 alert()->info("Filtrage effectué", "Filtre par superviseur");
             } elseif ($request->gestionnaire) {
-                $gestionnaire = User::findOrFail($request->gestionnaire);
+                $gestionnaire = User::find($request->gestionnaire);
+                if (!$gestionnaire) {
+                    throw new \Exception("Ce gestionnaire n'existe pas");
+                }
+
                 $supervisorIds = $gestionnaire->supervisors->pluck("id")->toArray();
                 $query->whereIn("supervisor", $supervisorIds);
                 alert()->info("Filtrage effectué", "Filtre par gestionnaire");
@@ -591,9 +605,15 @@ class AdminController extends Controller
                     continue;
                 }
 
+                /** Locations IDs */
+                $locationsIds = $house->Locations
+                    ->where("status", "!=", 3)
+                    ->pluck("id")->toArray();
+
                 /** Factures validées avant le dernier état */
-                $houseFactures = $last_state->Factures
+                $houseFactures = Facture::whereIn("location", $locationsIds)
                     ->where("status", 2)
+                    ->get()
                     ->filter(fn($facture) => $facture->created_at < $last_state->created_at);
 
                 /** Transformation en tableau formaté */
@@ -614,6 +634,22 @@ class AdminController extends Controller
 
                 // Ajouter directement chaque élément à la collection
                 $locatorsBefore = $locatorsBefore->concat($locatorFormatted);
+            }
+
+            // Pour imprimer
+            if ($request->imprimer) {
+                set_time_limit(0);
+                // dd($request->imprimer);
+                $pdf = Pdf::loadView("imprimer-locators-before-stop-state", [
+                    "locators" => $locatorsBefore,
+                    "supervisor" => $supervisor,
+                    "gestionnaire" => $gestionnaire,
+                ]);
+
+                // Set PDF orientation to landscape
+                $pdf->setPaper('a4', 'landscape');
+
+                return $pdf->stream();
             }
 
             return view("admin.agency-statistique-before-state", [
@@ -644,11 +680,24 @@ class AdminController extends Controller
 
             $query = House::whereIn("id", $houseIds);
 
+            /** */
+            $supervisor = null;
+            $gestionnaire = null;
+
             if ($request->supervisor) {
+                $supervisor = User::find($request->supervisor);
+                if (!$supervisor) {
+                    throw new \Exception("Le superviseur n'existe pas");
+                }
+
                 $query->where("supervisor", $request->supervisor);
                 alert()->info("Filtrage effectué", "Filtre par superviseur");
             } elseif ($request->gestionnaire) {
-                $gestionnaire = User::findOrFail($request->gestionnaire);
+                $gestionnaire = User::find($request->gestionnaire);
+                if (!$gestionnaire) {
+                    throw new \Exception("Ce gestionnaire n'existe pas");
+                }
+
                 $supervisorIds = $gestionnaire->supervisors->pluck("id")->toArray();
                 $query->whereIn("supervisor", $supervisorIds);
                 alert()->info("Filtrage effectué", "Filtre par gestionnaire");
@@ -667,15 +716,17 @@ class AdminController extends Controller
                     continue;
                 }
 
-                /** Factures validées après le dernier état */
-                $houseFactures = $last_state->Factures
-                    ->where("status", 2)
-                    // ->filter(fn($facture) => $facture->created_at > $last_state->created_at)
-                    ;
+                /** Locations IDs */
+                $locationsIds = $house->Locations
+                    ->where("status", "!=", 3)
+                    ->pluck("id")->toArray();
 
-                if ($house->id == 227) {
-                    return response()->json($houseFactures);
-                }
+                /** Factures validées avant le dernier état */
+                $houseFactures = Facture::whereIn("location", $locationsIds)
+                    ->where("status", 2)
+                    ->get()
+                    ->filter(fn($facture) => $facture->created_at > $last_state->created_at);
+
                 /** Transformation en tableau formaté */
                 $locatorFormatted = $houseFactures->map(function ($facture) use ($house, $last_state) {
                     return (object) [
@@ -692,11 +743,24 @@ class AdminController extends Controller
                     ];
                 });
 
-                if ($house->id == 227) {
-                    return response()->json($locatorFormatted);
-                }
                 // Ajouter directement chaque élément à la collection
                 $locatorsBefore = $locatorsBefore->concat($locatorFormatted);
+            }
+
+            // Pour imprimer
+            if ($request->imprimer) {
+                set_time_limit(0);
+                // dd($request->imprimer);
+                $pdf = Pdf::loadView("imprimer-locators-after-stop-state", [
+                    "locators" => $locatorsBefore,
+                    "supervisor" => $supervisor,
+                    "gestionnaire" => $gestionnaire,
+                ]);
+
+                // Set PDF orientation to landscape
+                $pdf->setPaper('a4', 'landscape');
+
+                return $pdf->stream();
             }
 
             return view("admin.agency-statistique-after-state", [

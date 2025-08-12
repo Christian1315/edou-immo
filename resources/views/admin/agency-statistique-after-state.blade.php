@@ -45,6 +45,10 @@
                                                 @endforeach
                                             </select>
                                             <br>
+                                            <div class="d-flex aligns-item-center">
+                                                <input type="checkbox" id="imprimer" name="imprimer"> &nbsp;
+                                                <label for="imprimer">Je veux imprimer aussi</label>
+                                            </div>
                                             <button type="submit" class="w-100 btn btn-sm bg-red mt-2">
                                                 <i class="bi bi-funnel"></i> Filtrer
                                             </button>
@@ -75,6 +79,11 @@
                                                 @endforeach
                                             </select>
                                             <br>
+                                            <div class="d-flex aligns-item-center">
+                                                <input type="checkbox" id="_imprimer" name="imprimer"> &nbsp;
+                                                <label for="_imprimer">Je veux imprimer aussi</label>
+                                            </div>
+
                                             <button type="submit" class="w-100 btn btn-sm bg-red mt-2">
                                                 <i class="bi bi-funnel"></i> Filtrer
                                             </button>

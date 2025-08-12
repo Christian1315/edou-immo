@@ -87,11 +87,19 @@
                 <!-- MAISON -->
                 <div class="row">
                     <div class="col-md-12">
-                        <h5> <strong class="title">Maison</strong> :&nbsp; <strong class="text-red">{{$house->name}}</strong></h5>
-                        <h6> <strong class="title">Superviseur</strong> :&nbsp; <strong class="text-red">{{$house->Supervisor?->name}}</strong></h6>
+                        @if($gestionnaire)
+                        <h5> <strong class="title">Gestionnaire</strong> :&nbsp; <strong class="text-red">{{$gestionnaire->name}}</strong></h5>
+                        @endif
+
+                        @if($supervisor)
+                        <h6> <strong class="title">Superviseur</strong> :&nbsp; <strong class="text-red">{{$supervisor?->name}}</strong></h6>
+                        @endif
                     </div>
                 </div>
                 <br><br>
+
+                <h4 class="">Total: <strong class="text-red"> {{$locators->count()}} </strong> </h4>
+                <h4 class="">Montant total: <strong class="text-red"> {{number_format($locators->sum("amount_paid"),2,"."," ")}} </strong> FCFA </h4>
 
                 <div class="row">
                     <div class="col-md-12">
@@ -100,24 +108,26 @@
                                 <thead class="bg_dark">
                                     <tr>
                                         <th class="text-center">N°</th>
-                                        <th class="text-center">Nom</th>
-                                        <th class="text-center">Prénom</th>
-                                        <th class="text-center">Phone </th>
-                                        <th class="text-center">Adresse</th>
-                                        <th class="text-center">Mois</th>
+                                        <th class="text-center">Nom/Prénom</th>
+                                        <th class="text-center">Maison</th>
+                                        <th class="text-center">Superviseur</th>
                                         <th class="text-center">Montant payé</th>
+                                        <th class="text-center">Loyer</th>
+                                        <th class="text-center">Date de payement</th>
+                                        <th class="text-center">Date arrêt d'état</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($locationsFiltered['beforeStopDate'] as $locator)
+                                    @foreach($locators as $locator)
                                     <tr class="align-items-center">
-                                        <td class="text-center">{{$loop->index + 1}}</td>
-                                        <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["name"]}}</span></td>
-                                        <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["prenom"]}}</span></td>
-                                        <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["phone"]}}</span></td>
-                                        <td class="text-center"><span class="badge bg-light text-dark"> {{$locator["adresse"]}}</span></td>
-                                        <td class="text-center"> <span class="badge bg-light text-dark"><i class="bi bi-calendar2-check"></i> {{\Carbon\Carbon::parse($locator["month"])->locale('fr')->isoFormat('D MMMM YYYY')}}</span> </td>
-                                        <td class="text-center"> <span class="badge bg-light text-dark">{{number_format($locator["amount_paid"],0,","," ")}}</span> </td>
+                                        <td class="text-center">{{$loop->iteration}}</td>
+                                        <td class="text-center text-red"> <span class=" bg-light text-dark">{{$locator->name}} </span> </td>
+                                        <td class="text-center text-red"> <span class=" bg-light text-dark">{{$locator->house_name}} </span> </td>
+                                        <td class="text-center text-red"> <span class=" bg-light text-dark">{{$locator->supervisor}} </span> </td>
+                                        <td class="text-center"> <span class=" bg-light text-dark">{{number_format($locator->amount_paid,2,"."," ")}} FCFA </span> </td>
+                                        <td class="text-center"> <span class=" bg-light text-success">{{number_format($locator->loyer,2,"."," ")}} FCFA </span> </td>
+                                        <td class="text-center"> <span class=" bg-light text-dark">{{\Carbon\Carbon::parse($locator->payement_date)->locale('fr')}} </span> </td>
+                                        <td class="text-center"> <span class=" bg-light text-red">{{\Carbon\Carbon::parse($locator->last_state_date)->locale('fr')}} </span> </td>
                                     </tr>
                                     @endforeach
                                 </tbody>
