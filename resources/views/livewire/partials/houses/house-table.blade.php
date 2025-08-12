@@ -18,7 +18,7 @@
     <tbody>
         @foreach (session('filteredHouses') ? session('filteredHouses') : $houses as $house)
         <tr class="align-items-center">
-            <td class="text-center">{{ $loop->index + 1 }}</td>
+            <td class="text-center"> {{ $loop->index + 1 }}</td>
             <td class="text-center">
                 <span class="bg-light text-dark">
                     {{ $house['name'] }}

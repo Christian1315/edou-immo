@@ -255,15 +255,26 @@
                             </h6>
 
                             <ul class="nav flex-column">
-                                <!-- statistiques -->
-                                @can("statistiques.view")
+                                <!-- statistique -->
                                 <li class="nav-item">
-                                    <a class="nav-link @if ($active == 'statistique') active @endif text-white"
-                                        href="/{{ crypId($agency['id']) }}/statistique">
-                                        <i class="bi bi-pc-display-horizontal"></i> &nbsp; Statistiques
-                                    </a>
+                                    <div class="btn-group dropdown-center">
+                                        <a class="nav-link @if($active == 'statistique') active @endif text-white dropdown-toggle" href="#"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-ev-station"></i> &nbsp; Statistiques
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-dark">
+                                            <!-- electricite -->
+                                            @can("statistiques.view")
+                                            <li><a class="dropdown-item @if($active == 'electricity') active @endif"
+                                                    href="/{{ crypId($agency['id']) }}/statistique-before-state">Statistique avant arrêt d'état</a>
+                                            </li>
+                                            <li><a class="dropdown-item @if($active == 'electricity') active @endif"
+                                                    href="/{{ crypId($agency['id']) }}/statistique-after-state">Statistique après arrêt d'état</a>
+                                            </li>
+                                            @endcan
+                                        </ul>
+                                    </div>
                                 </li>
-                                @endcan
 
                                 <!-- bilan agence -->
                                 @can("bilan.view")

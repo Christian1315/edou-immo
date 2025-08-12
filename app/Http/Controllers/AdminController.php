@@ -550,39 +550,162 @@ class AdminController extends Controller
     }
     /**Fin du traitement des factures d'eau */
 
-
-    function AgencyStatistique(Request $request, $agencyId)
+    /**
+     * Statistique avant arrêt des états
+     */
+    public function AgencyStatistiqueBeforeState(Request $request, $agencyId)
     {
         try {
-            $agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
+            $agency = Agency::where("visible", 1)
+                ->find(deCrypId($agencyId));
+
             if (!$agency) {
                 throw new \Exception("Cette agence n'existe pas!");
-            };
-            ####____
-
-            $query = House::whereIn("agency", $agency->_Houses->pluck("id")->toArray());
-            if ($request->supervisor) {
-                $houses = $query->where("supervisor", $request->supervisor)->get();
-                alert()->info("Filtrage éffectué", "Filtre de statistiques effectuée par superviseur");
-
-                return back()->withInput()->with(["houses_filtered" => $houses]);
-            } elseif ($request->gestionnaire) {
-                $gestionnaire = User::findOrFail($request->gestionnaire);
-                $houses = $query->whereIn("supervisor", $gestionnaire->supervisors
-                    ->pluck("id")
-                    ->toArray())
-                    ->get();
-
-                alert()->info("Filtrage éffectué", "Filtre de statistiques effectuée par gestionnaire");
-
-                return back()->withInput()->with(["houses_filtered" => $houses]);
-            } else {
-                $houses = $query->get();
             }
 
-            return view("admin.agency-statistique", ["agency" => $agency, "houses" => $houses]);
+            /** Toutes les maisons liées à l'agence */
+            $houseIds = $agency->_Houses->pluck("id")->toArray();
+
+            $query = House::whereIn("id", $houseIds);
+
+            if ($request->supervisor) {
+                $query->where("supervisor", $request->supervisor);
+                alert()->info("Filtrage effectué", "Filtre par superviseur");
+            } elseif ($request->gestionnaire) {
+                $gestionnaire = User::findOrFail($request->gestionnaire);
+                $supervisorIds = $gestionnaire->supervisors->pluck("id")->toArray();
+                $query->whereIn("supervisor", $supervisorIds);
+                alert()->info("Filtrage effectué", "Filtre par gestionnaire");
+            }
+
+            /** Filtrer uniquement les maisons ayant un dernier état */
+            $houses = $query->get()
+                ->filter(fn($house) => $house->States->last());
+
+            $locatorsBefore = collect();
+
+            foreach ($houses as $house) {
+                $last_state = $house->States->last();
+
+                if (!$last_state) {
+                    continue;
+                }
+
+                /** Factures validées avant le dernier état */
+                $houseFactures = $last_state->Factures
+                    ->where("status", 2)
+                    ->filter(fn($facture) => $facture->created_at < $last_state->created_at);
+
+                /** Transformation en tableau formaté */
+                $locatorFormatted = $houseFactures->map(function ($facture) use ($house, $last_state) {
+                    return (object) [
+                        "name"          => trim(($facture->Location->Locataire?->name ?? '') . ' ' . ($facture->Location->Locataire?->prenom ?? '')),
+                        "house_name"    => $house->name,
+                        "supervisor"    => $house->Supervisor?->name,
+                        "phone"         => $facture->Location->Locataire?->phone,
+                        "adresse"       => $facture->Location->Locataire?->adresse,
+                        "comments"      => $facture->Location->Locataire?->comments,
+                        "payement_date" => $facture->created_at,
+                        "amount_paid"   => $facture->amount,
+                        "loyer"         => $facture->Location?->loyer,
+                        "last_state_date"         => $last_state->created_at,
+                    ];
+                });
+
+                // Ajouter directement chaque élément à la collection
+                $locatorsBefore = $locatorsBefore->concat($locatorFormatted);
+            }
+
+            return view("admin.agency-statistique-before-state", [
+                "agency"   => $agency,
+                "locators" => $locatorsBefore
+            ]);
         } catch (\Exception $e) {
             alert()->error("Opération échouée", $e->getMessage());
+            return back();
+        }
+    }
+
+    /**
+     * Statistique après arrêt des états
+     */
+    function AgencyStatistiqueAfterState(Request $request, $agencyId)
+    {
+        try {
+            $agency = Agency::where("visible", 1)
+                ->find(deCrypId($agencyId));
+
+            if (!$agency) {
+                throw new \Exception("Cette agence n'existe pas!");
+            }
+
+            /** Toutes les maisons liées à l'agence */
+            $houseIds = $agency->_Houses->pluck("id")->toArray();
+
+            $query = House::whereIn("id", $houseIds);
+
+            if ($request->supervisor) {
+                $query->where("supervisor", $request->supervisor);
+                alert()->info("Filtrage effectué", "Filtre par superviseur");
+            } elseif ($request->gestionnaire) {
+                $gestionnaire = User::findOrFail($request->gestionnaire);
+                $supervisorIds = $gestionnaire->supervisors->pluck("id")->toArray();
+                $query->whereIn("supervisor", $supervisorIds);
+                alert()->info("Filtrage effectué", "Filtre par gestionnaire");
+            }
+
+            /** Filtrer uniquement les maisons ayant un dernier état */
+            $houses = $query->get()
+                ->filter(fn($house) => $house->States->last());
+
+            $locatorsBefore = collect();
+
+            foreach ($houses as $house) {
+                $last_state = $house->States->last();
+
+                if (!$last_state) {
+                    continue;
+                }
+
+                /** Factures validées après le dernier état */
+                $houseFactures = $last_state->Factures
+                    ->where("status", 2)
+                    // ->filter(fn($facture) => $facture->created_at > $last_state->created_at)
+                    ;
+
+                if ($house->id == 227) {
+                    return response()->json($houseFactures);
+                }
+                /** Transformation en tableau formaté */
+                $locatorFormatted = $houseFactures->map(function ($facture) use ($house, $last_state) {
+                    return (object) [
+                        "name"          => trim(($facture->Location->Locataire?->name ?? '') . ' ' . ($facture->Location->Locataire?->prenom ?? '')),
+                        "house_name"    => $house->name,
+                        "supervisor"    => $house->Supervisor?->name,
+                        "phone"         => $facture->Location->Locataire?->phone,
+                        "adresse"       => $facture->Location->Locataire?->adresse,
+                        "comments"      => $facture->Location->Locataire?->comments,
+                        "payement_date" => $facture->created_at,
+                        "amount_paid"   => $facture->amount,
+                        "loyer"         => $facture->Location?->loyer,
+                        "last_state_date"         => $last_state->created_at,
+                    ];
+                });
+
+                if ($house->id == 227) {
+                    return response()->json($locatorFormatted);
+                }
+                // Ajouter directement chaque élément à la collection
+                $locatorsBefore = $locatorsBefore->concat($locatorFormatted);
+            }
+
+            return view("admin.agency-statistique-after-state", [
+                "agency"   => $agency,
+                "locators" => $locatorsBefore
+            ]);
+        } catch (\Exception $e) {
+            alert()->error("Opération échouée", $e->getMessage());
+            return back();
         }
     }
 
@@ -635,7 +758,6 @@ class AdminController extends Controller
                 ->whereBetween("created_at", [$debut, $fin]) : $agency->_Houses
                 ->flatMap
                 ->Locations;
-
 
             /**Locations */
             $locations = $locationQuery

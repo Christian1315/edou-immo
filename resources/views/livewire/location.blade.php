@@ -7,7 +7,7 @@
         </button>
     </div>
     <br>
-    
+
     <!-- Modal room type-->
     <div class="modal fade" id="location_type" aria-labelledby="location_type" aria-hidden="true">
         <div class="modal-dialog">
@@ -807,11 +807,12 @@
             };
             const formattedDate = date.toLocaleDateString("fr", options);
 
+            // alert(formattedDate)
             $(".next_loyer_date").val(formattedDate)
             // alert(location.locataire.prorata)
             if (location.locataire.prorata) {
                 $(".prorata").removeClass("d-none")
-                $(".prorata_days").val(location.prorata_days??0)
+                $(".prorata_days").val(location.prorata_days ?? 0)
                 $(".prorata_amount").val(location.prorata_amount)
                 $(".prorata_date").val(location.locataire.prorata_date)
             }

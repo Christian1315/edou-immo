@@ -2,7 +2,7 @@
 
     <!-- HEADER -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Panel des statistiques de l'agence</h1>
+        <h1 class="h2">Les locations ayant payés <strong class="text-red"> après le dernier arrêt </strong> des états</h1>
     </div>
     <br>
 
@@ -34,7 +34,7 @@
                                 <p class="" id="exampleModalLabel">Filter par superviseur</p>
                             </div>
                             <div class="modal-body">
-                                <form action="{{route('agencyStatistique',crypId($agency->id))}}" method="GET">
+                                <form action="{{route('agencyStatistiqueBeforeState',crypId($agency->id))}}" method="GET">
                                     @csrf
                                     <div class="row">
                                         <div class="col-md-12">
@@ -64,7 +64,7 @@
                                 <p class="" id="exampleModalLabel">Filter par gestionnaire de compte</p>
                             </div>
                             <div class="modal-body">
-                                <form action="{{route('agencyStatistique',crypId($agency->id))}}" method="GET">
+                                <form action="{{route('agencyStatistiqueBeforeState',crypId($agency->id))}}" method="GET">
                                     @csrf
                                     <div class="row">
                                         <div class="col-md-12">
@@ -87,7 +87,9 @@
                 </div>
 
                 <!-- TABLEAU DE LISTE -->
-                <h4 class="">Total: <strong class="text-red"> {{session()->get("houses_filtered")?->count()??$houses->count()}} </strong> </h4>
+                <h4 class="">Total: <strong class="text-red"> {{$locators->count()}} </strong> </h4>
+                <h6 class="">Montant total: <strong class="text-red"> {{number_format($locators->sum("amount_paid"),2,"."," ")}} </strong> FCFA </h6>
+
                 <div class="row">
                     <div class="col-12">
                         <div class="table-responsive table-responsive-list shadow-lg p-3">
@@ -95,31 +97,26 @@
                                 <thead class="bg_dark">
                                     <tr>
                                         <th class="text-center">N°</th>
-                                        <th class="text-center">Nom</th>
-                                        <th class="text-center">Latitude</th>
-                                        <th class="text-center">Longitude</th>
-                                        <th class="text-center">Type de maison</th>
+                                        <th class="text-center">Nom/Prénom</th>
+                                        <th class="text-center">Maison</th>
                                         <th class="text-center">Superviseur</th>
-                                        <th class="text-center">Propriétaire</th>
-                                        <th class="text-center">Mouvements</th>
+                                        <th class="text-center">Montant payé</th>
+                                        <th class="text-center">Loyer</th>
+                                        <th class="text-center">Date de payement</th>
+                                        <th class="text-center">Date arrêt d'état</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach(session()->get("houses_filtered")??$houses as $house)
+                                    @foreach($locators as $locator)
                                     <tr class="align-items-center">
-                                        <td class="text-center">{{$loop->index + 1}}</td>
-                                        <td class="text-center text-red"> <span class=" bg-light text-dark">{{$house->name}} </span> </td>
-                                        <td class="text-center"> <span class=" bg-light text-dark">@if($house["latitude"]) {{$house["latitude"]}} @else --- @endif </span> </td>
-                                        <td class="text-center">@if($house["longitude"]) {{$house["longitude"]}} @else --- @endif</td>
-                                        <td class="text-center">{{$house->Type?->name}}</td>
-                                        <td class="text-center text-red"> <span class=" bg-light text-dark"> {{$house->Supervisor?->name}}</span> </td>
-                                        <td class="text-center"> <span class=" bg-light text-dark"> {{$house->Proprietor?->lastname}} {{$house->Proprietor?->firstname}}</span> </td>
-
-                                        <td class="text-center">
-                                            <a href="{{route('location.FiltreBeforeStateDateStoped', crypId($house['id']))}}" class="btn btn-sm btn-dark" title="Avant arrêt des états"><i class="bi bi-arrow-left-circle-fill"></i></a> &nbsp;
-                                            <a href="{{route('location.FiltreAfterStateDateStoped', crypId($house['id']))}}" class="btn btn-sm bg-red" title="Après arrêt des états"><i class="bi bi-arrow-right-circle-fill"></i></a>
-                                            &nbsp;
-                                        </td>
+                                        <td class="text-center">{{$loop->iteration}}</td>
+                                        <td class="text-center text-red"> <span class=" bg-light text-dark">{{$locator->name}} </span> </td>
+                                        <td class="text-center text-red"> <span class=" bg-light text-dark">{{$locator->house_name}} </span> </td>
+                                        <td class="text-center text-red"> <span class=" bg-light text-dark">{{$locator->supervisor}} </span> </td>
+                                        <td class="text-center"> <span class=" bg-light text-dark">{{number_format($locator->amount_paid,2,"."," ")}} FCFA </span> </td>
+                                        <td class="text-center"> <span class=" bg-light text-success">{{number_format($locator->loyer,2,"."," ")}} FCFA </span> </td>
+                                        <td class="text-center"> <span class=" bg-light text-dark">{{\Carbon\Carbon::parse($locator->payement_date)->locale('fr')}} </span> </td>
+                                        <td class="text-center"> <span class=" bg-light text-red">{{\Carbon\Carbon::parse($locator->last_state_date)->locale('fr')}} </span> </td>
                                     </tr>
                                     @endforeach
                                 </tbody>

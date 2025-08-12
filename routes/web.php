@@ -206,7 +206,8 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/{agency}/eau/locations', "Eau")->name("eau");
 
     /** AGENCY STATISTIQUES */
-    Route::any('/{agency}/statistique', "AgencyStatistique")->name("agencyStatistique");
+    Route::any('/{agency}/statistique-before-state', "AgencyStatistiqueBeforeState")->name("agencyStatistiqueBeforeState");
+    Route::any('/{agency}/statistique-after-state', "AgencyStatistiqueAfterState")->name("agencyStatistiqueAfterState");
 
     Route::get('/{agency}/recovery_05_to_echeance_date', "AgencyRecovery05")->name("recovery_05_to_echeance_date");
     Route::get('/{agency}/recovery_10_to_echeance_date', "AgencyRecovery10")->name("recovery_10_to_echeance_date");
