@@ -266,7 +266,7 @@
                         <tbody>
                             @foreach(session()->get("locations_filtred") ? session()->get("locations_filtred"):$locations as $location)
                             <tr class="align-items-center">
-                                <td class="text-center">{{$location->Room?->id}} {{$location->Room?->number}}</td>
+                                <td class="text-center">{{$location->Room?->number}}</td>
                                 <td class="text-center"> <span class=" bg-dark text-white">{{$location->Locataire?->name}} {{$location->Locataire?->prenom}} </span> </td>
                                 <td class="text-center"><span class=" bg-light text-dark text-bold"> {{$location->House?->name}} ({{$location->House?->Supervisor?->name}})</span></td>
                                 <td class="text-center"><span class=" bg-light text-dark text-bold"> {{$location->Locataire?->phone}}</span></td>

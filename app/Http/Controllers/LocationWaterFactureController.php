@@ -102,6 +102,10 @@ class LocationWaterFactureController extends Controller
 
             $agency = $facture->Location->_Agency;
             $agencyAccount = $this->getAgencyAccount($agency->id);
+
+            Log::debug("Agency", ["data" => $agency]);
+            Log::debug("Agency Account", ["data" => $agencyAccount]);
+
             if (!$agencyAccount) {
                 DB::rollBack();
                 return $this->handleError("Ce compte d'agence n'existe pas! Vous ne pouvez pas le créditer!");
@@ -336,7 +340,7 @@ class LocationWaterFactureController extends Controller
     private function getAgencyAccount(int $agencyId): ?AgencyAccount
     {
         try {
-            return AgencyAccount::where(['agency' => $agencyId])->find(env('ELECTRICITY_WATER_ACCOUNT_ID'));
+            return AgencyAccount::firstWhere(['agency' => $agencyId,"account"=>env('ELECTRICITY_WATER_ACCOUNT_ID')]);
         } catch (QueryException $e) {
             Log::error('Erreur lors de la récupération du compte d\'agence: ' . $e->getMessage());
             throw $e;
