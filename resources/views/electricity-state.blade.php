@@ -102,7 +102,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            
+
                             <td class="text">
                                 <div class="">
                                     <h6 class="">Maison : <em class=""> {{$state->House->name}} </em> </h6>
@@ -115,7 +115,7 @@
             </div>
 
             <br>
-            <h5 class="text-center">Date d'arrêt: <strong class=""> {{Change_date_to_text($state->state_stoped_day) }} </strong> </h5>
+            <h5 class="text-center">Date d'arrêt: <strong class=""> {{\Carbon\carbon::parse($state->state_stoped_day)->locale('fr')->isoFormat("D MMMM YYYY")}} </strong> </h5>
             <br>
 
             @if(count($state->StatesFactures)>0)
@@ -123,54 +123,62 @@
                 <thead class="table-dark">
                     <tr>
                         <th class="text-center">N°</th>
+                        <th class="text-center">Locataire</th>
+                        <th class="text-center">Contact</th>
                         <th class="text-center">Chambre</th>
-                        <th class="text-center" colspan="3">Locataire</th>
                         <th class="text-center">Index début</th>
                         <th class="text-center">Index fin</th>
                         <th class="text-center">Consommation</th>
                         <th class="text-center">P.U</th>
-                        <th class="text-center">Montant facturé</th>
-                        <th class="text-center">Montant Payé</th>
+                        <th class="text-center">Montant à payer</th>
+                        <th class="text-center">Impayés</th>
+                        <th class="text-center">Montant total à payé</th>
+                        <th class="text-center">Montant payé</th>
+                        <th class="text-center">Montant dû</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    @foreach($state->StatesFactures as $facture)
-                    @if(!$facture->state_facture)
+                    @foreach($factures as $facture)
                     <tr class="align-items-center">
-                        <td class="text-center">{{$loop->index+1}}</td>
-                        <td class="text-center">{{$facture->Location->Room->number}}</td>
-
-                        <td class="text-center ">{{$facture->Location->Locataire->name}}</td>
-                        <td class="text-center ">{{$facture->Location->Locataire->prenom}}</td>
-                        <td class="text-center ">{{$facture->Location->Locataire->phone}}</td>
+                        <td class="text-center">{{$loop->iteration}}</td>
+                        <td class="text-center ">{{$facture->Location?->Locataire?->name}}</td>
+                        <td class="text-center ">{{$facture->Location?->Locataire?->phone}}</td>
+                        <td class="text-center">{{$facture->Location?->Room?->number}}</td>
 
                         <td class="text-center"> {{$facture["start_index"]}} </td>
                         <td class="text-center"> {{$facture["end_index"]}} </td>
                         <td class="text-center"> {{$facture["consomation"]}} </td>
-                        <td class="text-center"> <strong class="shadow ">{{$facture->Location->Room->electricity_unit_price}} </strong> </td>
+                        <td class="text-center"> <strong class="shadow ">{{$facture->Location?->Room?->electricity_unit_price}} </strong> </td>
+                        <!-- montant à payer-->
                         <td class="text-center">{{$facture['amount']}}</td>
+                        <!-- montant impayé -->
                         <td class="text-center">
-                            @if($facture['paid'])
-                            {{$facture['amount']}}
-                            @else
-                            ---
-                            @endif
+                            {{$facture->paid?'---':$facture->amount}}
                         </td>
+                        <!-- total à payer-->
+                        <td class="text-center">{{$facture['amount']}}</td>
+                        <!-- montant payé -->
+                        <td class="text-center">
+                            {{$facture->paid?$facture->amount:'---'}}
+                        </td>
+                        <!-- montant dû -->
+                        <td class="text-center">{{$facture->paid?'---':$facture->amount}}</td>
                     </tr>
-                    @endif
                     @endforeach
-                    <tr>
-                        <td class="bg-secondary text-white" colspan="2">Totaux: </td>
-                        <td colspan="7"></td>
-                        <td class=""> <strong class="text-center">= {{$factures_sum}} fcfa</strong></td>
-                        <td class=""> <strong class="text-center">= {{$paid_factures_sum}} fcfa</strong></td>
+                    <tr class="text-center" style="font-weight: bold!important;">
+                        <td class="bg-light text-dark" colspan="7">MONTANT A PAYER: </td>
+                        <td colspan="6"> {{number_format($umpaid_factures_sum,2,"."," ")}} fcfa</td>
+                    </tr class="text-center">
+
+                    <tr class="text-center" style="font-weight: bold!important;">
+                        <td class="bg-light text-dark" colspan="7">COMMISSION DE L'AGENCE: </td>
+                        <td colspan="6"> {{number_format($umpaid_factures_sum*10/100,2,"."," ")}} fcfa</td>
                     </tr>
 
-                    <tr>
-                        <td colspan="9"></td>
-                        <td class="bg-dark text-white">Arriérés: </td>
-                        <td class="bg-secondary text-white"> <strong class="text-center">= {{$umpaid_factures_sum}} fcfa</strong></td>
+                    <tr class="text-center" style="font-weight: bold!important;">
+                        <td class="bg-light text-dark" colspan="7">NET A PAYER: </td>
+                        <td colspan="6"> {{number_format(($umpaid_factures_sum - $umpaid_factures_sum*10/100),2,"."," ")}} fcfa</td>
                     </tr>
                 </tbody>
             </table>

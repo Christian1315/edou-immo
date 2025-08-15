@@ -224,6 +224,7 @@ class AdminController extends Controller
 
     function Electricity(Request $request, $agencyId)
     {
+        set_time_limit(0);
         try {
             $current_agency = Agency::where("visible", 1)->find(deCrypId($agencyId));
             if (!$current_agency) {
@@ -241,12 +242,7 @@ class AdminController extends Controller
             $owner = $request->owner;
 
             $locations = Collection::make(
-                ($debut || $fin || $owner) ?
-                    $activeLocations
-                    ->map(function ($location) use ($debut, $fin, $owner) {
-                        return $this->processLocation($location, $debut, $fin, $owner);
-                    })->all() :
-                    $activeLocations
+                $activeLocations
                     ->map(function ($location) use ($debut, $fin, $owner) {
                         return $this->processLocation($location, $debut, $fin, $owner);
                     })->all()
@@ -295,8 +291,8 @@ class AdminController extends Controller
             "ElectricityFactures"
         ]);
 
-        $location['house_name'] = $location->House->name;
-        $location['locataire'] = $location->Locataire->name . " " . $location->Locataire->prenom;
+        $location['house_name'] = $location->House?->name;
+        $location['locataire'] = $location->Locataire?->name . " " . $location->Locataire?->prenom;
 
         $location['electricity_factures'] = ($debut || $fin || $owner) ?
             $location
@@ -350,7 +346,6 @@ class AdminController extends Controller
 
     private function calculateFactureData(Location $location, $latestFacture, bool $isLatestFactureStateFacture, $electricityFactures): Location
     {
-
         $unpaidFactures = $electricityFactures
             ->where('id', '!=', $latestFacture->id)
             ->where('paid', false)

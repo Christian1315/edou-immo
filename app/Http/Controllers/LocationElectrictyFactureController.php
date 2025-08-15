@@ -53,7 +53,7 @@ class LocationElectrictyFactureController extends Controller
     {
         try {
             DB::beginTransaction();
-            
+
             $formData = $request->all();
             $this->validateElectricityFacture($formData);
 
@@ -70,7 +70,7 @@ class LocationElectrictyFactureController extends Controller
             }
 
             LocationElectrictyFacture::create($factureData);
-            
+
             DB::commit();
             alert()->success("Succès", "Facture d'électricité générée avec succès!!");
 
@@ -101,6 +101,10 @@ class LocationElectrictyFactureController extends Controller
 
             $agency = $facture->Location->_Agency;
             $agencyAccount = $this->getAgencyAccount($agency->id);
+
+            Log::debug("Agency", ["data" => $agency]);
+            Log::debug("Agency Account", ["data" => $agencyAccount]);
+
             if (!$agencyAccount) {
                 DB::rollBack();
                 return $this->handleError("Ce compte d'agence n'existe pas! Vous ne pouvez pas le créditer!");
@@ -112,7 +116,7 @@ class LocationElectrictyFactureController extends Controller
             }
 
             $this->processPayment($facture, $agencyAccount);
-            
+
             DB::commit();
             alert()->success("Succès", "La facture d'électricité de montant ({$facture->amount}) a été payée avec succès!!");
 
@@ -133,6 +137,7 @@ class LocationElectrictyFactureController extends Controller
     {
         try {
             DB::beginTransaction();
+            Log::debug('Debut d\'arrêt des états ', ["data" => $request->all()]);
 
             $formData = $request->all();
             $this->validateHouseData($formData);
@@ -160,7 +165,6 @@ class LocationElectrictyFactureController extends Controller
         }
     }
 
-
     /**
      * Filtre les locations par superviseur
      * 
@@ -180,7 +184,7 @@ class LocationElectrictyFactureController extends Controller
             // Récupération des locations avec eager loading
             $locations_filtred = $agency->_Locations()
                 ->where('status', '!=', 3)
-                ->whereHas('Room', function ($query){
+                ->whereHas('Room', function ($query) {
                     $query->where('electricity', true);
                 })
                 ->whereHas('House.Supervisor', function ($query) use ($request) {
@@ -221,7 +225,7 @@ class LocationElectrictyFactureController extends Controller
                 ->with(['House', 'Room', 'Locataire'])
                 ->where('status', '!=', 3)
                 ->where('house', $request->house)
-                ->whereHas('Room', function ($query){
+                ->whereHas('Room', function ($query) {
                     $query->where('electricity', true);
                 })
                 ->get();
@@ -258,7 +262,7 @@ class LocationElectrictyFactureController extends Controller
             $locations_filtred = $agency->_Locations()
                 ->with(['House.Proprietor', 'Room', 'Locataire'])
                 ->where('status', '!=', 3)
-                ->whereHas('Room', function ($query){
+                ->whereHas('Room', function ($query) {
                     $query->where('electricity', true);
                 })
                 ->whereHas('House.Proprietor', function ($query) use ($request) {
@@ -336,7 +340,7 @@ class LocationElectrictyFactureController extends Controller
     private function getAgencyAccount(int $agencyId): ?AgencyAccount
     {
         try {
-            return AgencyAccount::where(['agency' => $agencyId])->find(env('ELECTRICITY_WATER_ACCOUNT_ID'));
+            return AgencyAccount::firstWhere(['agency' => $agencyId,"account"=>env('ELECTRICITY_WATER_ACCOUNT_ID')]);
         } catch (QueryException $e) {
             Log::error('Erreur lors de la récupération du compte d\'agence: ' . $e->getMessage());
             throw $e;

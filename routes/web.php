@@ -120,7 +120,6 @@ Route::controller(UserController::class)->group(function () {
     Route::delete('{id}/delete', 'DeleteAccount')->name("user.DeleteAccount");
     Route::post('attach-supervisor-to-agent_account/{supervisor}', 'AffectSupervisorToAccountyAgent')->name("user.AffectSupervisorToAccountyAgent"); #Affecter un superviseur à un agent comptable
 
-
     ##___
     Route::any('users', 'Users');
     Route::any('users/{id}', 'RetrieveUser');

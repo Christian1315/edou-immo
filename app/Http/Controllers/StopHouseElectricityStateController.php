@@ -47,6 +47,7 @@ class StopHouseElectricityStateController extends Controller
 
             $pdf = Pdf::loadView('electricity-state', [
                 'state' => $state,
+                'factures'=>$factures,
                 'factures_sum' => $facturesSum,
                 'paid_factures_sum' => $paidFacturesSum,
                 'umpaid_factures_sum' => $unpaidFacturesSum
