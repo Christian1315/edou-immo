@@ -328,7 +328,6 @@
                     <!-- ALERT -->
                     {{ $slot }}
 
-
                     {{-- MODAL DE CHANGEMENT DE MOT DE PASE --}}
                     <!-- Modal -->
                     <div class="modal fade" id="updatePassword" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -621,6 +620,5 @@
         });
     </script>
     @stack('scripts')
-
     </html>
 </div>

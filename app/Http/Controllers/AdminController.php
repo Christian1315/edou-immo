@@ -606,10 +606,18 @@ class AdminController extends Controller
                     ->pluck("id")->toArray();
 
                 /** Factures validées avant le dernier état */
-                $houseFactures = Facture::whereIn("location", $locationsIds)
+                $houseFacturesQuery = Facture::whereIn("location", $locationsIds)
                     ->where("status", 2)
-                    ->get()
-                    ->filter(fn($facture) => $facture->created_at < $last_state->created_at);
+                    ->where('created_at', "<", $last_state->created_at);
+
+
+                if ($request->month) {
+                    $dateMonth = \Carbon\Carbon::createFromFormat('Y-m', $request->month);
+                    $houseFacturesQuery->whereMonth("created_at", $dateMonth->month)
+                        ->whereYear("created_at", $dateMonth->year);
+                }
+
+                $houseFactures = $houseFacturesQuery->get();
 
                 /** Transformation en tableau formaté */
                 $locatorFormatted = $houseFactures->map(function ($facture) use ($house, $last_state) {
@@ -698,6 +706,7 @@ class AdminController extends Controller
                 alert()->info("Filtrage effectué", "Filtre par gestionnaire");
             }
 
+
             /** Filtrer uniquement les maisons ayant un dernier état */
             $houses = $query->get()
                 ->filter(fn($house) => $house->States->last());
@@ -717,10 +726,17 @@ class AdminController extends Controller
                     ->pluck("id")->toArray();
 
                 /** Factures validées avant le dernier état */
-                $houseFactures = Facture::whereIn("location", $locationsIds)
+                $houseFacturesQuery = Facture::whereIn("location", $locationsIds)
                     ->where("status", 2)
-                    ->get()
-                    ->filter(fn($facture) => $facture->created_at > $last_state->created_at);
+                    ->where('created_at', ">", $last_state->created_at);
+
+                if ($request->month) {
+                    $dateMonth = \Carbon\Carbon::createFromFormat('Y-m', $request->month);
+                    $houseFacturesQuery->whereMonth("created_at", $dateMonth->month)
+                        ->whereYear("created_at", $dateMonth->year);
+                }
+
+                $houseFactures = $houseFacturesQuery->get();
 
                 /** Transformation en tableau formaté */
                 $locatorFormatted = $houseFactures->map(function ($facture) use ($house, $last_state) {

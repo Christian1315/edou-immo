@@ -40,11 +40,16 @@
                                         <div class="col-md-12">
                                             <label>Choisissez un superviseur</label>
                                             <select required name="supervisor" value="{{old('supervisor')}}" class="form-control agency-modal-select2">
+                                                <option value="">******</option>
                                                 @foreach(supervisors() as $supervisor)
                                                 <option value="{{ $supervisor->id }}">{{ $supervisor->name }}</option>
                                                 @endforeach
                                             </select>
                                             <br>
+                                            <div class="">
+                                                <label for="month">Filtrer par <span class="test-red">mois</span></label>
+                                                <input type="month" name="month" class="form-control">
+                                            </div>
                                             <div class="d-flex aligns-item-center">
                                                 <input type="checkbox" id="imprimer" name="imprimer"> &nbsp;
                                                 <label for="imprimer">Je veux imprimer aussi</label>
@@ -74,11 +79,16 @@
                                         <div class="col-md-12">
                                             <label>Choisissez un gestionnaire de compte</label>
                                             <select required name="gestionnaire" value="{{old('gestionnaire')}}" class="form-control agency-modal-select2">
+                                                <option value="">******</option>
                                                 @foreach(gestionnaires() as $gestionnaire)
                                                 <option value="{{ $gestionnaire->id }}">{{ $gestionnaire->name }}</option>
                                                 @endforeach
                                             </select>
                                             <br>
+                                            <div class="">
+                                                <label for="month">Filtrer par <span class="test-red">mois</span></label>
+                                                <input type="month" name="month" class="form-control">
+                                            </div>
                                             <div class="d-flex aligns-item-center">
                                                 <input type="checkbox" id="_imprimer" name="imprimer"> &nbsp;
                                                 <label for="_imprimer">Je veux imprimer aussi</label>
